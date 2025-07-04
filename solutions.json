@@ -1,0 +1,20 @@
+[
+  {
+    "id": "001",
+    "title": "למידה מבוססת פרויקטים",
+    "method": "סינכרוני",
+    "instructor": "ד\"ר מיכל כהן",
+    "education_levels": ["חטיבה", "תיכון"],
+    "hours": 30,
+    "image": "images/project-learning.jpg",
+    "summary": "קורס המלמד כיצד ליישם למידה מבוססת פרויקטים בכיתה.",
+    "goals": "פיתוח חשיבה ביקורתית ועבודת צוות.",
+    "start_date": "2025-09-01",
+    "day": "שלישי",
+    "start_time": "16:00",
+    "end_time": "18:00",
+    "contacted": true,
+    "syllabus_status": "מאושר",
+    "syllabus_link": "files/syllabus_001.pdf"
+  }
+]
