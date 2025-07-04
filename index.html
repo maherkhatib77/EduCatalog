@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+  <meta charset="UTF-8" />
+  <title>קטלוג פתרונות למידה</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body dir="rtl">
+  <header>
+    <h1>קטלוג פתרונות למידה</h1>
+    <button id="loginBtn">Login</button>
+    <input type="text" id="searchInput" placeholder="חפש פתרון..." />
+  </header>
+
+  <main id="cardsContainer">
+    <!-- הכרטיסים ייווצרו כאן -->
+  </main>
+
+  <!-- חלון קופץ -->
+  <div id="popup" class="hidden">
+    <div class="popup-content">
+      <button onclick="closePopup()">סגור ✖</button>
+      <h2 id="popupTitle"></h2>
+      <p id="popupDetails"></p>
+      <button onclick="window.print()">הדפסה</button>
+      <button onclick="downloadPDF()">שמור כ-PDF</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
