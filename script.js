@@ -47,3 +47,38 @@ document.getElementById("searchInput").addEventListener("input", function () {
   );
   displaySolutions(filtered);
 });
+
+function addNewSolution() {
+  try {
+    let current = JSON.parse(document.getElementById("jsonContent").value || "[]");
+    if (!Array.isArray(current)) current = [];
+
+    const newSolution = {
+      "id": "",
+      "title": "פתרון חדש",
+      "summary": "",
+      "objectives": "",
+      "method": "",
+      "instructor": "",
+      "guide": "",
+      "education_levels": [],
+      "hours": 0,
+      "domain": "",
+      "subject": "",
+      "start_date": "",
+      "day": "",
+      "start_time": "",
+      "end_time": "",
+      "contacted": false,
+      "syllabus_status": "",
+      "syllabus_link": "",
+      "image": ""
+    };
+
+    current.push(newSolution);
+    document.getElementById("jsonContent").value = JSON.stringify(current, null, 2);
+    document.getElementById("statusMsg").textContent = "🆕 שורה חדשה נוספה.";
+  } catch (e) {
+    document.getElementById("statusMsg").textContent = "❌ לא ניתן להוסיף – תוכן JSON אינו תקין.";
+  }
+}
