@@ -1,43 +1,40 @@
+
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ניהול פתרונות למידה</title>
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <title>ניהול פתרונות למידה</title>
+    <link rel="stylesheet" href="style.css">
+    <script defer src="firebase-config.js"></script>
+    <script defer src="dashboard.js"></script>
 </head>
 <body>
-  <header>
-    <h1>📂 ניהול פתרונות למידה</h1>
-  </header>
+    <header>
+        <h1>📁 ניהול פתרונות למידה</h1>
+    </header>
 
-  <section class="form-section">
-    <h2>הוספת / עריכת פתרון</h2>
-    <form id="solutionForm">
-      <input type="hidden" id="recordId" />
-      <label>שם הפתרון:<input type="text" id="name" required /></label>
-      <label>רכז פדגוגי:<input type="text" id="coordinator" required /></label>
-      <label>מנחה:<input type="text" id="instructor" required /></label>
-      <label>שלב חינוכי:<input type="text" id="level" required /></label>
-      <label>תאריך התחלה:<input type="date" id="date" required /></label>
-      <label>שעות לגמול:<input type="number" id="hours" required min="1" /></label>
-      <label>תיאור:<textarea id="description" required></textarea></label>
-      <label>תמונה (קישור):<input type="url" id="image" required /></label>
-      <button type="submit">💾 שמור פתרון</button>
-    </form>
-  </section>
+    <section id="search-section">
+        <input type="text" id="search-input" placeholder="חפש לפי שם, רכז או מנחה...">
+    </section>
 
-  <section class="search-section">
-    <input type="text" id="search" placeholder="חפש לפי שם, רכז או שלב חינוך..." />
-  </section>
+    <section id="form-section">
+        <h2>טופס פתרון למידה</h2>
+        <form id="learning-form">
+            <input type="hidden" id="item-id">
+            <label>שם הפתרון: <input type="text" id="title" required></label>
+            <label>רכז פדגוגי: <input type="text" id="coordinator" required></label>
+            <label>מנחה: <input type="text" id="mentor" required></label>
+            <label>שלב חינוך: <input type="text" id="educationLevel" required></label>
+            <label>תאריך התחלה: <input type="date" id="startDate" required></label>
+            <label>היקף שעות: <input type="number" id="hours" required></label>
+            <label>קישור לתמונה: <input type="url" id="image" required></label>
+            <button type="submit">💾 שמור</button>
+        </form>
+    </section>
 
-  <section id="solutionsList">
-    <!-- כרטיסיות הפתרונות ייווצרו כאן -->
-  </section>
-
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js"></script>
-  <script src="firebase-config.js"></script>
-  <script src="dashboard.js"></script>
+    <section id="items-section">
+        <h2>📚 רשימת פתרונות</h2>
+        <div id="items-list"></div>
+    </section>
 </body>
 </html>
