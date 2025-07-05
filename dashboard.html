@@ -51,7 +51,7 @@
       const file = document.getElementById("file").value;
       const token = document.getElementById("token").value;
 
-      const url = `https://api.github.com/repos/${username}/${repo}/contents/${file}`;
+      const url = `https://api.github.com/repos/${username}/${repo}/contents/${filename}`;
       const res = await fetch(url, {
         headers: {
           Authorization: `token ${token}`,
