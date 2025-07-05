@@ -7,7 +7,7 @@
 </head>
 <body>
   <h2>📚 פתרונות למידה</h2>
-  <div id="solutions"></div>
+  <div id="solutions" class="cards-container"></div>
   <a href="dashboard.html"><button>🔒 כניסת מנהל</button></a>
 
   <script>
@@ -16,15 +16,16 @@
       .then(data => {
         const container = document.getElementById("solutions");
         data.forEach(item => {
-          const box = document.createElement("div");
-          box.style = "border:1px solid #ccc; background:#fff; padding:1em; margin-bottom:1em;";
-          box.innerHTML = `
-            <h3>${item.title}</h3>
-            <p><strong>מזהה:</strong> ${item.id}</p>
-            <p><strong>מרצה:</strong> ${item.instructor}</p>
-            <p><strong>שעות:</strong> ${item.hours}</p>
+          const card = document.createElement("div");
+          card.className = "card";
+          card.innerHTML = `
+            <img src="\${item.image}" alt="תמונה">
+            <h3>\${item.title}</h3>
+            <p><strong>מזהה:</strong> \${item.id}</p>
+            <p><strong>מרצה:</strong> \${item.instructor}</p>
+            <p><strong>שעות:</strong> \${item.hours}</p>
           `;
-          container.appendChild(box);
+          container.appendChild(card);
         });
       });
   </script>
