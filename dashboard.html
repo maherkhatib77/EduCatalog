@@ -6,96 +6,96 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-  <div id="loginBox">
-    <h2>🔐 כניסת מנהל</h2>
-    <label>שם משתמש:</label>
-    <input type="text" id="adminUser" placeholder="Pisga">
-    <label>סיסמה:</label>
-    <input type="password" id="adminPass" placeholder="Sara@2203">
-    <button onclick="verifyLogin()">התחבר</button>
-    <p id="loginMsg"></p>
-  </div>
-
-  <div id="mainBox" style="display:none;">
-    <h2>📂 ניהול פתרונות למידה</h2>
-    <table id="solutionsTable">
-      <thead>
-        <tr>
-          <th>מזהה</th>
-          <th>שם</th>
-          <th>מרצה</th>
-          <th>שעות</th>
-          <th>פעולות</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-    <button onclick="addNew()">➕ הוסף חדש</button>
-    <button onclick="saveData()">💾 שמור</button>
-    <p id="status"></p>
-  </div>
+  <h2>📂 ניהול פתרונות למידה</h2>
+  <table id="solutionsTable">
+    <thead>
+      <tr>
+        <th>מזהה</th>
+        <th>שם</th>
+        <th>מרצה</th>
+        <th>שעות</th>
+        <th>תמונה</th>
+        <th>מחיקה</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+  <button onclick="addNew()">➕ הוסף חדש</button>
+  <button onclick="saveToGitHub()">💾 שמור ל־GitHub</button>
+  <p id="status"></p>
 
   <script>
+    const username = "maherkhatib77";
+    const repo = "EduCatalog";
+    const path = "solutions.json";
+    const token = "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";
+    let sha = "";
     let data = [];
 
-    function verifyLogin() {
-      const user = document.getElementById("adminUser").value;
-      const pass = document.getElementById("adminPass").value;
-      if (user === "Pisga" && pass === "Sara@2203") {
-        document.getElementById("loginBox").style.display = "none";
-        document.getElementById("mainBox").style.display = "block";
-        loadData();
-      } else {
-        document.getElementById("loginMsg").textContent = "שגיאה בפרטי ההתחברות.";
-      }
-    }
-
     function loadData() {
-      fetch('solutions.json')
-        .then(res => res.json())
-        .then(json => {
-          data = json;
-          renderTable();
-        });
+      fetch(`https://api.github.com/repos/\${username}/\${repo}/contents/\${path}`, {
+        headers: { Authorization: `token \${token}` }
+      })
+      .then(res => res.json())
+      .then(json => {
+        sha = json.sha;
+        data = JSON.parse(atob(json.content));
+        renderTable();
+      });
     }
 
     function renderTable() {
       const tbody = document.querySelector("#solutionsTable tbody");
       tbody.innerHTML = "";
-      data.forEach((item, index) => {
+      data.forEach((item, i) => {
         const row = document.createElement("tr");
         row.innerHTML = `
-          <td><input value="${item.id}" onchange="data[${index}].id = this.value"></td>
-          <td><input value="${item.title}" onchange="data[${index}].title = this.value"></td>
-          <td><input value="${item.instructor}" onchange="data[${index}].instructor = this.value"></td>
-          <td><input type="number" value="${item.hours}" onchange="data[${index}].hours = parseInt(this.value)"></td>
-          <td><button onclick="removeRow(${index})">🗑️ מחק</button></td>
+          <td><input value="\${item.id}" onchange="data[\${i}].id=this.value"></td>
+          <td><input value="\${item.title}" onchange="data[\${i}].title=this.value"></td>
+          <td><input value="\${item.instructor}" onchange="data[\${i}].instructor=this.value"></td>
+          <td><input type="number" value="\${item.hours}" onchange="data[\${i}].hours=parseInt(this.value)"></td>
+          <td><input value="\${item.image}" onchange="data[\${i}].image=this.value"></td>
+          <td><button onclick="deleteRow(\${i})">🗑️</button></td>
         `;
         tbody.appendChild(row);
       });
     }
 
     function addNew() {
-      data.push({ id: "", title: "", instructor: "", hours: 0 });
+      data.push({ id: "", title: "", instructor: "", hours: 0, image: "" });
       renderTable();
     }
 
-    function removeRow(index) {
-      data.splice(index, 1);
+    function deleteRow(i) {
+      data.splice(i, 1);
       renderTable();
     }
 
-    function saveData() {
-      const content = JSON.stringify(data, null, 2);
-      const blob = new Blob([content], { type: "application/json" });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = "solutions.json";
-      link.click();
-      document.getElementById("status").textContent = "הקובץ נשמר (הורדה ללקוח).";
+    function saveToGitHub() {
+      const content = btoa(JSON.stringify(data, null, 2));
+      fetch(`https://api.github.com/repos/\${username}/\${repo}/contents/\${path}`, {
+        method: "PUT",
+        headers: {
+          Authorization: `token \${token}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          message: "עדכון קובץ solutions.json",
+          content: content,
+          sha: sha
+        })
+      })
+      .then(res => res.json())
+      .then(result => {
+        document.getElementById("status").textContent = "✅ נשמר בהצלחה.";
+        sha = result.content.sha;
+      })
+      .catch(() => {
+        document.getElementById("status").textContent = "❌ שגיאה בשמירה.";
+      });
     }
+
+    loadData();
   </script>
 </body>
 </html>
