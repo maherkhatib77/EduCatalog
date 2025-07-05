@@ -1,27 +1,18 @@
 <!DOCTYPE html>
-<html lang="he" dir="rtl">
+<html lang="he">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
   <title>פתרונות למידה</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container">
+  <header>
     <h1>📚 פתרונות למידה</h1>
-    <input type="text" id="search" placeholder="חפש פתרון למידה..." />
-    <div id="cardsContainer"></div>
-  </div>
-
-  <div id="popup" class="popup">
-    <div class="popup-content">
-      <span class="close-btn" onclick="closePopup()">×</span>
-      <div id="popupDetails"></div>
-    </div>
-  </div>
-
-  <script src="app.js"></script>
+    <button onclick="location.href='dashboard.html'">🔐 כניסת מנהל</button>
+  </header>
+  <main id="solutions-container">
+    <!-- כרטיסיות יוטענו כאן -->
+  </main>
+  <script src="index.js"></script>
 </body>
 </html>
