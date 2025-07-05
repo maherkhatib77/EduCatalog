@@ -1,29 +1,43 @@
 <!DOCTYPE html>
-<html lang="he">
+<html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>קטלוג פתרונות למידה</title>
   <link rel="stylesheet" href="style.css" />
 </head>
-<body dir="rtl">
+<body>
+
+  <!-- תפריט עליון -->
   <header>
     <h1>קטלוג פתרונות למידה</h1>
-    <button id="loginBtn">Login</button>
-    <input type="text" id="searchInput" placeholder="חפש פתרון..." />
+    <div>
+      <input type="text" id="searchInput" placeholder="חפש שירות או מידע..." />
+      <button id="loginBtn">כניסת מנהלים</button>
+    </div>
   </header>
 
+  <!-- באנר -->
+  <section class="banner">
+    <h2>כדי לצפות בתכני המוסד שלך עליך להיכנס למערכת</h2>
+    <button class="primary-btn">לכניסה</button>
+  </section>
+
+  <!-- אזור כרטיסים -->
   <main id="cardsContainer">
-    <!-- הכרטיסים ייווצרו כאן -->
+    <!-- כרטיסי פתרונות ייווצרו ע"י JavaScript -->
   </main>
 
-  <!-- חלון קופץ -->
+  <!-- חלונית קופצת -->
   <div id="popup" class="hidden">
     <div class="popup-content">
-      <button onclick="closePopup()">סגור ✖</button>
+      <button onclick="closePopup()">✖ סגור</button>
       <h2 id="popupTitle"></h2>
       <p id="popupDetails"></p>
-      <button onclick="window.print()">הדפסה</button>
-      <button onclick="downloadPDF()">שמור כ-PDF</button>
+      <div class="popup-buttons">
+        <button onclick="window.print()">הדפסה</button>
+        <button onclick="downloadPDF()">שמור כ-PDF</button>
+      </div>
     </div>
   </div>
 
