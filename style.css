@@ -149,3 +149,33 @@ header h1 {
 .hidden {
   display: none;
 }
+.login-container {
+  max-width: 400px;
+  margin: 100px auto;
+  padding: 2em;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.login-container input {
+  width: 90%;
+  padding: 0.6em;
+  margin: 0.5em 0;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.login-container button {
+  background-color: #0078d4;
+  color: white;
+  border: none;
+  padding: 0.7em 1.5em;
+  border-radius: 8px;
+  font-size: 1em;
+  cursor: pointer;
+  margin-top: 1em;
+}
+
+
