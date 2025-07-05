@@ -2,33 +2,64 @@
 <html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>קטלוג פתרונות למידה</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <!-- תפריט עליון -->
   <header>
     <h1>קטלוג פתרונות למידה</h1>
-    <div class="header-actions">
-      <input type="text" id="searchInput" placeholder="חפש פתרון למידה..." />
+    <div>
+      <input type="text" id="searchInput" placeholder="חפש פתרון..." />
       <button onclick="window.location.href='admin.html'" id="loginBtn">Log In</button>
-
     </div>
   </header>
 
-  <!-- באנר -->
-  <section class="banner">
-    <h2>כדי לצפות בתכני המוסד שלך עליך להיכנס למערכת</h2>
-    <button class="primary-btn">כניסה</button>
-  </section>
-
-  <!-- אזור הכרטיסים -->
   <main id="cardsContainer">
-    <!-- הקלפים יוזנו בעזרת JavaScript -->
+    <!-- הכרטיסים יוזנו בעזרת JavaScript -->
   </main>
 
-  <script src="script.js"></script>
+  <script>
+    let solutions = [];
+
+    fetch("solutions.json")
+      .then((res) => res.json())
+      .then((data) => {
+        solutions = data;
+        displaySolutions(data);
+      });
+
+    function displaySolutions(data) {
+      const container = document.getElementById("cardsContainer");
+      container.innerHTML = "";
+      data.forEach((sol) => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+          <img src="${sol.image}" alt="תמונה" />
+          <h3>${sol.title}</h3>
+          <p><strong>מספר מזהה:</strong> ${sol.id}</p>
+          <p><strong>אופן למידה:</strong> ${sol.method}</p>
+          <p><strong>מנחה:</strong> ${sol.instructor}</p>
+          <p><strong>שלבי חינוך:</strong> ${sol.education_levels?.join(", ")}</p>
+          <p><strong>שעות אקדמיות:</strong> ${sol.hours}</p>
+          <p><strong>תאריך התחלה:</strong> ${sol.start_date || "לא צוין"}</p>
+          <p><strong>תקציר:</strong> ${sol.summary || "אין מידע"}</p>
+          <p><strong>סטטוס סילבוס:</strong> ${sol.syllabus_status || "לא ידוע"}</p>
+          ${sol.syllabus_link ? `<a href="${sol.syllabus_link}" target="_blank">📎 קובץ סילבוס</a>` : ""}
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    document.getElementById("searchInput").addEventListener("input", function () {
+      const value = this.value.toLowerCase();
+      const filtered = solutions.filter((s) =>
+        s.title.toLowerCase().includes(value)
+      );
+      displaySolutions(filtered);
+    });
+  </script>
+
 </body>
 </html>
