@@ -77,3 +77,8 @@ searchInput.oninput = () => {
     itemList.innerHTML = "";
     filtered.forEach(([key, val]) => itemList.appendChild(renderItem(key, val)));
 };
+
+
+function openModule(name) {
+  document.getElementById('module-container').innerHTML = `<p>מודול ${name} נטען כאן...</p>`;
+}
