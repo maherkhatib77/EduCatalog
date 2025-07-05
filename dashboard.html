@@ -1,40 +1,25 @@
-
 <!DOCTYPE html>
-<html lang="he" dir="rtl">
+<html lang="he">
 <head>
-    <meta charset="UTF-8">
-    <title>ניהול פתרונות למידה</title>
-    <link rel="stylesheet" href="style.css">
-    <script defer src="firebase-config.js"></script>
-    <script defer src="dashboard.js"></script>
+  <meta charset="UTF-8">
+  <title>ניהול פתרונות למידה</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <h1>📁 ניהול פתרונות למידה</h1>
-    </header>
-
-    <section id="search-section">
-        <input type="text" id="search-input" placeholder="חפש לפי שם, רכז או מנחה...">
+  <header>
+    <h1>📁 ניהול פתרונות למידה</h1>
+  </header>
+  <main id="dashboard">
+    <div class="modules">
+      <div class="module" onclick="openModule('add')">➕ הוספת פתרון</div>
+      <div class="module" onclick="openModule('edit')">✏️ עריכת פתרון</div>
+      <div class="module" onclick="openModule('delete')">🗑️ מחיקת פתרון</div>
+      <div class="module" onclick="openModule('search')">🔍 חיפוש מתקדם</div>
+    </div>
+    <section id="module-container">
+      <!-- תוכן המודול ייטען כאן -->
     </section>
-
-    <section id="form-section">
-        <h2>טופס פתרון למידה</h2>
-        <form id="learning-form">
-            <input type="hidden" id="item-id">
-            <label>שם הפתרון: <input type="text" id="title" required></label>
-            <label>רכז פדגוגי: <input type="text" id="coordinator" required></label>
-            <label>מנחה: <input type="text" id="mentor" required></label>
-            <label>שלב חינוך: <input type="text" id="educationLevel" required></label>
-            <label>תאריך התחלה: <input type="date" id="startDate" required></label>
-            <label>היקף שעות: <input type="number" id="hours" required></label>
-            <label>קישור לתמונה: <input type="url" id="image" required></label>
-            <button type="submit">💾 שמור</button>
-        </form>
-    </section>
-
-    <section id="items-section">
-        <h2>📚 רשימת פתרונות</h2>
-        <div id="items-list"></div>
-    </section>
+  </main>
+  <script src="dashboard.js"></script>
 </body>
 </html>
