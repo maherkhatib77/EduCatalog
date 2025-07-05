@@ -177,5 +177,47 @@ header h1 {
   cursor: pointer;
   margin-top: 1em;
 }
+.admin-panel {
+  padding: 2em;
+  background-color: #e8f1fb;
+}
+
+.form-section, .list-section {
+  background: white;
+  padding: 1.5em;
+  margin-bottom: 2em;
+  border-radius: 12px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.1);
+}
+
+#solutionForm input {
+  display: block;
+  width: 100%;
+  padding: 0.6em;
+  margin: 0.5em 0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+#solutionForm button {
+  background-color: #0078d4;
+  color: white;
+  border: none;
+  padding: 0.8em 1.5em;
+  border-radius: 8px;
+  font-size: 1em;
+  cursor: pointer;
+}
+
+.solution-card {
+  background: #f9f9f9;
+  padding: 1em;
+  margin: 0.5em 0;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
 
