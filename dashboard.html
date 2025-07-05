@@ -3,116 +3,99 @@
 <head>
   <meta charset="UTF-8">
   <title>ניהול פתרונות למידה</title>
-  <style>
-    body { font-family: sans-serif; background: #f2f9ff; padding: 2em; }
-    .box { background: white; padding: 2em; border-radius: 10px; max-width: 800px; margin: auto; box-shadow: 0 0 10px #ccc; }
-    input, textarea { width: 100%; padding: 0.7em; margin-bottom: 1em; font-size: 1em; }
-    button { background: #2b4c8a; color: white; padding: 0.6em 1.2em; font-weight: bold; border: none; cursor: pointer; }
-    .readonly { background: #eee; color: #555; }
-    .hidden { display: none; }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="box" id="loginBox">
-  <h2>🔐 כניסת מנהל מערכת</h2>
-  <label>👤 שם משתמש:</label>
-  <input type="text" id="adminUser" placeholder="Pisga">
-  <label>🔑 סיסמה:</label>
-  <input type="password" id="adminPass" placeholder="Sara@2203">
-  <button onclick="verifyLogin()">התחבר</button>
-  <p id="loginMsg"></p>
-</div>
+  <div id="loginBox">
+    <h2>🔐 כניסת מנהל</h2>
+    <label>שם משתמש:</label>
+    <input type="text" id="adminUser" placeholder="Pisga">
+    <label>סיסמה:</label>
+    <input type="password" id="adminPass" placeholder="Sara@2203">
+    <button onclick="verifyLogin()">התחבר</button>
+    <p id="loginMsg"></p>
+  </div>
 
-<div class="box hidden" id="editorBox">
-  <h2>📂 עורך פתרונות למידה (GitHub JSON)</h2>
+  <div id="mainBox" style="display:none;">
+    <h2>📂 ניהול פתרונות למידה</h2>
+    <table id="solutionsTable">
+      <thead>
+        <tr>
+          <th>מזהה</th>
+          <th>שם</th>
+          <th>מרצה</th>
+          <th>שעות</th>
+          <th>פעולות</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <button onclick="addNew()">➕ הוסף חדש</button>
+    <button onclick="saveData()">💾 שמור</button>
+    <p id="status"></p>
+  </div>
 
-  <label>👤 שם משתמש ב־GitHub:</label>
-  <input type="text" id="username" value="maherkhatib77" readonly class="readonly">
+  <script>
+    let data = [];
 
-  <label>📁 שם הריפו:</label>
-  <input type="text" id="repo" value="EduCatalog" readonly class="readonly">
-
-  <label>🗂️ שם הקובץ (JSON):</label>
-  <input type="text" id="filename" value="solutions.json">
-
-  <label>🔐 GitHub Token:</label>
-  <input type="password" id="token" placeholder="הדבק כאן את ה-token שלך">
-
-  <button onclick="loadJson()">📥 טען קובץ JSON מ־GitHub</button>
-  <button onclick="addNewSolution()">➕ הוסף פתרון חדש</button>
-
-  <label>📝 ערוך את תוכן הקובץ:</label>
-  <textarea id="jsonContent" rows="20"></textarea>
-  <button onclick="saveJson()">💾 שמור שינויים</button>
-
-  <p id="statusMsg"></p>
-</div>
-
-<script>
-  function verifyLogin() {
-    const user = document.getElementById("adminUser").value.trim();
-    const pass = document.getElementById("adminPass").value.trim();
-    if (user === "Pisga" && pass === "Sara@2203") {
-      document.getElementById("loginBox").classList.add("hidden");
-      document.getElementById("editorBox").classList.remove("hidden");
-    } else {
-      document.getElementById("loginMsg").textContent = "❌ שם משתמש או סיסמה שגויים.";
+    function verifyLogin() {
+      const user = document.getElementById("adminUser").value;
+      const pass = document.getElementById("adminPass").value;
+      if (user === "Pisga" && pass === "Sara@2203") {
+        document.getElementById("loginBox").style.display = "none";
+        document.getElementById("mainBox").style.display = "block";
+        loadData();
+      } else {
+        document.getElementById("loginMsg").textContent = "שגיאה בפרטי ההתחברות.";
+      }
     }
-  }
 
-  async function loadJson() {
-    const username = document.getElementById("username").value;
-    const repo = document.getElementById("repo").value;
-    const filename = document.getElementById("filename").value;
-    const token = document.getElementById("token").value;
-    const url = `https://api.github.com/repos/${username}/${repo}/contents/${filename}`;
-
-    try {
-      const res = await fetch(url, { headers: { Authorization: `token ${token}` } });
-      if (!res.ok) throw new Error("שגיאה בטעינת הקובץ");
-      const data = await res.json();
-      const content = atob(data.content);
-      document.getElementById("jsonContent").value = content;
-      document.getElementById("statusMsg").textContent = "✅ קובץ נטען בהצלחה.";
-    } catch (err) {
-      document.getElementById("statusMsg").textContent = "❌ שגיאה בטעינת הקובץ.";
+    function loadData() {
+      fetch('solutions.json')
+        .then(res => res.json())
+        .then(json => {
+          data = json;
+          renderTable();
+        });
     }
-  }
 
-  async function saveJson() {
-    const username = document.getElementById("username").value;
-    const repo = document.getElementById("repo").value;
-    const filename = document.getElementById("filename").value;
-    const token = document.getElementById("token").value;
-    const content = btoa(unescape(encodeURIComponent(document.getElementById("jsonContent").value)));
-    const url = `https://api.github.com/repos/${username}/${repo}/contents/${filename}`;
-
-    try {
-      const res = await fetch(url, { headers: { Authorization: `token ${token}` } });
-      const data = await res.json();
-      const sha = data.sha;
-
-      const update = await fetch(url, {
-        method: "PUT",
-        headers: {
-          Authorization: `token ${token}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          message: "עדכון מ־dashboard ניהולי",
-          content: content,
-          sha: sha
-        })
+    function renderTable() {
+      const tbody = document.querySelector("#solutionsTable tbody");
+      tbody.innerHTML = "";
+      data.forEach((item, index) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td><input value="${item.id}" onchange="data[${index}].id = this.value"></td>
+          <td><input value="${item.title}" onchange="data[${index}].title = this.value"></td>
+          <td><input value="${item.instructor}" onchange="data[${index}].instructor = this.value"></td>
+          <td><input type="number" value="${item.hours}" onchange="data[${index}].hours = parseInt(this.value)"></td>
+          <td><button onclick="removeRow(${index})">🗑️ מחק</button></td>
+        `;
+        tbody.appendChild(row);
       });
-
-      if (!update.ok) throw new Error();
-      document.getElementById("statusMsg").textContent = "✅ הקובץ נשמר בהצלחה.";
-    } catch {
-      document.getElementById("statusMsg").textContent = "❌ שגיאה בשמירה.";
     }
-  }
-</script>
 
+    function addNew() {
+      data.push({ id: "", title: "", instructor: "", hours: 0 });
+      renderTable();
+    }
+
+    function removeRow(index) {
+      data.splice(index, 1);
+      renderTable();
+    }
+
+    function saveData() {
+      const content = JSON.stringify(data, null, 2);
+      const blob = new Blob([content], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "solutions.json";
+      link.click();
+      document.getElementById("status").textContent = "הקובץ נשמר (הורדה ללקוח).";
+    }
+  </script>
 </body>
 </html>
