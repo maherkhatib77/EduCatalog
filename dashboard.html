@@ -2,128 +2,116 @@
 <html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <title>ניהול פתרונות למידה (GitHub JSON Editor)</title>
+  <title>ניהול פתרונות למידה</title>
   <style>
-    body {
-      font-family: sans-serif;
-      background: #f0f6ff;
-      margin: 2em;
-    }
-    h2 {
-      color: #2b4c8a;
-    }
-    input, textarea {
-      width: 100%;
-      padding: 0.6em;
-      margin-bottom: 1em;
-    }
-    button {
-      background: #2b4c8a;
-      color: white;
-      padding: 0.6em 1.2em;
-      border: none;
-      cursor: pointer;
-      font-weight: bold;
-    }
-    .readonly {
-      background: #eee;
-      color: #666;
-    }
-    .section {
-      background: #fff;
-      padding: 1.5em;
-      margin-bottom: 2em;
-      border-radius: 10px;
-      box-shadow: 0 0 5px #ccc;
-    }
+    body { font-family: sans-serif; background: #f2f9ff; padding: 2em; }
+    .box { background: white; padding: 2em; border-radius: 10px; max-width: 800px; margin: auto; box-shadow: 0 0 10px #ccc; }
+    input, textarea { width: 100%; padding: 0.7em; margin-bottom: 1em; font-size: 1em; }
+    button { background: #2b4c8a; color: white; padding: 0.6em 1.2em; font-weight: bold; border: none; cursor: pointer; }
+    .readonly { background: #eee; color: #555; }
+    .hidden { display: none; }
   </style>
 </head>
 <body>
 
-  <h2>🧩 ממשק ניהול פתרונות למידה (GitHub JSON Editor)</h2>
+<div class="box" id="loginBox">
+  <h2>🔐 כניסת מנהל מערכת</h2>
+  <label>👤 שם משתמש:</label>
+  <input type="text" id="adminUser" placeholder="Pisga">
+  <label>🔑 סיסמה:</label>
+  <input type="password" id="adminPass" placeholder="Sara@2203">
+  <button onclick="verifyLogin()">התחבר</button>
+  <p id="loginMsg"></p>
+</div>
 
-  <div class="section">
-    <label>👤 שם משתמש ב־GitHub:</label>
-    <input type="text" id="username" value="maherkhatib77">
+<div class="box hidden" id="editorBox">
+  <h2>📂 עורך פתרונות למידה (GitHub JSON)</h2>
 
-    <label>📁 שם הריפו:</label>
-    <input type="text" id="repo" class="readonly" value="EduCatalog" readonly>
+  <label>👤 שם משתמש ב־GitHub:</label>
+  <input type="text" id="username" value="maherkhatib77" readonly class="readonly">
 
-    <label>🗂️ שם הקובץ (JSON):</label>
-    <input type="text" id="filename" value="solutions.json">
+  <label>📁 שם הריפו:</label>
+  <input type="text" id="repo" value="EduCatalog" readonly class="readonly">
 
-    <label>🔐 GitHub Token:</label>
-    <input type="password" id="token">
+  <label>🗂️ שם הקובץ (JSON):</label>
+  <input type="text" id="filename" value="solutions.json">
 
-    <button onclick="loadJson()">📥 טען קובץ JSON מ־GitHub</button>
-  </div>
+  <label>🔐 GitHub Token:</label>
+  <input type="password" id="token" placeholder="הדבק כאן את ה-token שלך">
 
-  <div class="section">
-    <label>📝 ערוך את תוכן ה־JSON</label>
-    <textarea id="jsonContent" rows="20" placeholder="כאן יופיע התוכן..."></textarea>
-    <button onclick="saveJson()">💾 שמור ל־GitHub (Commit)</button>
-    <p id="statusMsg"></p>
-  </div>
+  <button onclick="loadJson()">📥 טען קובץ JSON מ־GitHub</button>
 
-  <script>
-    async function loadJson() {
-      const username = document.getElementById("username").value;
-      const repo = document.getElementById("repo").value;
-      const filename = document.getElementById("filename").value;
-      const token = document.getElementById("token").value;
+  <label>📝 ערוך את תוכן הקובץ:</label>
+  <textarea id="jsonContent" rows="20"></textarea>
+  <button onclick="saveJson()">💾 שמור שינויים</button>
 
-      const url = `https://api.github.com/repos/${username}/${repo}/contents/${filename}`;
+  <p id="statusMsg"></p>
+</div>
 
-      try {
-        const res = await fetch(url, {
-          headers: { Authorization: `token ${token}` }
-        });
-        if (!res.ok) throw new Error("שגיאה בטעינה מה־GitHub");
-        const data = await res.json();
-        const content = atob(data.content);
-        document.getElementById("jsonContent").value = content;
-        document.getElementById("statusMsg").textContent = "✅ נטען בהצלחה.";
-      } catch (err) {
-        document.getElementById("statusMsg").textContent = "❌ שגיאה בטעינת הקובץ.";
-      }
+<script>
+  function verifyLogin() {
+    const user = document.getElementById("adminUser").value.trim();
+    const pass = document.getElementById("adminPass").value.trim();
+    if (user === "Pisga" && pass === "Sara@2203") {
+      document.getElementById("loginBox").classList.add("hidden");
+      document.getElementById("editorBox").classList.remove("hidden");
+    } else {
+      document.getElementById("loginMsg").textContent = "❌ שם משתמש או סיסמה שגויים.";
     }
+  }
 
-    async function saveJson() {
-      const username = document.getElementById("username").value;
-      const repo = document.getElementById("repo").value;
-      const filename = document.getElementById("filename").value;
-      const token = document.getElementById("token").value;
-      const content = btoa(unescape(encodeURIComponent(document.getElementById("jsonContent").value)));
-      const url = `https://api.github.com/repos/${username}/${repo}/contents/${filename}`;
+  async function loadJson() {
+    const username = document.getElementById("username").value;
+    const repo = document.getElementById("repo").value;
+    const filename = document.getElementById("filename").value;
+    const token = document.getElementById("token").value;
+    const url = `https://api.github.com/repos/${username}/${repo}/contents/${filename}`;
 
-      try {
-        // Get the SHA of the current file
-        const res = await fetch(url, {
-          headers: { Authorization: `token ${token}` }
-        });
-        const data = await res.json();
-        const sha = data.sha;
-
-        const update = await fetch(url, {
-          method: "PUT",
-          headers: {
-            Authorization: `token ${token}`,
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            message: "עדכון JSON אוטומטי מ־dashboard",
-            content: content,
-            sha: sha
-          })
-        });
-
-        if (!update.ok) throw new Error("שגיאה בעדכון הקובץ");
-        document.getElementById("statusMsg").textContent = "✅ הקובץ עודכן בהצלחה.";
-      } catch (err) {
-        document.getElementById("statusMsg").textContent = "❌ שגיאה בשמירת הקובץ.";
-      }
+    try {
+      const res = await fetch(url, { headers: { Authorization: `token ${token}` } });
+      if (!res.ok) throw new Error("שגיאה בטעינת הקובץ");
+      const data = await res.json();
+      const content = atob(data.content);
+      document.getElementById("jsonContent").value = content;
+      document.getElementById("statusMsg").textContent = "✅ קובץ נטען בהצלחה.";
+    } catch (err) {
+      document.getElementById("statusMsg").textContent = "❌ שגיאה בטעינת הקובץ.";
     }
-  </script>
+  }
+
+  async function saveJson() {
+    const username = document.getElementById("username").value;
+    const repo = document.getElementById("repo").value;
+    const filename = document.getElementById("filename").value;
+    const token = document.getElementById("token").value;
+    const content = btoa(unescape(encodeURIComponent(document.getElementById("jsonContent").value)));
+    const url = `https://api.github.com/repos/${username}/${repo}/contents/${filename}`;
+
+    try {
+      const res = await fetch(url, { headers: { Authorization: `token ${token}` } });
+      const data = await res.json();
+      const sha = data.sha;
+
+      const update = await fetch(url, {
+        method: "PUT",
+        headers: {
+          Authorization: `token ${token}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          message: "עדכון מ־dashboard ניהולי",
+          content: content,
+          sha: sha
+        })
+      });
+
+      if (!update.ok) throw new Error();
+      document.getElementById("statusMsg").textContent = "✅ הקובץ נשמר בהצלחה.";
+    } catch {
+      document.getElementById("statusMsg").textContent = "❌ שגיאה בשמירה.";
+    }
+  }
+</script>
 
 </body>
 </html>
