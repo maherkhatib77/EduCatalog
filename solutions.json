@@ -1,0 +1,29 @@
+[
+  {
+    "id": "001",
+    "title": "למידה מבוססת פרויקטים",
+    "method": "סינכרוני",
+    "instructor": "ד\"ר מיכל כהן",
+    "education_levels": ["חטיבה", "תיכון"],
+    "hours": 30,
+    "image": "images/project-learning.jpg"
+  },
+  {
+    "id": "002",
+    "title": "פדגוגיה דיגיטלית",
+    "method": "א-סינכרוני",
+    "instructor": "רן לוי",
+    "education_levels": ["יסודי", "חטיבה"],
+    "hours": 20,
+    "image": "images/digital-teaching.jpg"
+  },
+  {
+    "id": "003",
+    "title": "הוראה מבוססת משחק",
+    "method": "היברידי",
+    "instructor": "סימה כהן",
+    "education_levels": ["קדם-יסודי", "יסודי"],
+    "hours": 25,
+    "image": "images/gamification.jpg"
+  }
+]
