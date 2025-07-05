@@ -11,8 +11,8 @@
   <!-- תפריט עליון -->
   <header>
     <h1>קטלוג פתרונות למידה</h1>
-    <div>
-      <input type="text" id="searchInput" placeholder="חפש שירות או מידע..." />
+    <div class="header-actions">
+      <input type="text" id="searchInput" placeholder="חפש פתרון למידה..." />
       <button id="loginBtn">כניסת מנהלים</button>
     </div>
   </header>
@@ -20,26 +20,13 @@
   <!-- באנר -->
   <section class="banner">
     <h2>כדי לצפות בתכני המוסד שלך עליך להיכנס למערכת</h2>
-    <button class="primary-btn">לכניסה</button>
+    <button class="primary-btn">כניסה</button>
   </section>
 
-  <!-- אזור כרטיסים -->
+  <!-- אזור הכרטיסים -->
   <main id="cardsContainer">
-    <!-- כרטיסי פתרונות ייווצרו ע"י JavaScript -->
+    <!-- הקלפים יוזנו בעזרת JavaScript -->
   </main>
-
-  <!-- חלונית קופצת -->
-  <div id="popup" class="hidden">
-    <div class="popup-content">
-      <button onclick="closePopup()">✖ סגור</button>
-      <h2 id="popupTitle"></h2>
-      <p id="popupDetails"></p>
-      <div class="popup-buttons">
-        <button onclick="window.print()">הדפסה</button>
-        <button onclick="downloadPDF()">שמור כ-PDF</button>
-      </div>
-    </div>
-  </div>
 
   <script src="script.js"></script>
 </body>
