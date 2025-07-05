@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>התחברות לניהול המערכת</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="login-container">
+    <h2>התחברות לממשק הניהול</h2>
+    <form id="loginForm">
+      <label for="username">שם משתמש:</label>
+      <input type="text" id="username" required />
+
+      <label for="password">סיסמה:</label>
+      <input type="password" id="password" required />
+
+      <button type="submit">התחבר</button>
+      <p id="loginMessage"></p>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById("loginForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const user = document.getElementById("username").value;
+      const pass = document.getElementById("password").value;
+      const message = document.getElementById("loginMessage");
+
+      if (user === "Pisga" && pass === "Sara@2203") {
+        message.textContent = "התחברת בהצלחה!";
+        message.style.color = "green";
+        setTimeout(() => {
+          window.location.href = "dashboard.html"; // עמוד הניהול בפועל
+        }, 1000);
+      } else {
+        message.textContent = "שם משתמש או סיסמה שגויים.";
+        message.style.color = "red";
+      }
+    });
+  </script>
+
+</body>
+</html>
