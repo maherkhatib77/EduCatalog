@@ -1,1 +1,35 @@
-body { font-family: 'Arial'; direction: rtl; background: #f5f8fb; color: #222; padding: 20px; }
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f5f8fc;
+    margin: 0;
+    padding: 0;
+    direction: rtl;
+}
+header {
+    background-color: #0047ba;
+    color: white;
+    padding: 10px;
+    text-align: center;
+}
+#form-section, #items-section, #search-section {
+    padding: 20px;
+}
+form label {
+    display: block;
+    margin-bottom: 10px;
+}
+input, button {
+    padding: 8px;
+    margin: 4px 0;
+}
+#items-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.item-card {
+    border: 1px solid #ccc;
+    background: white;
+    padding: 10px;
+    width: 300px;
+}
