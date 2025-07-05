@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>ניהול פתרונות למידה</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header>
+    <h1>ממשק ניהול פתרונות למידה</h1>
+  </header>
+
+  <main class="admin-panel">
+
+    <!-- טופס הוספת פתרון חדש -->
+    <section class="form-section">
+      <h2>הוספת פתרון למידה חדש</h2>
+      <form id="solutionForm">
+        <input type="text" id="title" placeholder="שם פתרון הלמידה" required />
+        <input type="text" id="id" placeholder="מספר מזהה" required />
+        <input type="text" id="method" placeholder="אופן הלמידה" />
+        <input type="text" id="instructor" placeholder="שם המנחה" />
+        <input type="text" id="education_levels" placeholder="שלבי חינוך (מופרדים בפסיקים)" />
+        <input type="number" id="hours" placeholder="שעות אקדמיות" />
+        <input type="text" id="image" placeholder="קישור לתמונה" />
+        <button type="submit">שמור פתרון</button>
+      </form>
+    </section>
+
+    <!-- רשימת פתרונות -->
+    <section class="list-section">
+      <h2>רשימת פתרונות קיימים</h2>
+      <div id="solutionList"></div>
+    </section>
+
+  </main>
+
+  <script>
+    let solutions = [];
+
+    function renderSolutions() {
+      const list = document.getElementById("solutionList");
+      list.innerHTML = "";
+      solutions.forEach((sol, index) => {
+        const item = document.createElement("div");
+        item.className = "solution-card";
+        item.innerHTML = `
+          <strong>${sol.title}</strong> (${sol.id}) - ${sol.instructor}
+          <button onclick="deleteSolution(${index})">🗑 מחק</button>
+        `;
+        list.appendChild(item);
+      });
+    }
+
+    function deleteSolution(index) {
+      if (confirm("האם אתה בטוח שברצונך למחוק את הפתרון?")) {
+        solutions.splice(index, 1);
+        renderSolutions();
+      }
+    }
+
+    document.getElementById("solutionForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const newSol = {
+        title: document.getElementById("title").value,
+        id: document.getElementById("id").value,
+        method: document.getElementById("method").value,
+        instructor: document.getElementById("instructor").value,
+        education_levels: document.getElementById("education_levels").value.split(","),
+        hours: parseInt(document.getElementById("hours").value),
+        image: document.getElementById("image").value
+      };
+      solutions.push(newSol);
+      renderSolutions();
+      this.reset();
+    });
+
+    // לצורך הדגמה בלבד - טוען פתרון קיים מה-JSON (ניתן להרחיב ל-fetch בעתיד)
+    window.onload = () => {
+      solutions = [
+        {
+          title: "למידה מבוססת פרויקטים",
+          id: "001",
+          method: "סינכרוני",
+          instructor: "ד\"ר מיכל כהן",
+          education_levels: ["חטיבה", "תיכון"],
+          hours: 30,
+          image: "images/project-learning.jpg"
+        }
+      ];
+      renderSolutions();
+    };
+  </script>
+
+</body>
+</html>
