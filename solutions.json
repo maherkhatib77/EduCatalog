@@ -1,23 +1,17 @@
 [
   {
     "id": "001",
-    "title": "למידה מבוססת פרויקטים",
-    "instructor": "ד"ר מיכל כהן",
-    "hours": 30,
-    "image": "images/project-learning.jpg"
-  },
-  {
-    "id": "002",
-    "title": "פדגוגיה דיגיטלית",
-    "instructor": "רן לוי",
-    "hours": 20,
-    "image": "images/digital-teaching.jpg"
-  },
-  {
-    "id": "003",
-    "title": "הוראה מבוססת משחקים",
-    "instructor": "סימה כהן",
-    "hours": 25,
-    "image": "images/gamification.jpg"
+    "name": "למידה מבוססת פרויקטים",
+    "manager": "ד"ר מיכל כהן",
+    "mentor": "ד"ר מיכל כהן",
+    "level": "על-יסודי",
+    "hours": "30",
+    "date": "2025-09-01",
+    "startTime": "10:00",
+    "endTime": "12:00",
+    "method": "סינכרוני",
+    "goals": "פיתוח חשיבה עצמאית",
+    "summary": "למידה באמצעות פרויקטים קבוצתיים",
+    "topic": "מיומנויות למידה"
   }
 ]
