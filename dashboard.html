@@ -1,24 +1,41 @@
 <!DOCTYPE html>
-<html lang="he">
+<html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <title>לוח ניהול - EduCatalog</title>
+  <title>ניהול פתרונות למידה</title>
   <link rel="stylesheet" href="style.css">
-  <script defer src="dashboard.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+  <script src="firebase.js"></script>
 </head>
 <body>
   <header>
-    <h1>מערכת ניהול EduCatalog</h1>
-    <button onclick="logout()">התנתק</button>
+    <h1>מערכת ניהול פתרונות למידה</h1>
+    <button onclick="logout()">🔒 יציאה</button>
   </header>
 
-  <div id="modulesMenu">
-    <button onclick="openModule('solutions')">פתרונות למידה</button>
-    <button onclick="openModule('instructors')">מנחים</button>
-  </div>
+  <main id="modules">
+    <div class="module-icon" onclick="loadModule('instructors')">👨‍🏫 מנחים</div>
+    <div class="module-icon" onclick="loadModule('hours')">⏱ היקף שעות</div>
+    <div class="module-icon" onclick="loadModule('mentors')">📘 מדריכים פדגוגיים</div>
+  </main>
 
-  <div id="moduleContent">
-    <!-- מודולים יופיעו כאן -->
-  </div>
+  <section id="moduleContainer"></section>
+
+  <script>
+    function loadModule(moduleName) {
+      fetch(`${moduleName}Module.html`)
+        .then(res => res.text())
+        .then(html => {
+          document.getElementById('moduleContainer').innerHTML = html;
+          const script = document.createElement('script');
+          script.src = `${moduleName}Module.js`;
+          document.body.appendChild(script);
+        });
+    }
+    function logout() {
+      window.location.href = 'index.html';
+    }
+  </script>
 </body>
 </html>
