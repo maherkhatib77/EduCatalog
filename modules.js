@@ -93,7 +93,7 @@ export function deleteGuide(id) {
 }
 
 // ============================
-// מודול 4: קטגוריות תוכן (אופציונלי להשלמה בהמשך)
+// מודול 4: קטגוריות תוכן
 // ============================
 export function addContentCategory(data) {
   const newRef = push(ref(db, 'content_categories'));
@@ -117,7 +117,7 @@ export function deleteContentCategory(id) {
 }
 
 // ============================
-// ממשק גרפי לכל מודול (דוגמה בסיסית להצגה והוספה)
+// ממשק גרפי - פתרונות למידה
 // ============================
 
 window.renderLearningSolutions = function(containerId, solutions) {
@@ -150,4 +150,103 @@ window.createLearningSolutionForm = function(containerId, onSubmit) {
   };
 }
 
-// ניתן לבנות בצורה דומה פונקציות גרפיות ל־Mentors, Guides וכו'.
+// ============================
+// ממשק גרפי - מנחים
+// ============================
+
+window.renderMentors = function(containerId, mentors) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  for (const [id, mentor] of Object.entries(mentors)) {
+    const div = document.createElement('div');
+    div.className = 'mentor-card';
+    div.innerHTML = `<h4>${mentor.name}</h4><p>${mentor.expertise || ''}</p>`;
+    container.appendChild(div);
+  }
+}
+
+window.createMentorForm = function(containerId, onSubmit) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = `
+    <form id="mentor-form">
+      <input name="name" placeholder="שם מנחה" required>
+      <input name="expertise" placeholder="תחום התמחות">
+      <button type="submit">שמור</button>
+    </form>
+  `;
+  const form = document.getElementById('mentor-form');
+  form.onsubmit = e => {
+    e.preventDefault();
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+    onSubmit(data);
+    form.reset();
+  };
+}
+
+// ============================
+// ממשק גרפי - מדריכים פדגוגיים
+// ============================
+
+window.renderGuides = function(containerId, guides) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  for (const [id, guide] of Object.entries(guides)) {
+    const div = document.createElement('div');
+    div.className = 'guide-card';
+    div.innerHTML = `<h4>${guide.name}</h4><p>${guide.region || ''}</p>`;
+    container.appendChild(div);
+  }
+}
+
+window.createGuideForm = function(containerId, onSubmit) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = `
+    <form id="guide-form">
+      <input name="name" placeholder="שם מדריך" required>
+      <input name="region" placeholder="אזור עבודה">
+      <button type="submit">שמור</button>
+    </form>
+  `;
+  const form = document.getElementById('guide-form');
+  form.onsubmit = e => {
+    e.preventDefault();
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+    onSubmit(data);
+    form.reset();
+  };
+}
+
+// ============================
+// ממשק גרפי - קטגוריות תוכן
+// ============================
+
+window.renderContentCategories = function(containerId, categories) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  for (const [id, cat] of Object.entries(categories)) {
+    const div = document.createElement('div');
+    div.className = 'category-card';
+    div.innerHTML = `<h4>${cat.name}</h4>`;
+    container.appendChild(div);
+  }
+}
+
+window.createContentCategoryForm = function(containerId, onSubmit) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = `
+    <form id="category-form">
+      <input name="name" placeholder="שם קטגוריה" required>
+      <button type="submit">שמור</button>
+    </form>
+  `;
+  const form = document.getElementById('category-form');
+  form.onsubmit = e => {
+    e.preventDefault();
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+    onSubmit(data);
+    form.reset();
+  };
+}
