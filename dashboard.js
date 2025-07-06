@@ -6,6 +6,15 @@ function showModule(id) {
   document.getElementById(id).style.display = 'block';
 }
 
+function logout() {
+  window.location.href = "index.html";
+}
+function openModule(moduleName) {
+  const container = document.getElementById("moduleContent");
+  container.innerHTML = `<h2>טוען את מודול ${moduleName}...</h2>`;
+  // בעתיד נטען כאן את תוכן המודול בפועל
+}
+
 // Load solutions
 const solRef = ref(db, 'solutions');
 onValue(solRef, snapshot => {
