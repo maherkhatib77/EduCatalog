@@ -79,6 +79,29 @@
     </section>
   </main>
 
+<div id="form-container"></div>
+<div id="cards-container"></div>
+
+<script type="module">
+  import {
+    createLearningSolutionForm,
+    renderLearningSolutions,
+    addLearningSolution,
+    loadLearningSolutions
+  } from './modules.js';
+
+  // יצירת הטופס
+  createLearningSolutionForm('form-container', data => {
+    addLearningSolution(data);
+  });
+
+  // הצגת הנתונים
+  loadLearningSolutions(data => {
+    renderLearningSolutions('cards-container', data);
+  });
+</script>
+
+  
   <script src="dashboard.js"></script>
 </body>
 </html>
