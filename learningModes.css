@@ -1,0 +1,30 @@
+
+body {
+    font-family: Arial, sans-serif;
+    direction: rtl;
+    padding: 20px;
+    background-color: #f4f4f4;
+}
+h1 {
+    text-align: center;
+}
+form {
+    margin-bottom: 20px;
+}
+input[type="text"] {
+    padding: 5px;
+    margin: 5px;
+}
+button {
+    padding: 5px 10px;
+}
+table {
+    width: 100%;
+    background-color: #fff;
+    border-collapse: collapse;
+}
+th, td {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #ccc;
+}
