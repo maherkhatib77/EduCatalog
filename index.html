@@ -1,45 +1,30 @@
-
 <!DOCTYPE html>
 <html lang="he">
 <head>
-    <meta charset="UTF-8">
-    <title>קטלוג פתרונות למידה</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="assets/styles/style.css">
-    <script type="module" src="assets/scripts/index.js" defer></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EduCatalog - פתרונות למידה</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
 </head>
-<body dir="rtl">
-    <header class="site-header">
-        <div class="container">
-            <h1>קטלוג פתרונות למידה</h1>
-            <button id="loginButton">כניסת מנהל</button>
-        </div>
-    </header>
+<body>
+  <header>
+    <h1>EduCatalog - קטלוג פתרונות למידה</h1>
+    <button id="loginButton">כניסת מנהל</button>
+  </header>
 
-    <section class="search-filter">
-        <input type="text" id="searchInput" placeholder="חפש פתרון למידה...">
-        <select id="filterStage">
-            <option value="">כל שלבי החינוך</option>
-            <option value="יסודי">יסודי</option>
-            <option value="על-יסודי">על-יסודי</option>
-            <option value="תיכון">תיכון</option>
-        </select>
-    </section>
+  <main id="solutionContainer">
+    <!-- כאן יוצגו כרטיסיות פתרונות למידה -->
+  </main>
 
-    <main class="solutions-container" id="solutionsContainer">
-        <!-- Cards will be dynamically injected here -->
-    </main>
-
-    <!-- Login Popup -->
-    <div id="loginModal" class="modal hidden">
-        <div class="modal-content">
-            <span class="close-btn" id="closeLogin">&times;</span>
-            <h2>כניסת מנהל</h2>
-            <input type="text" id="username" placeholder="שם משתמש">
-            <input type="password" id="password" placeholder="סיסמה">
-            <button id="loginSubmit">כניסה</button>
-            <p id="loginError" class="error-msg"></p>
-        </div>
+  <div id="loginModal" class="modal">
+    <div class="modal-content">
+      <h2>כניסת מנהל</h2>
+      <input type="text" id="username" placeholder="שם משתמש" />
+      <input type="password" id="password" placeholder="סיסמה" />
+      <button id="loginSubmit">אישור</button>
     </div>
+  </div>
+
+  <script src="assets/js/index.js"></script>
 </body>
 </html>
