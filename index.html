@@ -1,64 +1,41 @@
+
 <!DOCTYPE html>
 <html lang="he">
 <head>
-  <meta charset="UTF-8">
-  <title>פתרונות למידה</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <title>פתרונות למידה</title>
+    <style>
+        body { font-family: Arial; direction: rtl; background-color: #f0f3f8; margin: 0; }
+        header { background-color: #0849a1; color: white; padding: 15px; display: flex; justify-content: space-between; }
+        .login-btn { background-color: #1877f2; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; }
+        #loginPopup { display: none; position: fixed; top: 20%; right: 35%; background: white; padding: 20px; border: 1px solid #ccc; border-radius: 5px; }
+    </style>
 </head>
 <body>
-  <header>
-    <h1>📚 פתרונות למידה</h1>
-    <!-- כפתור כניסת מנהל -->
-<button onclick="openLoginModal()" class="login-btn">כניסת מנהל 🔐</button>
+    <header>
+        <h1>📘 פתרונות למידה</h1>
+        <button class="login-btn" onclick="document.getElementById('loginPopup').style.display='block'">כניסת מנהל 🔐</button>
+    </header>
 
-<!-- חלון קופץ להזנת שם משתמש וסיסמה -->
-<div id="loginModal" class="modal" style="display: none;">
-  <div class="modal-content">
-    <span class="close" onclick="closeLoginModal()">&times;</span>
-    <h2>כניסת מנהל</h2>
-    <input type="text" id="username" placeholder="שם משתמש" />
-    <input type="password" id="password" placeholder="סיסמה" />
-    <button onclick="login()">אישור</button>
-    <p id="loginError" style="color: red;"></p>
-  </div>
-</div>
+    <div id="loginPopup">
+        <h3>התחברות מנהל</h3>
+        <input type="text" id="username" placeholder="שם משתמש"><br><br>
+        <input type="password" id="password" placeholder="סיסמה"><br><br>
+        <button onclick="login()">התחבר</button>
+        <button onclick="document.getElementById('loginPopup').style.display='none'">סגור</button>
+        <p id="loginError" style="color: red;"></p>
+    </div>
 
-<style>
-.modal {
-  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  background-color: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center;
-}
-.modal-content {
-  background-color: white; padding: 20px; border-radius: 8px;
-  width: 300px; text-align: center;
-}
-.modal input {
-  display: block; width: 100%; margin: 10px 0; padding: 8px;
-}
-</style>
-
-<script>
-function openLoginModal() {
-  document.getElementById("loginModal").style.display = "flex";
-}
-function closeLoginModal() {
-  document.getElementById("loginModal").style.display = "none";
-}
-function login() {
-  const user = document.getElementById("username").value;
-  const pass = document.getElementById("password").value;
-  if (user === "Pisga" && pass === "Sara@2203") {
-    window.location.href = "dashboard.html";
-  } else {
-    document.getElementById("loginError").innerText = "שם משתמש או סיסמה שגויים";
-  }
-}
-</script>
-
-  </header>
-  <main id="solutions-container">
-    <!-- כרטיסיות יוטענו כאן -->
-  </main>
-  <script src="index.js"></script>
+    <script>
+        function login() {
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+            if(user === "Pisga" && pass === "Sara@2203") {
+                window.location.href = "dashboard.html";
+            } else {
+                document.getElementById('loginError').innerText = "שם משתמש או סיסמה שגויים.";
+            }
+        }
+    </script>
 </body>
 </html>
