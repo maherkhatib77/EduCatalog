@@ -1,25 +1,35 @@
+
 <!DOCTYPE html>
 <html lang="he">
 <head>
-  <meta charset="UTF-8">
-  <title>ניהול פתרונות למידה</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <title>ניהול פתרונות למידה</title>
+    <style>
+        body { font-family: Arial; direction: rtl; background-color: #f0f3f8; margin: 0; }
+        header { background-color: #0849a1; color: white; padding: 15px; }
+        .modules { display: flex; flex-wrap: wrap; gap: 20px; padding: 30px; }
+        .module-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 8px #ccc;
+            padding: 20px;
+            text-align: center;
+            flex: 1 1 200px;
+            cursor: pointer;
+        }
+        .module-card:hover { background-color: #eef3ff; }
+    </style>
 </head>
 <body>
-  <header>
-    <h1>📁 ניהול פתרונות למידה</h1>
-  </header>
-  <main id="dashboard">
+    <header>
+        <h1>📁 ניהול פתרונות למידה</h1>
+    </header>
+
     <div class="modules">
-      <div class="module" onclick="openModule('add')">➕ הוספת פתרון</div>
-      <div class="module" onclick="openModule('edit')">✏️ עריכת פתרון</div>
-      <div class="module" onclick="openModule('delete')">🗑️ מחיקת פתרון</div>
-      <div class="module" onclick="openModule('search')">🔍 חיפוש מתקדם</div>
+        <div class="module-card" onclick="location.href='modules/add.html'">➕ הוספת פתרון</div>
+        <div class="module-card" onclick="location.href='modules/edit.html'">📝 עריכת פתרון</div>
+        <div class="module-card" onclick="location.href='modules/delete.html'">🗑️ מחיקת פתרון</div>
+        <div class="module-card" onclick="location.href='modules/search.html'">🔍 חיפוש מתקדם</div>
     </div>
-    <section id="module-container">
-      <!-- תוכן המודול ייטען כאן -->
-    </section>
-  </main>
-  <script src="dashboard.js"></script>
 </body>
 </html>
