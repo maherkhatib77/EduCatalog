@@ -1,35 +1,54 @@
-
 <!DOCTYPE html>
 <html lang="he">
 <head>
-    <meta charset="UTF-8">
-    <title>ניהול פתרונות למידה</title>
-    <style>
-        body { font-family: Arial; direction: rtl; background-color: #f0f3f8; margin: 0; }
-        header { background-color: #0849a1; color: white; padding: 15px; }
-        .modules { display: flex; flex-wrap: wrap; gap: 20px; padding: 30px; }
-        .module-card {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 0 8px #ccc;
-            padding: 20px;
-            text-align: center;
-            flex: 1 1 200px;
-            cursor: pointer;
-        }
-        .module-card:hover { background-color: #eef3ff; }
-    </style>
+  <meta charset="UTF-8">
+  <title>מערכת ניהול EduCatalog</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <h1>📁 ניהול פתרונות למידה</h1>
-    </header>
+  <header><h1>מערכת ניהול EduCatalog</h1></header>
+  <section class="modules">
+    <div class="module" onclick="showModule('learning')">📘 פתרונות למידה</div>
+    <div class="module" onclick="showModule('instructors')">👨‍🏫 מנחים</div>
+  </section>
 
-    <div class="modules">
-        <div class="module-card" onclick="location.href='modules/add.html'">➕ הוספת פתרון</div>
-        <div class="module-card" onclick="location.href='modules/edit.html'">📝 עריכת פתרון</div>
-        <div class="module-card" onclick="location.href='modules/delete.html'">🗑️ מחיקת פתרון</div>
-        <div class="module-card" onclick="location.href='modules/search.html'">🔍 חיפוש מתקדם</div>
+  <!-- פתרונות למידה -->
+  <section id="learning" class="module-section">
+    <h2>ניהול פתרונות למידה</h2>
+    <div>
+      <input type="text" id="filterInput" placeholder="סנן לפי שם פתרון למידה...">
+      <button onclick="clearFilter()">נקה סינון</button>
     </div>
+    <form id="solutionForm">
+      <input type="text" placeholder="שם פתרון למידה" id="solutionName" required>
+      <input type="text" placeholder="רכז פדגוגי" id="pedagogicGuide">
+      <input type="text" placeholder="מנחה" id="instructorName">
+      <input type="date" id="startDate">
+      <input type="text" placeholder="שלב חינוך" id="educationLevel">
+      <input type="number" placeholder="שעות אקדמיות" id="hours">
+      <button type="submit">💾 שמור פתרון</button>
+    </form>
+    <table id="solutionsTable"><thead><tr>
+      <th>שם פתרון</th><th>רכז</th><th>מנחה</th><th>תאריך</th><th>שלב</th><th>שעות</th><th>פעולות</th>
+    </tr></thead><tbody></tbody></table>
+  </section>
+
+  <!-- מנחים -->
+  <section id="instructors" class="module-section" style="display:none">
+    <h2>ניהול מנחים</h2>
+    <form id="instructorForm">
+      <input type="text" placeholder="מספר זהות" id="instructorID" required>
+      <input type="text" placeholder="שם מלא" id="instructorFullName" required>
+      <input type="text" placeholder="טלפון נייד" id="instructorPhone">
+      <input type="email" placeholder="דוא"ל" id="instructorEmail">
+      <button type="submit">💾 שמור מנחה</button>
+    </form>
+    <table id="instructorsTable"><thead><tr>
+      <th>ת.ז.</th><th>שם</th><th>טלפון</th><th>דוא"ל</th><th>פעולות</th>
+    </tr></thead><tbody></tbody></table>
+  </section>
+
+  <script src="firebase.js" type="module"></script>
+  <script src="dashboard.js" type="module"></script>
 </body>
 </html>
