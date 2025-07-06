@@ -1,56 +1,34 @@
 
-const instructorsRef = firebase.database().ref("instructors");
-
 document.getElementById("instructorForm").addEventListener("submit", function(e) {
   e.preventDefault();
-  const id = document.getElementById("instructorId").value;
-  const name = document.getElementById("instructorName").value;
-  const phone = document.getElementById("instructorPhone").value;
-  const email = document.getElementById("instructorEmail").value;
-  instructorsRef.child(id).set({ id, name, phone, email });
+  const id = document.getElementById("id").value;
+  const name = document.getElementById("name").value;
+  const phone = document.getElementById("phone").value;
+  const email = document.getElementById("email").value;
+  firebase.database().ref("instructors/" + id).set({ id, name, phone, email });
   this.reset();
+  loadInstructors();
 });
 
-instructorsRef.on("value", snapshot => {
+function loadInstructors() {
   const tbody = document.querySelector("#instructorsTable tbody");
   tbody.innerHTML = "";
-  snapshot.forEach(child => {
-    const data = child.val();
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td>${data.id}</td>
-      <td>${data.name}</td>
-      <td>${data.phone}</td>
-      <td>${data.email}</td>
-      <td>
-        <button onclick='editInstructor("${data.id}")'>ערוך</button>
-        <button onclick='deleteInstructor("${data.id}")'>מחק</button>
-      </td>
-    `;
-    tbody.appendChild(row);
+  firebase.database().ref("instructors").once("value", snapshot => {
+    snapshot.forEach(child => {
+      const data = child.val();
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${data.id}</td>
+        <td>${data.name}</td>
+        <td>${data.phone}</td>
+        <td>${data.email}</td>
+        <td><button onclick="deleteInstructor('${data.id}')">🗑</button></td>`;
+      tbody.appendChild(tr);
+    });
   });
-});
-
+}
 function deleteInstructor(id) {
-  if (confirm("האם אתה בטוח שברצונך למחוק מנחה זה?")) {
-    instructorsRef.child(id).remove();
-  }
+  firebase.database().ref("instructors/" + id).remove();
+  loadInstructors();
 }
-
-function editInstructor(id) {
-  instructorsRef.child(id).once("value").then(snapshot => {
-    const data = snapshot.val();
-    document.getElementById("instructorId").value = data.id;
-    document.getElementById("instructorName").value = data.name;
-    document.getElementById("instructorPhone").value = data.phone;
-    document.getElementById("instructorEmail").value = data.email;
-  });
-}
-
-document.getElementById("searchInstructor").addEventListener("input", function () {
-  const filter = this.value.toLowerCase();
-  document.querySelectorAll("#instructorsTable tbody tr").forEach(row => {
-    const name = row.children[1].textContent.toLowerCase();
-    row.style.display = name.includes(filter) ? "" : "none";
-  });
-});
+loadInstructors();

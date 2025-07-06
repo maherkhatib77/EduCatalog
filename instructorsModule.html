@@ -1,55 +1,9 @@
-<!DOCTYPE html>
-<html lang="he" dir="rtl">
-<head>
-  <meta charset="UTF-8">
-  <title>מודול מנחים - EduCatalog</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyCYEdHutsO1eYn3iQvnVehl-t96__Plwo4",
-      authDomain: "educatalog-63603.firebaseapp.com",
-      databaseURL: "https://educatalog-63603-default-rtdb.firebaseio.com",
-      projectId: "educatalog-63603",
-      storageBucket: "educatalog-63603.appspot.com",
-      messagingSenderId: "577201627806",
-      appId: "1:577201627806:web:bd9d6346134d7c3dff518f"
-    };
-    firebase.initializeApp(firebaseConfig);
-  </script>
-</head>
-<body>
-  <div class="container">
-    <h1>מודול מנחים</h1>
-
-    <form id="instructorForm">
-      <label>מספר זהות: <input type="text" id="instructorId" required></label><br>
-      <label>שם מלא: <input type="text" id="instructorName" required></label><br>
-      <label>טלפון נייד: <input type="text" id="instructorPhone" required></label><br>
-      <label>דוא"ל: <input type="email" id="instructorEmail" required></label><br>
-      <button type="submit">💾 הוסף מנחה</button>
-    </form>
-
-    <hr>
-
-    <h2>רשימת מנחים</h2>
-    <input type="text" id="searchInstructor" placeholder="🔍 חפש לפי שם..." />
-
-    <table id="instructorsTable">
-      <thead>
-        <tr>
-          <th>מספר זהות</th>
-          <th>שם מלא</th>
-          <th>טלפון נייד</th>
-          <th>דוא"ל</th>
-          <th>פעולות</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
-
-  <script src="instructorsModule.js"></script>
-</body>
-</html>
+<h2>מודול מנחים</h2>
+<form id="instructorForm">
+  <label>מספר זהות:</label><input type="text" id="id" required />
+  <label>שם מלא:</label><input type="text" id="name" required />
+  <label>טלפון נייד:</label><input type="tel" id="phone" required />
+  <label>כתובת דוא"ל:</label><input type="email" id="email" required />
+  <button type="submit">💾 שמירה</button>
+</form>
+<table id="instructorsTable"><thead><tr><th>מספר זהות</th><th>שם</th><th>טלפון</th><th>דוא"ל</th><th>מחיקה</th></tr></thead><tbody></tbody></table>

@@ -1,0 +1,14 @@
+<h2>מודול מדריכים פדגוגיים</h2>
+<form id="mentorsForm">
+  <label>מספר זהות:</label><input type="text" id="mentor_id" required />
+  <label>שם פרטי:</label><input type="text" id="firstName" required />
+  <label>שם משפחה:</label><input type="text" id="lastName" required />
+  <label>דוא"ל:</label><input type="email" id="email" required />
+  <label>סוג הרשאה:</label>
+  <select id="role">
+    <option value="מלאה">מלאה</option>
+    <option value="חלקית">חלקית</option>
+  </select>
+  <button type="submit">💾 שמירה</button>
+</form>
+<table id="mentorsTable"><thead><tr><th>מספר</th><th>שם מלא</th><th>דוא"ל</th><th>הרשאה</th><th>מחיקה</th></tr></thead><tbody></tbody></table>
