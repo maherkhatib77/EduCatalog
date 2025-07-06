@@ -2,53 +2,23 @@
 <html lang="he">
 <head>
   <meta charset="UTF-8">
-  <title>מערכת ניהול EduCatalog</title>
+  <title>לוח ניהול - EduCatalog</title>
   <link rel="stylesheet" href="style.css">
+  <script defer src="dashboard.js"></script>
 </head>
 <body>
-  <header><h1>מערכת ניהול EduCatalog</h1></header>
-  <section class="modules">
-    <div class="module" onclick="showModule('learning')">📘 פתרונות למידה</div>
-    <div class="module" onclick="showModule('instructors')">👨‍🏫 מנחים</div>
-  </section>
+  <header>
+    <h1>מערכת ניהול EduCatalog</h1>
+    <button onclick="logout()">התנתק</button>
+  </header>
 
-  <!-- פתרונות למידה -->
-  <section id="learning" class="module-section">
-    <h2>ניהול פתרונות למידה</h2>
-    <div>
-      <input type="text" id="filterInput" placeholder="סנן לפי שם פתרון למידה...">
-      <button onclick="clearFilter()">נקה סינון</button>
-    </div>
-    <form id="solutionForm">
-      <input type="text" placeholder="שם פתרון למידה" id="solutionName" required>
-      <input type="text" placeholder="רכז פדגוגי" id="pedagogicGuide">
-      <input type="text" placeholder="מנחה" id="instructorName">
-      <input type="date" id="startDate">
-      <input type="text" placeholder="שלב חינוך" id="educationLevel">
-      <input type="number" placeholder="שעות אקדמיות" id="hours">
-      <button type="submit">💾 שמור פתרון</button>
-    </form>
-    <table id="solutionsTable"><thead><tr>
-      <th>שם פתרון</th><th>רכז</th><th>מנחה</th><th>תאריך</th><th>שלב</th><th>שעות</th><th>פעולות</th>
-    </tr></thead><tbody></tbody></table>
-  </section>
+  <div id="modulesMenu">
+    <button onclick="openModule('solutions')">פתרונות למידה</button>
+    <button onclick="openModule('instructors')">מנחים</button>
+  </div>
 
-  <!-- מנחים -->
-  <section id="instructors" class="module-section" style="display:none">
-    <h2>ניהול מנחים</h2>
-    <form id="instructorForm">
-      <input type="text" placeholder="מספר זהות" id="instructorID" required>
-      <input type="text" placeholder="שם מלא" id="instructorFullName" required>
-      <input type="text" placeholder="טלפון נייד" id="instructorPhone">
-      <input type="email" placeholder="דוא"ל" id="instructorEmail">
-      <button type="submit">💾 שמור מנחה</button>
-    </form>
-    <table id="instructorsTable"><thead><tr>
-      <th>ת.ז.</th><th>שם</th><th>טלפון</th><th>דוא"ל</th><th>פעולות</th>
-    </tr></thead><tbody></tbody></table>
-  </section>
-
-  <script src="firebase.js" type="module"></script>
-  <script src="dashboard.js" type="module"></script>
+  <div id="moduleContent">
+    <!-- מודולים יופיעו כאן -->
+  </div>
 </body>
 </html>
