@@ -2,54 +2,30 @@
 <!DOCTYPE html>
 <html lang="he">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>מערכת ניהול - EduCatalog</title>
-  <link rel="stylesheet" href="css/style.css" />
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-  <script src="js/firebase-config.js"></script>
+  <meta charset="UTF-8">
+  <title>ניהול פתרונות למידה</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-<body>
-  <header>
-    <h1>מערכת ניהול EduCatalog</h1>
-    <button onclick="window.location.href='index.html'">חזרה לעמוד הראשי</button>
+<body dir="rtl">
+  <header class="site-header">
+    <h1>ניהול פתרונות למידה</h1>
+    <button onclick="location.href='index.html'">🔙 חזרה לעמוד הראשי</button>
   </header>
-
   <main>
-    <section class="module-buttons">
-      <button onclick="loadModule('solutions')">פתרונות למידה</button>
-      <button onclick="loadModule('instructors')">מנחים</button>
-      <button onclick="loadModule('pedagogicalGuides')">מדריכים פדגוגיים</button>
-      <button onclick="loadModule('academicHours')">היקף שעות</button>
-      <button onclick="loadModule('learningModes')">אופני למידה</button>
-      <button onclick="loadModule('meetingDays')">ימי מפגש</button>
-      <button onclick="loadModule('educationLevels')">שלבי חינוך</button>
-      <button onclick="loadModule('learningCategories')">תחומי פתרונות</button>
-      <button onclick="loadModule('subjects')">תחומי דעת</button>
-      <button onclick="loadModule('generalInfo')">מידע כללי</button>
+    <section class="modules">
+      <button onclick="loadModule('learningSolutions')">📘 פתרונות למידה</button>
+      <button onclick="loadModule('instructors')">👨‍🏫 מנחים</button>
+      <button onclick="loadModule('mentors')">📚 מדריכים פדגוגיים</button>
+      <button onclick="loadModule('creditHours')">⏱ היקף שעות</button>
+      <button onclick="loadModule('learningModes')">💡 אופני למידה</button>
+      <button onclick="loadModule('meetingDays')">📅 ימי מפגש</button>
+      <button onclick="loadModule('educationLevels')">🏫 שלבי חינוך</button>
+      <button onclick="loadModule('subjects')">📖 תחומי דעת</button>
+      <button onclick="loadModule('solutionCategories')">🗂 תחומי פתרונות</button>
+      <button onclick="loadModule('siteInfo')">ℹ️ מידע כללי</button>
     </section>
-
-    <section id="moduleContent">
-      <!-- כאן ייטען המודול שנבחר -->
-    </section>
+    <div id="moduleContainer">בחר מודול...</div>
   </main>
-
-  <script>
-    function loadModule(name) {
-      fetch(`js/modules/${name}.js`)
-        .then(response => response.text())
-        .then(scriptContent => {
-          const script = document.createElement("script");
-          script.textContent = scriptContent;
-          document.getElementById("moduleContent").innerHTML = ""; // ניקוי קוד קודם
-          document.body.appendChild(script);
-        })
-        .catch(error => {
-          alert("שגיאה בטעינת המודול: " + name);
-          console.error(error);
-        });
-    }
-  </script>
+  <script src="js/main.js"></script>
 </body>
 </html>
