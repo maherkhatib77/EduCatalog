@@ -1,107 +1,147 @@
-
 <!DOCTYPE html>
-<html lang="he">
+<html lang="he" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
   <title>ממשק ניהול EduCatalog</title>
-  <link rel="stylesheet" href="dashboard.css" />
+  <script type="module" src="./modules.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #003366;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin: 1rem;
+    }
+    nav button {
+      padding: 0.5rem 1rem;
+      font-weight: bold;
+      border: none;
+      background: #0055a5;
+      color: white;
+      cursor: pointer;
+    }
+    .section {
+      display: none;
+      padding: 1rem;
+      background: white;
+      margin: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .active {
+      display: block;
+    }
+    .card {
+      border: 1px solid #ddd;
+      padding: 1rem;
+      margin-bottom: 0.5rem;
+      border-radius: 4px;
+      background: #fafafa;
+    }
+    form input, form button {
+      display: block;
+      margin: 0.5rem 0;
+      padding: 0.5rem;
+      width: 100%;
+      max-width: 400px;
+    }
+  </style>
 </head>
 <body>
   <header>
-    <h1>ממשק ניהול EduCatalog</h1>
-    <button onclick="window.location.href='../index.html'">חזרה לעמוד הראשי</button>
+    <h1>ממשק ניהול - EduCatalog</h1>
   </header>
-
-  <main>
-    <section class="module-buttons">
-      <button class="module-btn" data-target="learning-solutions">פתרונות למידה</button>
-      <button class="module-btn" data-target="instructors">מנחים</button>
-      <button class="module-btn" data-target="learning-hours">היקף שעות</button>
-      <button class="module-btn" data-target="pedagogical-guides">מדריכים פדגוגיים</button>
-      <button class="module-btn" data-target="learning-modes">אופני למידה</button>
-      <button class="module-btn" data-target="meeting-days">ימי מפגש</button>
-      <button class="module-btn" data-target="education-levels">שלבי חינוך</button>
-      <button class="module-btn" data-target="solution-categories">קטגוריות פתרונות</button>
-      <button class="module-btn" data-target="subjects">תחומי דעת</button>
-      <button class="module-btn" data-target="site-info">מידע כללי</button>
-    </section>
-
-    <!-- תבניות של כל המודולים -->
-    <section id="learning-solutions" class="module-section" style="display:none;">
-      <h2>מודול פתרונות למידה</h2>
-      <!-- תוכן המודול -->
-    </section>
-
-    <section id="instructors" class="module-section" style="display:none;">
-      <h2>מודול מנחים</h2>
-      <!-- תוכן המודול -->
-    </section>
-
-    <section id="learning-hours" class="module-section" style="display:none;">
-      <h2>מודול היקף שעות</h2>
-      <!-- תוכן המודול -->
-    </section>
-
-    <section id="pedagogical-guides" class="module-section" style="display:none;">
-      <h2>מודול מדריכים פדגוגיים</h2>
-      <!-- תוכן המודול -->
-    </section>
-
-    <section id="learning-modes" class="module-section" style="display:none;">
-      <h2>מודול אופני למידה</h2>
-      <!-- תוכן המודול -->
-    </section>
-
-    <section id="meeting-days" class="module-section" style="display:none;">
-      <h2>מודול ימי מפגש</h2>
-      <!-- תוכן המודול -->
-    </section>
-
-    <section id="education-levels" class="module-section" style="display:none;">
-      <h2>מודול שלבי חינוך</h2>
-      <!-- תוכן המודול -->
-    </section>
-
-    <section id="solution-categories" class="module-section" style="display:none;">
-      <h2>מודול קטגוריות פתרונות</h2>
-      <!-- תוכן המודול -->
-    </section>
-
-    <section id="subjects" class="module-section" style="display:none;">
-      <h2>מודול תחומי דעת</h2>
-      <!-- תוכן המודול -->
-    </section>
-
-    <section id="site-info" class="module-section" style="display:none;">
-      <h2>מודול מידע כללי לאתר</h2>
-      <!-- תוכן המודול -->
-    </section>
-  </main>
-
-<div id="form-container"></div>
-<div id="cards-container"></div>
-
-<script type="module">
-  import {
-    createLearningSolutionForm,
-    renderLearningSolutions,
-    addLearningSolution,
-    loadLearningSolutions
-  } from './modules.js';
-
-  // יצירת הטופס
-  createLearningSolutionForm('form-container', data => {
-    addLearningSolution(data);
-  });
-
-  // הצגת הנתונים
-  loadLearningSolutions(data => {
-    renderLearningSolutions('cards-container', data);
-  });
-</script>
-
   
-  <script src="dashboard.js"></script>
+  <nav>
+    <button onclick="showSection('learning')">פתרונות למידה</button>
+    <button onclick="showSection('mentors')">מנחים</button>
+    <button onclick="showSection('guides')">מדריכים</button>
+    <button onclick="showSection('categories')">קטגוריות תוכן</button>
+  </nav>
+
+  <section id="learning" class="section">
+    <h2>פתרונות למידה</h2>
+    <div id="learning-form"></div>
+    <div id="learning-list"></div>
+  </section>
+
+  <section id="mentors" class="section">
+    <h2>מנחים</h2>
+    <div id="mentors-form"></div>
+    <div id="mentors-list"></div>
+  </section>
+
+  <section id="guides" class="section">
+    <h2>מדריכים פדגוגיים</h2>
+    <div id="guides-form"></div>
+    <div id="guides-list"></div>
+  </section>
+
+  <section id="categories" class="section">
+    <h2>קטגוריות תוכן</h2>
+    <div id="categories-form"></div>
+    <div id="categories-list"></div>
+  </section>
+
+  <script type="module">
+    import {
+      createLearningSolutionForm,
+      renderLearningSolutions,
+      addLearningSolution,
+      loadLearningSolutions,
+
+      createMentorForm,
+      renderMentors,
+      addMentor,
+      loadMentors,
+
+      createGuideForm,
+      renderGuides,
+      addGuide,
+      loadGuides,
+
+      createContentCategoryForm,
+      renderContentCategories,
+      addContentCategory,
+      loadContentCategories
+    } from './modules.js';
+
+    // התחלה אוטומטית
+    showSection('learning');
+
+    // פתרונות למידה
+    createLearningSolutionForm('learning-form', data => addLearningSolution(data));
+    loadLearningSolutions(data => renderLearningSolutions('learning-list', data));
+
+    // מנחים
+    createMentorForm('mentors-form', data => addMentor(data));
+    loadMentors(data => renderMentors('mentors-list', data));
+
+    // מדריכים
+    createGuideForm('guides-form', data => addGuide(data));
+    loadGuides(data => renderGuides('guides-list', data));
+
+    // קטגוריות
+    createContentCategoryForm('categories-form', data => addContentCategory(data));
+    loadContentCategories(data => renderContentCategories('categories-list', data));
+  </script>
+
+  <script>
+    function showSection(id) {
+      document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+  </script>
 </body>
 </html>
