@@ -1,40 +1,41 @@
+
 <!DOCTYPE html>
-<html lang="he" dir="rtl">
+<html lang="he">
 <head>
-  <meta charset="UTF-8">
-  <title>ניהול פתרונות למידה</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <title>מערכת ניהול EduCatalog</title>
+  <link rel="stylesheet" href="css/style.css" />
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
-  <script src="firebase.js"></script>
+  <script src="js/firebase-config.js"></script>
 </head>
 <body>
-  <header>
-    <h1>מערכת ניהול פתרונות למידה</h1>
-    <button onclick="logout()">🔒 יציאה</button>
-  </header>
+  <h1>ניהול פתרונות למידה</h1>
+  <div class="module-icons">
+    <button onclick="toggleModule('learningModes')">🧠 אופני למידה</button>
+    <button onclick="toggleModule('meetingDays')">📅 ימי מפגש</button>
+  </div>
 
-  <main id="modules">
-    <div class="module-icon" onclick="loadModule('instructors')">👨‍🏫 מנחים</div>
-    <div class="module-icon" onclick="loadModule('hours')">⏱ היקף שעות</div>
-    <div class="module-icon" onclick="loadModule('mentors')">📘 מדריכים פדגוגיים</div>
-  </main>
+  <div id="learningModes" class="module" style="display:none">
+    <h2>מודול אופני למידה</h2>
+    <div id="learningModesList"></div>
+    <input type="text" id="newLearningMode" placeholder="הוסף אופן למידה">
+    <button onclick="addLearningMode()">הוסף</button>
+  </div>
 
-  <section id="moduleContainer"></section>
+  <div id="meetingDays" class="module" style="display:none">
+    <h2>מודול ימי מפגש</h2>
+    <div id="meetingDaysList"></div>
+    <input type="text" id="newMeetingDay" placeholder="הוסף יום">
+    <button onclick="addMeetingDay()">הוסף</button>
+  </div>
 
+  <script src="js/modules/learningModes.js"></script>
+  <script src="js/modules/meetingDays.js"></script>
   <script>
-    function loadModule(moduleName) {
-      fetch(`${moduleName}Module.html`)
-        .then(res => res.text())
-        .then(html => {
-          document.getElementById('moduleContainer').innerHTML = html;
-          const script = document.createElement('script');
-          script.src = `${moduleName}Module.js`;
-          document.body.appendChild(script);
-        });
-    }
-    function logout() {
-      window.location.href = 'index.html';
+    function toggleModule(id) {
+      document.querySelectorAll(".module").forEach(el => el.style.display = "none");
+      document.getElementById(id).style.display = "block";
     }
   </script>
 </body>
