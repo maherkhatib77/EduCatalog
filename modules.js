@@ -115,3 +115,39 @@ export function updateContentCategory(id, data) {
 export function deleteContentCategory(id) {
   remove(ref(db, `content_categories/${id}`));
 }
+
+// ============================
+// ממשק גרפי לכל מודול (דוגמה בסיסית להצגה והוספה)
+// ============================
+
+window.renderLearningSolutions = function(containerId, solutions) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  for (const [id, sol] of Object.entries(solutions)) {
+    const div = document.createElement('div');
+    div.className = 'solution-card';
+    div.innerHTML = `<h4>${sol.solution_name}</h4><p>${sol.summary}</p>`;
+    container.appendChild(div);
+  }
+}
+
+window.createLearningSolutionForm = function(containerId, onSubmit) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = `
+    <form id="learning-form">
+      <input name="solution_name" placeholder="שם פתרון הלמידה" required>
+      <input name="summary" placeholder="תקציר פתרון הלמידה">
+      <button type="submit">שמור</button>
+    </form>
+  `;
+  const form = document.getElementById('learning-form');
+  form.onsubmit = e => {
+    e.preventDefault();
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+    onSubmit(data);
+    form.reset();
+  };
+}
+
+// ניתן לבנות בצורה דומה פונקציות גרפיות ל־Mentors, Guides וכו'.
