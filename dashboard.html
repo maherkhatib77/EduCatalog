@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+  <meta charset="UTF-8">
+  <title>ניהול פתרונות למידה</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/firebase-config.js"></script>
+</head>
+<body>
+  <header>
+    <h1>ממשק ניהול EduCatalog</h1>
+    <button onclick="window.location.href='index.html'">יציאה למשתמש</button>
+  </header>
+  <main id="adminModules">
+    <button onclick="loadModule('solutions')">פתרונות למידה</button>
+    <button onclick="loadModule('instructors')">מנחים</button>
+    <button onclick="loadModule('pedagogicalGuides')">מדריכים פדגוגיים</button>
+    <button onclick="loadModule('academicHours')">שעות אקדמיות</button>
+    <button onclick="loadModule('learningModes')">אופני למידה</button>
+    <button onclick="loadModule('meetingDays')">ימי מפגש</button>
+    <button onclick="loadModule('educationLevels')">שלבי חינוך</button>
+    <button onclick="loadModule('learningCategories')">תחומי פתרונות</button>
+    <button onclick="loadModule('subjects')">תחומי דעת</button>
+    <button onclick="loadModule('generalInfo')">מידע כללי</button>
+    <section id="moduleContent"></section>
+  </main>
+  <script>
+    function loadModule(name) {
+      const script = document.createElement('script');
+      script.src = `js/modules/${name}.js`;
+      document.body.appendChild(script);
+    }
+  </script>
+</body>
+</html>
