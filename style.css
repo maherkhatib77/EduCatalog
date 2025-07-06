@@ -1,67 +1,27 @@
-
 body {
-  font-family: 'Arial', sans-serif;
-  margin: 0;
+  font-family: Arial, sans-serif;
   direction: rtl;
-  background-color: #f0f4f8;
 }
 header {
-  background-color: #003366;
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+  background-color: #004080;
   color: white;
-  padding: 15px;
-  text-align: center;
 }
 button {
-  background-color: #0077cc;
-  color: white;
-  padding: 8px 12px;
-  border: none;
-  border-radius: 5px;
-  margin: 5px;
-  cursor: pointer;
+  padding: 0.5rem 1rem;
+  margin: 0.5rem;
 }
-.cards-grid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  padding: 20px;
+.modal {
+  display: none;
+  position: fixed;
+  right: 0; left: 0; top: 0; bottom: 0;
+  background-color: rgba(0,0,0,0.5);
 }
-.card {
-  background-color: white;
-  border: 1px solid #ddd;
-  border-radius: 10px;
+.modal-content {
+  background-color: #fff;
+  margin: 10% auto;
+  padding: 2rem;
   width: 300px;
-  margin: 10px;
-  padding: 15px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-.search-container {
-  text-align: center;
-  margin: 20px;
-}
-input {
-  padding: 8px;
-  margin: 5px;
-}
-table {
-  width: 95%;
-  margin: auto;
-  border-collapse: collapse;
-  margin-top: 20px;
-}
-th, td {
-  border: 1px solid #ccc;
-  padding: 8px;
-  text-align: center;
-}
-.module {
-  display: inline-block;
-  padding: 20px;
-  margin: 10px;
-  background: #eee;
-  border-radius: 10px;
-  cursor: pointer;
-}
-.module-section {
-  padding: 20px;
 }
