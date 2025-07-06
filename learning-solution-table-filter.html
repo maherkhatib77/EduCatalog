@@ -1,0 +1,58 @@
+
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <title>ניהול פתרונות למידה עם סינון</title>
+    <link rel="stylesheet" href="style.css">
+    <script type="module" src="script-table-manager-filter.js" defer></script>
+</head>
+<body>
+    <h1>טבלת ניהול פתרונות למידה</h1>
+
+    <div id="filters">
+        <input type="text" id="searchInput" placeholder="חיפוש לפי שם פתרון או רכז...">
+        <select id="levelFilter">
+            <option value="">כל שלבי החינוך</option>
+            <option value="יסודי">יסודי</option>
+            <option value="על-יסודי">על-יסודי</option>
+            <option value="תיכון">תיכון</option>
+            <option value="חינוך מיוחד">חינוך מיוחד</option>
+        </select>
+        <button id="clearFilters">נקה סינון</button>
+    </div>
+
+    <table border="1" id="solutionsTable">
+        <thead>
+            <tr>
+                <th>שם פתרון</th>
+                <th>רכז</th>
+                <th>מנחה</th>
+                <th>שלב חינוך</th>
+                <th>תאריך התחלה</th>
+                <th>שעות</th>
+                <th>עריכה</th>
+                <th>מחיקה</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</body>
+</html>
+
+<!-- טופס עריכה קופץ -->
+<div id="editModal" style="display:none; position:fixed; top:10%; left:50%; transform:translateX(-50%);
+     background:white; padding:20px; border:2px solid #333; z-index:1000; width:400px; max-width:90%;">
+    <h2>עריכת פתרון למידה</h2>
+    <form id="editForm">
+        <input type="hidden" id="editKey">
+        <label>שם פתרון:</label><input type="text" id="editTitle"><br>
+        <label>רכז פדגוגי:</label><input type="text" id="editCoordinator"><br>
+        <label>מנחה:</label><input type="text" id="editInstructor"><br>
+        <label>שלב חינוך:</label><input type="text" id="editLevel"><br>
+        <label>תאריך התחלה:</label><input type="date" id="editDate"><br>
+        <label>שעות אקדמיות:</label><input type="number" id="editHours"><br>
+        <button type="submit">שמור</button>
+        <button type="button" onclick="document.getElementById('editModal').style.display='none'">ביטול</button>
+    </form>
+</div>
