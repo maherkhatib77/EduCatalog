@@ -1,1 +1,36 @@
-<!-- Placeholder for dashboard.html -->
+
+<!DOCTYPE html>
+<html lang="he">
+<head>
+  <meta charset="UTF-8">
+  <title>מערכת ניהול - EduCatalog</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <script defer src="dashboard.js"></script>
+</head>
+<body dir="rtl">
+  <header class="header">
+    <h1>מערכת ניהול פתרונות למידה</h1>
+    <button id="logoutBtn">יציאה</button>
+  </header>
+
+  <main class="admin-modules">
+    <h2>בחר מודול לניהול:</h2>
+    <div class="module-buttons">
+      <button onclick="loadModule('solutions')">פתרונות למידה</button>
+      <button onclick="loadModule('instructors')">מנחים</button>
+      <button onclick="loadModule('pedagogicalGuides')">מדריכים פדגוגיים</button>
+      <button onclick="loadModule('hours')">היקף שעות</button>
+      <button onclick="loadModule('learningModes')">אופני למידה</button>
+      <button onclick="loadModule('meetingDays')">ימי מפגש</button>
+      <button onclick="loadModule('educationStages')">שלבי חינוך</button>
+      <button onclick="loadModule('solutionFields')">תחומי פתרון</button>
+      <button onclick="loadModule('disciplines')">תחומי דעת</button>
+      <button onclick="loadModule('siteInfo')">מידע כללי לאתר</button>
+    </div>
+
+    <section id="moduleContent">
+      <p>יש לבחור מודול כדי להמשיך בניהול.</p>
+    </section>
+  </main>
+</body>
+</html>
