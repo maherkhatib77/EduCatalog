@@ -1,43 +1,67 @@
 
 body {
   font-family: 'Arial', sans-serif;
-  direction: rtl;
-  background: #f5f8fc;
   margin: 0;
-  padding: 0;
+  direction: rtl;
+  background-color: #f0f4f8;
 }
 header {
-  background: #0d47a1;
+  background-color: #003366;
   color: white;
-  padding: 1em;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  padding: 15px;
+  text-align: center;
 }
 button {
-  background: #1976d2;
+  background-color: #0077cc;
   color: white;
+  padding: 8px 12px;
   border: none;
-  padding: 0.5em 1em;
-  font-size: 1em;
+  border-radius: 5px;
+  margin: 5px;
   cursor: pointer;
 }
-.modules {
+.cards-grid {
   display: flex;
-  justify-content: space-around;
-  margin: 2em 0;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 20px;
+}
+.card {
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  width: 300px;
+  margin: 10px;
+  padding: 15px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+.search-container {
+  text-align: center;
+  margin: 20px;
+}
+input {
+  padding: 8px;
+  margin: 5px;
+}
+table {
+  width: 95%;
+  margin: auto;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+th, td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: center;
 }
 .module {
-  background: white;
-  border: 1px solid #ddd;
-  padding: 2em;
-  width: 180px;
-  text-align: center;
-  font-size: 1.2em;
-  cursor: pointer;
+  display: inline-block;
+  padding: 20px;
+  margin: 10px;
+  background: #eee;
   border-radius: 10px;
-  box-shadow: 1px 1px 5px #ccc;
+  cursor: pointer;
 }
-#solutions-container {
-  padding: 2em;
+.module-section {
+  padding: 20px;
 }
