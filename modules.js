@@ -218,3 +218,40 @@ export function renderSubjects(cId, data) {
     c.innerHTML += `<div class='card'>${item.subject}</div>`;
   }
 }
+
+// === מודול 9: מידע כללי לאתר ===
+export function addSiteInfo(data) { set(ref(db, 'site_info'), data); }
+export function loadSiteInfo(cb) { onValue(ref(db, 'site_info'), s => cb(s.val())); }
+export function createSiteInfoForm(cId, onSubmit) {
+  document.getElementById(cId).innerHTML = `
+    <form id="siteinfo-form">
+      <input name="title" placeholder="כותרת עמוד ראשי" required>
+      <input name="year" placeholder="שנת לימודים">
+      <input name="logo" placeholder="קישור ללוגו">
+      <input name="copyright" placeholder="זכויות יוצרים">
+      <input name="contact" placeholder="פרטי יצירת קשר">
+      <input name="work_days" placeholder="ימי עבודה">
+      <input name="hours" placeholder="שעות פעילות">
+      <input name="address" placeholder="כתובת פיזית">
+      <input name="waze" placeholder="קישור ל-Waze">
+      <input name="maps" placeholder="קישור ל-Google Maps">
+      <button type="submit">שמור</button>
+    </form>`;
+  document.getElementById('siteinfo-form').onsubmit = e => {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(e.target).entries());
+    onSubmit(data);
+  };
+}
+export function renderSiteInfo(cId, data) {
+  const c = document.getElementById(cId);
+  c.innerHTML = `
+    <div class='card'>
+      <h4>${data.title}</h4>
+      <p>שנה: ${data.year}</p>
+      <p>צור קשר: ${data.contact}</p>
+      <p>ימים: ${data.work_days}, שעות: ${data.hours}</p>
+      <p>כתובת: ${data.address}</p>
+      <p><a href='${data.waze}' target='_blank'>Waze</a> | <a href='${data.maps}' target='_blank'>Google Maps</a></p>
+    </div>`;
+}
