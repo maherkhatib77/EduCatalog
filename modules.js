@@ -1,12 +1,11 @@
 // ============================
 // קובץ ראשי - modules.js
-// כולל את כל מודולי הניהול: פתרונות למידה, מנחים, מדריכים וכו'
+// כולל את כל מודולי הניהול
 // ============================
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getDatabase, ref, push, set, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-// קונפיגורציית Firebase (נא לוודא שהיא נכונה)
 const firebaseConfig = {
   apiKey: "AIza...",
   authDomain: "educatalog-63603.firebaseapp.com",
@@ -20,193 +19,130 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// ============================
-// מודול 1: פתרונות למידה
-// ============================
+// === מודול 1: פתרונות למידה ===
 export function addLearningSolution(data) {
   const newRef = push(ref(db, 'learning_solutions'));
   set(newRef, data);
 }
-
 export function loadLearningSolutions(callback) {
-  const solutionsRef = ref(db, 'learning_solutions');
-  onValue(solutionsRef, snapshot => {
-    const data = snapshot.val();
-    callback(data);
-  });
+  onValue(ref(db, 'learning_solutions'), snapshot => callback(snapshot.val()));
 }
-
-export function updateLearningSolution(id, data) {
-  update(ref(db, `learning_solutions/${id}`), data);
-}
-
-export function deleteLearningSolution(id) {
-  remove(ref(db, `learning_solutions/${id}`));
-}
-
 export function createLearningSolutionForm(containerId, onSubmit) {
-  const container = document.getElementById(containerId);
-  container.innerHTML = `
+  document.getElementById(containerId).innerHTML = `
     <form id="learning-form">
-      <input name="solution_name" placeholder="שם פתרון הלמידה" required>
-      <input name="summary" placeholder="תקציר פתרון הלמידה">
+      <input name="solution_name" placeholder="שם פתרון" required>
+      <input name="summary" placeholder="תקציר">
       <button type="submit">שמור</button>
-    </form>
-  `;
-  const form = document.getElementById('learning-form');
-  form.onsubmit = e => {
+    </form>`;
+  document.getElementById('learning-form').onsubmit = e => {
     e.preventDefault();
-    const formData = new FormData(form);
-    const data = Object.fromEntries(formData.entries());
+    const data = Object.fromEntries(new FormData(e.target).entries());
     onSubmit(data);
-    form.reset();
+    e.target.reset();
   };
 }
-
-export function renderLearningSolutions(containerId, solutions) {
-  const container = document.getElementById(containerId);
-  container.innerHTML = '';
-  for (const [id, sol] of Object.entries(solutions)) {
-    const div = document.createElement('div');
-    div.className = 'card';
-    div.innerHTML = `<h4>${sol.solution_name}</h4><p>${sol.summary}</p>`;
-    container.appendChild(div);
+export function renderLearningSolutions(containerId, data) {
+  const c = document.getElementById(containerId);
+  c.innerHTML = '';
+  for (const [id, item] of Object.entries(data)) {
+    c.innerHTML += `<div class='card'><h4>${item.solution_name}</h4><p>${item.summary}</p></div>`;
   }
 }
 
-// ============================
-// מודול 2: מנחים
-// ============================
-export function addMentor(data) {
-  const newRef = push(ref(db, 'mentors'));
-  set(newRef, data);
-}
-
-export function loadMentors(callback) {
-  const mentorsRef = ref(db, 'mentors');
-  onValue(mentorsRef, snapshot => {
-    const data = snapshot.val();
-    callback(data);
-  });
-}
-
-export function createMentorForm(containerId, onSubmit) {
-  const container = document.getElementById(containerId);
-  container.innerHTML = `
+// === מודול 2: מנחים ===
+export function addMentor(data) { set(push(ref(db, 'mentors')), data); }
+export function loadMentors(cb) { onValue(ref(db, 'mentors'), s => cb(s.val())); }
+export function createMentorForm(cId, onSubmit) {
+  document.getElementById(cId).innerHTML = `
     <form id="mentor-form">
       <input name="name" placeholder="שם מנחה" required>
       <input name="expertise" placeholder="תחום התמחות">
       <button type="submit">שמור</button>
-    </form>
-  `;
-  const form = document.getElementById('mentor-form');
-  form.onsubmit = e => {
+    </form>`;
+  document.getElementById('mentor-form').onsubmit = e => {
     e.preventDefault();
-    const formData = new FormData(form);
-    const data = Object.fromEntries(formData.entries());
+    const data = Object.fromEntries(new FormData(e.target).entries());
     onSubmit(data);
-    form.reset();
+    e.target.reset();
   };
 }
-
-export function renderMentors(containerId, mentors) {
-  const container = document.getElementById(containerId);
-  container.innerHTML = '';
-  for (const [id, mentor] of Object.entries(mentors)) {
-    const div = document.createElement('div');
-    div.className = 'card';
-    div.innerHTML = `<h4>${mentor.name}</h4><p>${mentor.expertise || ''}</p>`;
-    container.appendChild(div);
+export function renderMentors(cId, data) {
+  const c = document.getElementById(cId);
+  c.innerHTML = '';
+  for (const [id, item] of Object.entries(data)) {
+    c.innerHTML += `<div class='card'><h4>${item.name}</h4><p>${item.expertise || ''}</p></div>`;
   }
 }
 
-// ============================
-// מודול 3: מדריכים פדגוגיים
-// ============================
-export function addGuide(data) {
-  const newRef = push(ref(db, 'guides'));
-  set(newRef, data);
-}
-
-export function loadGuides(callback) {
-  const guidesRef = ref(db, 'guides');
-  onValue(guidesRef, snapshot => {
-    const data = snapshot.val();
-    callback(data);
-  });
-}
-
-export function createGuideForm(containerId, onSubmit) {
-  const container = document.getElementById(containerId);
-  container.innerHTML = `
+// === מודול 3: מדריכים פדגוגיים ===
+export function addGuide(data) { set(push(ref(db, 'guides')), data); }
+export function loadGuides(cb) { onValue(ref(db, 'guides'), s => cb(s.val())); }
+export function createGuideForm(cId, onSubmit) {
+  document.getElementById(cId).innerHTML = `
     <form id="guide-form">
       <input name="name" placeholder="שם מדריך" required>
       <input name="region" placeholder="אזור עבודה">
       <button type="submit">שמור</button>
-    </form>
-  `;
-  const form = document.getElementById('guide-form');
-  form.onsubmit = e => {
+    </form>`;
+  document.getElementById('guide-form').onsubmit = e => {
     e.preventDefault();
-    const formData = new FormData(form);
-    const data = Object.fromEntries(formData.entries());
+    const data = Object.fromEntries(new FormData(e.target).entries());
     onSubmit(data);
-    form.reset();
+    e.target.reset();
   };
 }
-
-export function renderGuides(containerId, guides) {
-  const container = document.getElementById(containerId);
-  container.innerHTML = '';
-  for (const [id, guide] of Object.entries(guides)) {
-    const div = document.createElement('div');
-    div.className = 'card';
-    div.innerHTML = `<h4>${guide.name}</h4><p>${guide.region || ''}</p>`;
-    container.appendChild(div);
+export function renderGuides(cId, data) {
+  const c = document.getElementById(cId);
+  c.innerHTML = '';
+  for (const [id, item] of Object.entries(data)) {
+    c.innerHTML += `<div class='card'><h4>${item.name}</h4><p>${item.region || ''}</p></div>`;
   }
 }
 
-// ============================
-// מודול 4: היקף שעות אקדמיות
-// ============================
-export function addHours(data) {
-  const newRef = push(ref(db, 'hours'));
-  set(newRef, data);
-}
-
-export function loadHours(callback) {
-  const hoursRef = ref(db, 'hours');
-  onValue(hoursRef, snapshot => {
-    const data = snapshot.val();
-    callback(data);
-  });
-}
-
-export function createHoursForm(containerId, onSubmit) {
-  const container = document.getElementById(containerId);
-  container.innerHTML = `
+// === מודול 4: היקף שעות אקדמיות ===
+export function addHours(data) { set(push(ref(db, 'hours')), data); }
+export function loadHours(cb) { onValue(ref(db, 'hours'), s => cb(s.val())); }
+export function createHoursForm(cId, onSubmit) {
+  document.getElementById(cId).innerHTML = `
     <form id="hours-form">
       <input name="amount" placeholder="לדוגמה: 30 / 60 / 120 שעות" required>
       <button type="submit">שמור</button>
-    </form>
-  `;
-  const form = document.getElementById('hours-form');
-  form.onsubmit = e => {
+    </form>`;
+  document.getElementById('hours-form').onsubmit = e => {
     e.preventDefault();
-    const formData = new FormData(form);
-    const data = Object.fromEntries(formData.entries());
+    const data = Object.fromEntries(new FormData(e.target).entries());
     onSubmit(data);
-    form.reset();
+    e.target.reset();
   };
 }
-
-export function renderHours(containerId, data) {
-  const container = document.getElementById(containerId);
-  container.innerHTML = '';
+export function renderHours(cId, data) {
+  const c = document.getElementById(cId);
+  c.innerHTML = '';
   for (const [id, item] of Object.entries(data)) {
-    const div = document.createElement('div');
-    div.className = 'card';
-    div.textContent = `${item.amount} שעות`;
-    container.appendChild(div);
+    c.innerHTML += `<div class='card'>${item.amount} שעות</div>`;
+  }
+}
+
+// === מודול 5: אופני למידה ===
+export function addMode(data) { set(push(ref(db, 'learning_modes')), data); }
+export function loadModes(cb) { onValue(ref(db, 'learning_modes'), s => cb(s.val())); }
+export function createModesForm(cId, onSubmit) {
+  document.getElementById(cId).innerHTML = `
+    <form id="modes-form">
+      <input name="type" placeholder="לדוג': פנים אל פנים, סינכרוני וכו'" required>
+      <button type="submit">שמור</button>
+    </form>`;
+  document.getElementById('modes-form').onsubmit = e => {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(e.target).entries());
+    onSubmit(data);
+    e.target.reset();
+  };
+}
+export function renderModes(cId, data) {
+  const c = document.getElementById(cId);
+  c.innerHTML = '';
+  for (const [id, item] of Object.entries(data)) {
+    c.innerHTML += `<div class='card'>${item.type}</div>`;
   }
 }
