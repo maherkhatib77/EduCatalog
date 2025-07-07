@@ -60,10 +60,12 @@
   <div id="loginModal">
     <div id="loginModalContent">
       <h2>הזדהות מנהל</h2>
-      <input type="text" id="username" placeholder="שם משתמש"><br>
-      <input type="password" id="password" placeholder="סיסמה"><br>
-      <button onclick="checkLogin()">כניסה</button>
-      <p class="error" id="loginError"></p>
+      <form onsubmit="checkLogin(); return false;">
+        <input type="text" id="username" placeholder="שם משתמש" required><br>
+        <input type="password" id="password" placeholder="סיסמה" required><br>
+        <button type="submit">כניסה</button>
+        <p class="error" id="loginError"></p>
+      </form>
     </div>
   </div>
 
