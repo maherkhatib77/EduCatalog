@@ -1,94 +1,68 @@
-<!DOCTYPE html>
-<html lang="he" dir="rtl">
-<head>
-  <meta charset="UTF-8">
-  <title>EduCatalog - עמוד ראשי</title>
-  <style>
-    body {
-      background-color: #003366;
-      color: white;
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 2rem;
-      text-align: right;
-    }
-    button {
-      background-color: white;
-      color: #003366;
-      border: none;
-      padding: 10px 20px;
-      font-size: 1rem;
-      cursor: pointer;
-      border-radius: 5px;
-    }
-    #loginModal {
-      display: none;
-      position: fixed;
-      z-index: 999;
-      right: 0;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      background-color: rgba(0, 0, 0, 0.6);
-    }
-    #loginModalContent {
-      background-color: white;
-      color: black;
-      margin: 10% auto;
-      padding: 2rem;
-      border-radius: 8px;
-      width: 90%;
-      max-width: 400px;
-      text-align: center;
-    }
-    input[type="text"], input[type="password"] {
-      width: 90%;
-      padding: 10px;
-      margin: 10px 0;
-      font-size: 1rem;
-    }
-    .error {
-      color: red;
-      font-size: 0.9rem;
-    }
-  </style>
-</head>
-<body>
-  <h1>ברוכים הבאים ל־EduCatalog</h1>
-  <button onclick="document.getElementById('loginModal').style.display='block'">כניסת מנהל</button>
 
-  <div id="loginModal">
-    <div id="loginModalContent">
-      <h2>הזדהות מנהל</h2>
-      <form onsubmit="checkLogin(); return false;">
-        <input type="text" id="username" placeholder="שם משתמש" required><br>
-        <input type="password" id="password" placeholder="סיסמה" required><br>
-        <button type="submit">כניסה</button>
-        <p class="error" id="loginError"></p>
-      </form>
+<!DOCTYPE html>
+<html lang="he">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EduCatalog – פתרונות למידה</title>
+  <script type="module" src="modules.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-white text-gray-900 font-sans">
+
+  <header class="bg-blue-800 text-white p-4 shadow">
+    <div class="container mx-auto flex justify-between items-center">
+      <h1 class="text-xl font-bold">EduCatalog</h1>
+      <button onclick="document.getElementById('login-popup').classList.remove('hidden')" class="bg-white text-blue-800 px-4 py-2 rounded">כניסת מנהל</button>
+    </div>
+  </header>
+
+  <main class="container mx-auto py-6">
+    <h2 class="text-2xl font-bold mb-4">פתרונות למידה זמינים</h2>
+    <div id="solutions-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+  </main>
+
+  <!-- חלון קופץ להזדהות מנהל -->
+  <div id="login-popup" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+    <div class="bg-white p-6 rounded shadow-md w-80">
+      <h3 class="text-lg font-bold mb-2">הזדהות מנהל</h3>
+      <input type="text" id="admin-user" placeholder="שם משתמש" class="w-full border p-2 mb-2" />
+      <input type="password" id="admin-pass" placeholder="סיסמה" class="w-full border p-2 mb-4" />
+      <div class="flex justify-between">
+        <button onclick="checkLogin()" class="bg-blue-600 text-white px-4 py-2 rounded">כניסה</button>
+        <button onclick="document.getElementById('login-popup').classList.add('hidden')" class="text-red-500">ביטול</button>
+      </div>
     </div>
   </div>
 
-  <script>
-    function checkLogin() {
-      const user = document.getElementById('username').value.trim();
-      const pass = document.getElementById('password').value.trim();
-      const error = document.getElementById('loginError');
+  <script type="module">
+    import { loadLearningSolutions } from './modules.js';
 
-      if (user === 'Pisga' && pass === 'Sara@2203') {
+    loadLearningSolutions(data => {
+      const container = document.getElementById('solutions-list');
+      container.innerHTML = '';
+      if (!data) return;
+      for (const [id, item] of Object.entries(data)) {
+        container.innerHTML += `
+          <div class="border rounded p-4 shadow hover:shadow-lg transition">
+            <h3 class="text-xl font-bold">${item.name}</h3>
+            <p class="text-sm text-gray-600">תחום תוכן: ${item.content_area || '—'}</p>
+            <p class="text-sm">שלב חינוך: ${item.education_level || '—'}</p>
+            <p class="text-sm">היקף שעות: ${item.hours || '—'}</p>
+            <p class="text-sm">מנחה: ${item.mentor || '—'}</p>
+          </div>`;
+      }
+    });
+
+    window.checkLogin = function () {
+      const u = document.getElementById('admin-user').value.trim();
+      const p = document.getElementById('admin-pass').value.trim();
+      if (u === 'Pisga' && p === 'Sara@2203') {
         window.location.href = 'dashboard/dashboard.html';
       } else {
-        error.textContent = 'שם משתמש או סיסמה שגויים';
+        alert('פרטי התחברות שגויים');
       }
-    }
-
-    // סגור את החלון בלחיצה מחוץ לתוכן
-    window.onclick = function(event) {
-      const modal = document.getElementById('loginModal');
-      if (event.target === modal) {
-        modal.style.display = 'none';
-      }
-    }
+    };
   </script>
 </body>
 </html>
