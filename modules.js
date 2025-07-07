@@ -194,3 +194,27 @@ export function renderLevels(cId, data) {
     c.innerHTML += `<div class='card'>${item.level}</div>`;
   }
 }
+
+// === מודול 8: תחומי דעת ===
+export function addSubject(data) { set(push(ref(db, 'subjects')), data); }
+export function loadSubjects(cb) { onValue(ref(db, 'subjects'), s => cb(s.val())); }
+export function createSubjectsForm(cId, onSubmit) {
+  document.getElementById(cId).innerHTML = `
+    <form id="subjects-form">
+      <input name="subject" placeholder="לדוג': שפה עברית, שפה ערבית וכו'" required>
+      <button type="submit">שמור</button>
+    </form>`;
+  document.getElementById('subjects-form').onsubmit = e => {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(e.target).entries());
+    onSubmit(data);
+    e.target.reset();
+  };
+}
+export function renderSubjects(cId, data) {
+  const c = document.getElementById(cId);
+  c.innerHTML = '';
+  for (const [id, item] of Object.entries(data)) {
+    c.innerHTML += `<div class='card'>${item.subject}</div>`;
+  }
+}
