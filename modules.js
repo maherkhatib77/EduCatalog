@@ -170,3 +170,27 @@ export function renderDays(cId, data) {
     c.innerHTML += `<div class='card'>${item.day}</div>`;
   }
 }
+
+// === מודול 7: שלבי חינוך ===
+export function addLevel(data) { set(push(ref(db, 'education_levels')), data); }
+export function loadLevels(cb) { onValue(ref(db, 'education_levels'), s => cb(s.val())); }
+export function createLevelsForm(cId, onSubmit) {
+  document.getElementById(cId).innerHTML = `
+    <form id="levels-form">
+      <input name="level" placeholder="לדוג': קדם-יסודי, יסודי, תיכון..." required>
+      <button type="submit">שמור</button>
+    </form>`;
+  document.getElementById('levels-form').onsubmit = e => {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(e.target).entries());
+    onSubmit(data);
+    e.target.reset();
+  };
+}
+export function renderLevels(cId, data) {
+  const c = document.getElementById(cId);
+  c.innerHTML = '';
+  for (const [id, item] of Object.entries(data)) {
+    c.innerHTML += `<div class='card'>${item.level}</div>`;
+  }
+}
