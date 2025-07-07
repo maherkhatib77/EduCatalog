@@ -3,725 +3,180 @@
 <html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <title>מערכת ניהול EduCatalog</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script type="module" src="../modules.js"></script>
+  <title>מערכת ניהול פתרונות למידה</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f2f5;
+      margin: 0;
+      padding: 20px;
+    }
+    h1, h2 {
+      color: #2c3e50;
+    }
+    button {
+      margin: 5px;
+      padding: 10px 15px;
+      border-radius: 5px;
+      border: none;
+      background-color: #3498db;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #2980b9;
+    }
+    .modal input, .modal select, .modal textarea {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 8px;
+      box-sizing: border-box;
+    }
+    table {
+      background: white;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background: #ecf0f1;
+    }
+  </style>
 </head>
-<body class="bg-gray-100 text-gray-900">
+<body>
 
-  <header class="bg-blue-900 text-white p-4 text-center text-2xl font-bold">
-    מערכת ניהול פתרונות למידה
-  </header>
+  <h1>📊 מערכת ניהול פתרונות למידה</h1>
 
-  <main class="p-6 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-    <!-- כפתורי מודולים -->
-    <button class="bg-white rounded-lg shadow p-4 flex items-center gap-3 hover:bg-blue-50"
-            onclick="openModule('mentors')">
-      <span>👨‍🏫 מנחים</span>
-    </button>
+  <!-- התחלה של מבנה מודול בסיסי עם חלון קופץ -->
+  <!-- מודול: היקף שעות אקדמאיות מוכר לגמול -->
+  <button onclick="openModal('modal-hours')">היקף שעות אקדמאיות מוכר לגמול</button>
+  <div id="modal-hours" class="modal" style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5);">
+    <div style="background: white; margin: 10% auto; padding: 20px; width: 90%; max-width: 800px; border-radius: 10px;">
+      <h2>מודול היקף שעות אקדמאיות מוכר לגמול</h2>
+      <form id="form-hours">
+        <label>בחר היקף שעות:</label>
+        <select id="hours-input" required>
+          <option value="">בחר...</option>
+          <option value="30">30 שעות</option>
+          <option value="40">40 שעות</option>
+          <option value="60">60 שעות</option>
+          <option value="120">120 שעות</option>
+        </select>
+        <button type="submit">הוסף</button>
+      </form>
+      <table id="table-hours" border="1" style="width: 100%; margin-top: 10px;">
+        <thead>
+          <tr>
+            <th>היקף שעות</th>
+            <th>עריכה</th>
+            <th>מחיקה</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <button onclick="exportToExcel('hours')">📤 ייצוא לאקסל</button>
+      <input type="file" accept=".xlsx" onchange="importFromExcel(event, 'hours')">
+      <button onclick="closeModal('modal-hours')">❌ יציאה</button>
+    </div>
+  </div>
 
-    <button class="bg-white rounded-lg shadow p-4 flex items-center gap-3 hover:bg-blue-50"
-            onclick="openModule('guides')">
-      <span>📘 מדריכים פדגוגיים</span>
-    </button>
+  <!-- מודול: פתרונות למידה -->
+  <button onclick="openModal('modal-learning-solutions')">פתרונות למידה</button>
+  <div id="modal-learning-solutions" class="modal" style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); overflow-y: auto;">
+    <div style="background: white; margin: 3% auto; padding: 20px; width: 95%; max-width: 1000px; border-radius: 10px;">
+      <h2>מודול פתרונות למידה</h2>
+      <form id="form-learning-solutions">
+        <label>שם המדריך הפדגוגי:</label>
+        <input type="text" id="pedagogical-guide" required><br>
+        <label>פתרון למידה מס':</label>
+        <input type="text" id="solution-number" required><br>
+        <label>שם פתרון הלמידה:</label>
+        <input type="text" id="solution-name" required><br>
+        <label>תקציר פתרון הלמידה:</label>
+        <textarea id="solution-summary" required></textarea><br>
+        <label>מטרות פתרון הלמידה:</label>
+        <textarea id="solution-goals" required></textarea><br>
+        <label>תחום התוכן:</label>
+        <input type="text" id="content-domain" required><br>
+        <label>שלב חינוך:</label>
+        <input type="text" id="education-stage" required><br>
+        <label>היקף שעות אקדמיות מוכר לגמול:</label>
+        <input type="text" id="academic-hours" required><br>
+        <label>תאריך ויום התחלת המפגשים:</label>
+        <input type="date" id="start-date" required><br>
+        <label>יום קבוע למפגשים:</label>
+        <input type="text" id="fixed-day" required><br>
+        <label>שעת התחלה:</label>
+        <input type="time" id="start-time" required><br>
+        <label>שעת סיום:</label>
+        <input type="time" id="end-time" required><br>
+        <label>אופני הלמידה:</label>
+        <input type="text" id="learning-mode" required><br>
+        <label>שם המנחה:</label>
+        <input type="text" id="mentor-name" required><br>
+        <label>האם נוצר קשר עם המרצה:</label>
+        <select id="contact-status" required>
+          <option value="">בחר...</option>
+          <option value="כן">כן</option>
+          <option value="לא">לא</option>
+        </select><br>
+        <label>סטטוס הסילבוס (קובץ סילבוס):</label>
+        <input type="file" id="syllabus-file" accept=".pdf,.doc,.docx"><br>
+        <button type="submit">שמור</button>
+      </form>
+      <table id="table-learning-solutions" border="1" style="width: 100%; margin-top: 10px;">
+        <thead>
+          <tr>
+            <th>שם פתרון</th>
+            <th>מדריך פדגוגי</th>
+            <th>מס'</th>
+            <th>תחום תוכן</th>
+            <th>שלב חינוך</th>
+            <th>שעות</th>
+            <th>יום התחלה</th>
+            <th>יום קבוע</th>
+            <th>שעות</th>
+            <th>מנחה</th>
+            <th>קשר מרצה</th>
+            <th>סילבוס</th>
+            <th>עריכה</th>
+            <th>מחיקה</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <button onclick="exportToExcel('learning-solutions')">📤 ייצוא לאקסל</button>
+      <input type="file" accept=".xlsx" onchange="importFromExcel(event, 'learning-solutions')">
+      <button onclick="closeModal('modal-learning-solutions')">❌ יציאה</button>
+    </div>
+  </div>
 
-    <button class="bg-white rounded-lg shadow p-4 flex items-center gap-3 hover:bg-blue-50"
-            onclick="openModule('learning_types')">
-      <span>💻 אופני למידה</span>
-    </button>
+  <script>
+    function openModal(id) {
+      document.getElementById(id).style.display = 'block';
+      loadTableData(id);
+    }
 
-    <button class="bg-white rounded-lg shadow p-4 flex items-center gap-3 hover:bg-blue-50"
-            onclick="openModule('days')">
-      <span>📅 ימי מפגש</span>
-    </button>
+    function closeModal(id) {
+      document.getElementById(id).style.display = 'none';
+    }
 
-    <button class="bg-white rounded-lg shadow p-4 flex items-center gap-3 hover:bg-blue-50"
-            onclick="openModule('stages')">
-      <span>🏫 שלבי חינוך</span>
-    </button>
+    function loadTableData(modalId) {
+      // כאן תבוא קריאה ל-Firebase לפי modalId
+      // לצורך דוגמה – הטבלה ריקה
+    }
 
-    <button class="bg-white rounded-lg shadow p-4 flex items-center gap-3 hover:bg-blue-50"
-            onclick="openModule('categories')">
-      <span>📂 תחומי פתרונות למידה</span>
-    </button>
+    function exportToExcel(type) {
+      // פונקציה שתייצא את הנתונים לאקסל לפי סוג המודול (type)
+    }
 
-    <button class="bg-white rounded-lg shadow p-4 flex items-center gap-3 hover:bg-blue-50"
-            onclick="openModule('subjects')">
-      <span>📚 תחומי דעת</span>
-    </button>
-
-    <button class="bg-white rounded-lg shadow p-4 flex items-center gap-3 hover:bg-blue-50"
-            onclick="openModule('site_info')">
-      <span>🌐 מידע כללי לאתר</span>
-    </button>
-
-    <button class="bg-white rounded-lg shadow p-4 flex items-center gap-3 hover:bg-blue-50"
-            onclick="openModule('credits')">
-      <span>🕒 היקף שעות מוכר</span>
-    </button>
-
-    <button class="bg-white rounded-lg shadow p-4 flex items-center gap-3 hover:bg-blue-50"
-            onclick="openModule('solutions')">
-      <span>🧩 פתרונות למידה</span>
-    </button>
-  </main>
-
-  <!-- אזור דינמי לכל מודול -->
-  <section id="module-container" class="p-6">
-    <div id="mentors">
-<input type="text" placeholder="🔍 חיפוש..." 
-       oninput="filterCards('mentors', this.value)"
-       class="border rounded px-2 py-1 mb-2 w-full">
-
-<button onclick="loadAndExport('mentors', 'mentors')"
-        class="bg-blue-600 text-white rounded px-4 py-2 mt-2 ml-2">
-  📤 ייצוא ל-Excel
-</button>
-
-<button onclick="importExcelToModule('mentors', addMentor)"
-        class="bg-green-600 text-white rounded px-4 py-2 mt-2 mb-4">
-  📥 ייבוא מקובץ Excel
-</button>
-</div>
-    <div id="guides">
-<input type="text" placeholder="🔍 חיפוש..." 
-       oninput="filterCards('guides', this.value)"
-       class="border rounded px-2 py-1 mb-2 w-full">
-
-<button onclick="loadAndExport('guides', 'guides')"
-        class="bg-blue-600 text-white rounded px-4 py-2 mt-2 ml-2">
-  📤 ייצוא ל-Excel
-</button>
-
-<button onclick="importExcelToModule('guides', addGuide)"
-        class="bg-green-600 text-white rounded px-4 py-2 mt-2 mb-4">
-  📥 ייבוא מקובץ Excel
-</button>
-</div>
-    <div id="learning_types">
-<input type="text" placeholder="🔍 חיפוש..." 
-       oninput="filterCards('learning_types', this.value)"
-       class="border rounded px-2 py-1 mb-2 w-full">
-
-<button onclick="loadAndExport('learning_types', 'learning_types')"
-        class="bg-blue-600 text-white rounded px-4 py-2 mt-2 ml-2">
-  📤 ייצוא ל-Excel
-</button>
-
-<button onclick="importExcelToModule('learning_types', addLearningType)"
-        class="bg-green-600 text-white rounded px-4 py-2 mt-2 mb-4">
-  📥 ייבוא מקובץ Excel
-</button>
-</div>
-    <div id="days">
-<input type="text" placeholder="🔍 חיפוש..." 
-       oninput="filterCards('days', this.value)"
-       class="border rounded px-2 py-1 mb-2 w-full">
-
-<button onclick="loadAndExport('days', 'days')"
-        class="bg-blue-600 text-white rounded px-4 py-2 mt-2 ml-2">
-  📤 ייצוא ל-Excel
-</button>
-
-<button onclick="importExcelToModule('days', addDay)"
-        class="bg-green-600 text-white rounded px-4 py-2 mt-2 mb-4">
-  📥 ייבוא מקובץ Excel
-</button>
-</div>
-    <div id="stages">
-<input type="text" placeholder="🔍 חיפוש..." 
-       oninput="filterCards('stages', this.value)"
-       class="border rounded px-2 py-1 mb-2 w-full">
-
-<button onclick="loadAndExport('stages', 'stages')"
-        class="bg-blue-600 text-white rounded px-4 py-2 mt-2 ml-2">
-  📤 ייצוא ל-Excel
-</button>
-
-<button onclick="importExcelToModule('stages', addStage)"
-        class="bg-green-600 text-white rounded px-4 py-2 mt-2 mb-4">
-  📥 ייבוא מקובץ Excel
-</button>
-</div>
-    <div id="categories">
-<input type="text" placeholder="🔍 חיפוש..." 
-       oninput="filterCards('categories', this.value)"
-       class="border rounded px-2 py-1 mb-2 w-full">
-
-<button onclick="loadAndExport('categories', 'categories')"
-        class="bg-blue-600 text-white rounded px-4 py-2 mt-2 ml-2">
-  📤 ייצוא ל-Excel
-</button>
-
-<button onclick="importExcelToModule('categories', addCategory)"
-        class="bg-green-600 text-white rounded px-4 py-2 mt-2 mb-4">
-  📥 ייבוא מקובץ Excel
-</button>
-</div>
-    <div id="subjects">
-<input type="text" placeholder="🔍 חיפוש..." 
-       oninput="filterCards('subjects', this.value)"
-       class="border rounded px-2 py-1 mb-2 w-full">
-
-<button onclick="loadAndExport('subjects', 'subjects')"
-        class="bg-blue-600 text-white rounded px-4 py-2 mt-2 ml-2">
-  📤 ייצוא ל-Excel
-</button>
-
-<button onclick="importExcelToModule('subjects', addSubject)"
-        class="bg-green-600 text-white rounded px-4 py-2 mt-2 mb-4">
-  📥 ייבוא מקובץ Excel
-</button>
-</div>
-    <div id="site_info">
-<input type="text" placeholder="🔍 חיפוש..." 
-       oninput="filterCards('site_info', this.value)"
-       class="border rounded px-2 py-1 mb-2 w-full">
-
-<button onclick="loadAndExport('site_info', 'site_info')"
-        class="bg-blue-600 text-white rounded px-4 py-2 mt-2 ml-2">
-  📤 ייצוא ל-Excel
-</button>
-
-<button onclick="importExcelToModule('site_info', addSiteInfo)"
-        class="bg-green-600 text-white rounded px-4 py-2 mt-2 mb-4">
-  📥 ייבוא מקובץ Excel
-</button>
-</div>
-    <div id="credits">
-<input type="text" placeholder="🔍 חיפוש..." 
-       oninput="filterCards('credits', this.value)"
-       class="border rounded px-2 py-1 mb-2 w-full">
-
-<button onclick="loadAndExport('credits', 'credits')"
-        class="bg-blue-600 text-white rounded px-4 py-2 mt-2 ml-2">
-  📤 ייצוא ל-Excel
-</button>
-
-<button onclick="importExcelToModule('credits', addCredit)"
-        class="bg-green-600 text-white rounded px-4 py-2 mt-2 mb-4">
-  📥 ייבוא מקובץ Excel
-</button>
-</div>
-    <div id="solutions">
-<input type="text" placeholder="🔍 חיפוש..." 
-       oninput="filterCards('solutions', this.value)"
-       class="border rounded px-2 py-1 mb-2 w-full">
-
-<button onclick="loadAndExport('solutions', 'solutions')"
-        class="bg-blue-600 text-white rounded px-4 py-2 mt-2 ml-2">
-  📤 ייצוא ל-Excel
-</button>
-
-<button onclick="importExcelToModule('solutions', addSolution)"
-        class="bg-green-600 text-white rounded px-4 py-2 mt-2 mb-4">
-  📥 ייבוא מקובץ Excel
-</button>
-</div>
-  </section>
-
-  <script type="module">
-    import {
-      createMentorsForm, loadMentors, renderMentors, addMentor,
-      createGuidesForm, loadGuides, renderGuides, addGuide,
-      createLearningTypesForm, loadLearningTypes, renderLearningTypes, addLearningType,
-      createDaysForm, loadDays, renderDays, addDay,
-      createStagesForm, loadStages, renderStages, addStage,
-      createCategoriesForm, loadCategories, renderCategories, addCategory,
-      createSubjectsForm, loadSubjects, renderSubjects, addSubject,
-      createSiteInfoForm, loadSiteInfo, renderSiteInfo, addSiteInfo,
-      createCreditsForm, loadCredits, renderCredits, addCredit,
-      createSolutionsForm, loadSolutions, renderSolutions, addSolution
-    } from "../modules.js";
-
-    const modules = {
-      mentors: () => {
-        createMentorsForm('mentors', addMentor);
-        loadMentors(data => renderMentors('mentors', data));
-      },
-      guides: () => {
-        createGuidesForm('guides', addGuide);
-        loadGuides(data => renderGuides('guides', data));
-      },
-      learning_types: () => {
-        createLearningTypesForm('learning_types', addLearningType);
-        loadLearningTypes(data => renderLearningTypes('learning_types', data));
-      },
-      days: () => {
-        createDaysForm('days', addDay);
-        loadDays(data => renderDays('days', data));
-      },
-      stages: () => {
-        createStagesForm('stages', addStage);
-        loadStages(data => renderStages('stages', data));
-      },
-      categories: () => {
-        createCategoriesForm('categories', addCategory);
-        loadCategories(data => renderCategories('categories', data));
-      },
-      subjects: () => {
-        createSubjectsForm('subjects', addSubject);
-        loadSubjects(data => renderSubjects('subjects', data));
-      },
-      site_info: () => {
-        createSiteInfoForm('site_info', addSiteInfo);
-        loadSiteInfo(data => renderSiteInfo('site_info', data));
-      },
-      credits: () => {
-        createCreditsForm('credits', addCredit);
-        loadCredits(data => renderCredits('credits', data));
-      },
-      solutions: () => {
-        createSolutionsForm('solutions', addSolution);
-        loadSolutions(data => renderSolutions('solutions', data));
-      },
-    };
-
-    window.openModule = function (id) {
-      // הסתר את כל המודולים
-      document.querySelectorAll('#module-container > div').forEach(div => div.innerHTML = '');
-      // טען את המודול הרצוי
-      modules[id]();
+    function importFromExcel(event, type) {
+      // פונקציה שתייבא נתונים מהקובץ למודול המתאים
     }
   </script>
-
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script>
-  // פונקציה כללית ליבוא אקסל לכל מודול לפי שם שדה בסיסי
-  function importExcelToModule(moduleId, addFunction) {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.xlsx,.xls';
-    input.onchange = (e) => {
-      const file = e.target.files[0];
-      const reader = new FileReader();
-      reader.onload = (evt) => {
-        const data = new Uint8Array(evt.target.result);
-        const workbook = XLSX.read(data, {type: 'array'});
-        const sheet = workbook.Sheets[workbook.SheetNames[0]];
-        const json = XLSX.utils.sheet_to_json(sheet);
-        json.forEach(row => addFunction(row));
-        alert('ייבוא הסתיים בהצלחה!');
-      };
-      reader.readAsArrayBuffer(file);
-    };
-    input.click();
-  }
-</script>
-
-
-<script>
-  function exportDataToExcel(data, filename) {
-    const ws = XLSX.utils.json_to_sheet(Object.values(data));
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Data");
-    XLSX.writeFile(wb, filename + ".xlsx");
-  }
-</script>
-
-
-<script>
-  function loadAndExport(path, filename) {
-    import('./modules.js').then(module => {
-      const db = module.db;
-      import("https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js").then(() => {
-        import("https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js").then(() => {
-          import("https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js").then(() => {
-            module.loadDataOnce(path).then(data => {
-              exportDataToExcel(data || {}, filename);
-            });
-          });
-        });
-      });
-    });
-  }
-</script>
-
-
-<script>
-function filterCards(containerId, searchText) {
-  const cards = document.querySelectorAll('#' + containerId + ' .card');
-  searchText = searchText.toLowerCase();
-  cards.forEach(card => {
-    const content = card.textContent.toLowerCase();
-    card.style.display = content.includes(searchText) ? '' : 'none';
-  });
-}
-</script>
-
-
-<script>
-function renderTable(containerId, dataObj, columns) {
-  const container = document.getElementById(containerId);
-  container.innerHTML = "";
-
-  // יצירת כפתור הדפסה
-  const printBtn = document.createElement("button");
-  printBtn.textContent = "🖨️ הדפס טבלה";
-  printBtn.className = "bg-green-600 text-white rounded px-4 py-2 mb-2";
-  printBtn.onclick = () => printTable(containerId + "-table");
-  container.appendChild(printBtn);
-
-  // יצירת Dropdown למיון
-  const sortSelect = document.createElement("select");
-  sortSelect.className = "ml-2 mb-2 border rounded px-2 py-1";
-  columns.forEach(col => {
-    const opt = document.createElement("option");
-    opt.value = col;
-    opt.textContent = "מיין לפי " + col;
-    sortSelect.appendChild(opt);
-  });
-  sortSelect.onchange = () => renderSortedTable(containerId, dataObj, columns, sortSelect.value);
-  container.appendChild(sortSelect);
-
-  renderSortedTable(containerId, dataObj, columns, columns[0]);
-}
-
-function renderSortedTable(containerId, dataObj, columns, sortBy) {
-  const container = document.getElementById(containerId);
-  const dataArray = Object.entries(dataObj || {});
-  dataArray.sort((a, b) => {
-    const aVal = a[1][sortBy] || "";
-    const bVal = b[1][sortBy] || "";
-    return aVal.localeCompare(bVal, 'he');
-  });
-
-  const tableId = containerId + "-table";
-  let html = `<table id="${tableId}" class="table-auto border w-full mt-2 text-right">
-    <thead><tr>` + columns.map(c => `<th class="border px-2 py-1 bg-gray-100">${c}</th>`).join('') + `</tr></thead><tbody>`;
-
-  for (const [id, item] of dataArray) {
-    html += "<tr>" + columns.map(c => `<td class="border px-2 py-1">${item[c] || ""}</td>`).join('') + "</tr>";
-  }
-
-  html += "</tbody></table>";
-  const tableContainer = document.createElement("div");
-  tableContainer.innerHTML = html;
-
-  // הסר טבלאות קודמות אם קיימות
-  const oldTable = document.getElementById(tableId);
-  if (oldTable) oldTable.remove();
-
-  container.appendChild(tableContainer);
-}
-
-function printTable(tableId) {
-  const table = document.getElementById(tableId);
-  const newWin = window.open("");
-  newWin.document.write("<html><head><title>הדפס טבלה</title></head><body dir='rtl'>");
-  newWin.document.write(table.outerHTML);
-  newWin.document.write("
-<script>
-function renderTable(containerId, dataObj, columns, editable = true, dbPath = "") {
-  const container = document.getElementById(containerId);
-  container.innerHTML = "";
-
-  const printBtn = document.createElement("button");
-  printBtn.textContent = "🖨️ הדפס טבלה";
-  printBtn.className = "bg-green-600 text-white rounded px-4 py-2 mb-2";
-  printBtn.onclick = () => printTable(containerId + "-table");
-  container.appendChild(printBtn);
-
-  const sortSelect = document.createElement("select");
-  sortSelect.className = "ml-2 mb-2 border rounded px-2 py-1";
-  columns.forEach(col => {
-    const opt = document.createElement("option");
-    opt.value = col;
-    opt.textContent = "מיין לפי " + col;
-    sortSelect.appendChild(opt);
-  });
-  sortSelect.onchange = () => renderSortedTable(containerId, dataObj, columns, sortSelect.value, editable, dbPath);
-  container.appendChild(sortSelect);
-
-  renderSortedTable(containerId, dataObj, columns, columns[0], editable, dbPath);
-}
-
-function renderSortedTable(containerId, dataObj, columns, sortBy, editable, dbPath) {
-  const container = document.getElementById(containerId);
-  const dataArray = Object.entries(dataObj || {});
-  dataArray.sort((a, b) => {
-    const aVal = a[1][sortBy] || "";
-    const bVal = b[1][sortBy] || "";
-    return aVal.localeCompare(bVal, 'he');
-  });
-
-  const tableId = containerId + "-table";
-  let html = `<table id="${tableId}" class="table-auto border w-full mt-2 text-right">
-    <thead><tr>` + columns.map(c => `<th class="border px-2 py-1 bg-gray-100">${c}</th>`).join('');
-
-  if (editable) html += `<th class="border px-2 py-1 bg-gray-100">פעולות</th>`;
-  html += `</tr></thead><tbody>`;
-
-  for (const [id, item] of dataArray) {
-    html += "<tr>";
-    columns.forEach(c => {
-      html += `<td class="border px-2 py-1">${item[c] || ""}</td>`;
-    });
-    if (editable) {
-      html += `<td class="border px-2 py-1">
-        <button onclick="editRow('${dbPath}', '${id}', ${JSON.stringify(item).replace(/"/g, '&quot;')})" class="text-blue-600">✏️</button>
-        <button onclick="deleteRow('${dbPath}', '${id}')" class="text-red-600 ml-2">🗑️</button>
-      </td>`;
-    }
-    html += "</tr>";
-  }
-
-  html += "</tbody></table>";
-  const tableContainer = document.createElement("div");
-  tableContainer.innerHTML = html;
-
-  const oldTable = document.getElementById(tableId);
-  if (oldTable) oldTable.remove();
-
-  container.appendChild(tableContainer);
-}
-
-function deleteRow(path, id) {
-  if (confirm("האם אתה בטוח שברצונך למחוק?")) {
-    import('./modules.js').then(m => {
-      m.removeItem(path + '/' + id);
-    });
-  }
-}
-
-function editRow(path, id, item) {
-  const newData = {};
-  for (const key in item) {
-    const val = prompt(`עדכן ערך עבור "${key}"`, item[key]);
-    if (val === null) return; // ביטול
-    newData[key] = val;
-  }
-  import('./modules.js').then(m => {
-    m.updateItem(path + '/' + id, newData);
-  });
-}
-</script>
-
-</body></html>");
-  newWin.document.close();
-  newWin.print();
-}
-</script>
-
-
-<script>
-function renderTable(containerId, dataObj, columns, editable = true, dbPath = "") {
-  const container = document.getElementById(containerId);
-  container.innerHTML = "";
-
-  const printBtn = document.createElement("button");
-  printBtn.textContent = "🖨️ הדפס טבלה";
-  printBtn.className = "bg-green-600 text-white rounded px-4 py-2 mb-2";
-  printBtn.onclick = () => printTable(containerId + "-table");
-  container.appendChild(printBtn);
-
-  const sortSelect = document.createElement("select");
-  sortSelect.className = "ml-2 mb-2 border rounded px-2 py-1";
-  columns.forEach(col => {
-    const opt = document.createElement("option");
-    opt.value = col;
-    opt.textContent = "מיין לפי " + col;
-    sortSelect.appendChild(opt);
-  });
-  sortSelect.onchange = () => renderSortedTable(containerId, dataObj, columns, sortSelect.value, editable, dbPath);
-  container.appendChild(sortSelect);
-
-  renderSortedTable(containerId, dataObj, columns, columns[0], editable, dbPath);
-}
-
-function renderSortedTable(containerId, dataObj, columns, sortBy, editable, dbPath) {
-  const container = document.getElementById(containerId);
-  const dataArray = Object.entries(dataObj || {});
-  dataArray.sort((a, b) => {
-    const aVal = a[1][sortBy] || "";
-    const bVal = b[1][sortBy] || "";
-    return aVal.localeCompare(bVal, 'he');
-  });
-
-  const tableId = containerId + "-table";
-  let html = `<table id="${tableId}" class="table-auto border w-full mt-2 text-right">
-    <thead><tr>` + columns.map(c => `<th class="border px-2 py-1 bg-gray-100">${c}</th>`).join('');
-
-  if (editable) html += `<th class="border px-2 py-1 bg-gray-100">פעולות</th>`;
-  html += `</tr></thead><tbody>`;
-
-  for (const [id, item] of dataArray) {
-    html += "<tr>";
-    columns.forEach(c => {
-      html += `<td class="border px-2 py-1">${item[c] || ""}</td>`;
-    });
-    if (editable) {
-      html += `<td class="border px-2 py-1">
-        <button onclick="editRow('${dbPath}', '${id}', ${JSON.stringify(item).replace(/"/g, '&quot;')})" class="text-blue-600">✏️</button>
-        <button onclick="deleteRow('${dbPath}', '${id}')" class="text-red-600 ml-2">🗑️</button>
-      </td>`;
-    }
-    html += "</tr>";
-  }
-
-  html += "</tbody></table>";
-  const tableContainer = document.createElement("div");
-  tableContainer.innerHTML = html;
-
-  const oldTable = document.getElementById(tableId);
-  if (oldTable) oldTable.remove();
-
-  container.appendChild(tableContainer);
-}
-
-function deleteRow(path, id) {
-  if (confirm("האם אתה בטוח שברצונך למחוק?")) {
-    import('./modules.js').then(m => {
-      m.removeItem(path + '/' + id);
-    });
-  }
-}
-
-function editRow(path, id, item) {
-  const newData = {};
-  for (const key in item) {
-    const val = prompt(`עדכן ערך עבור "${key}"`, item[key]);
-    if (val === null) return; // ביטול
-    newData[key] = val;
-  }
-  import('./modules.js').then(m => {
-    m.updateItem(path + '/' + id, newData);
-  });
-}
-</script>
-
-<!-- התחלה של מבנה מודול בסיסי עם חלון קופץ -->
-<!-- מודול: היקף שעות אקדמאיות מוכר לגמול -->
-<button onclick="openModal('modal-hours')">היקף שעות אקדמאיות מוכר לגמול</button>
-<div id="modal-hours" class="modal" style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5);">
-  <div style="background: white; margin: 10% auto; padding: 20px; width: 90%; max-width: 800px; border-radius: 10px;">
-    <h2>מודול היקף שעות אקדמאיות מוכר לגמול</h2>
-    <form id="form-hours">
-      <label>בחר היקף שעות:</label>
-      <select id="hours-input" required>
-        <option value="">בחר...</option>
-        <option value="30">30 שעות</option>
-        <option value="40">40 שעות</option>
-        <option value="60">60 שעות</option>
-        <option value="120">120 שעות</option>
-      </select>
-      <button type="submit">הוסף</button>
-    </form>
-    <table id="table-hours" border="1" style="width: 100%; margin-top: 10px;">
-      <thead>
-        <tr>
-          <th>היקף שעות</th>
-          <th>עריכה</th>
-          <th>מחיקה</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-    <button onclick="exportToExcel('hours')">📤 ייצוא לאקסל</button>
-    <input type="file" accept=".xlsx" onchange="importFromExcel(event, 'hours')">
-    <button onclick="closeModal('modal-hours')">❌ יציאה</button>
-  </div>
-</div>
-
-<!-- ... שאר המודולים שכבר הוזנו ... -->
-
-<!-- מודול: פתרונות למידה -->
-<button onclick="openModal('modal-learning-solutions')">פתרונות למידה</button>
-<div id="modal-learning-solutions" class="modal" style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); overflow-y: auto;">
-  <div style="background: white; margin: 3% auto; padding: 20px; width: 95%; max-width: 1000px; border-radius: 10px;">
-    <h2>מודול פתרונות למידה</h2>
-    <form id="form-learning-solutions">
-      <label>שם המדריך הפדגוגי:</label>
-      <input type="text" id="pedagogical-guide" required><br>
-      <label>פתרון למידה מס':</label>
-      <input type="text" id="solution-number" required><br>
-      <label>שם פתרון הלמידה:</label>
-      <input type="text" id="solution-name" required><br>
-      <label>תקציר פתרון הלמידה:</label>
-      <textarea id="solution-summary" required></textarea><br>
-      <label>מטרות פתרון הלמידה:</label>
-      <textarea id="solution-goals" required></textarea><br>
-      <label>תחום התוכן:</label>
-      <input type="text" id="content-domain" required><br>
-      <label>שלב חינוך:</label>
-      <input type="text" id="education-stage" required><br>
-      <label>היקף שעות אקדמיות מוכר לגמול:</label>
-      <input type="text" id="academic-hours" required><br>
-      <label>תאריך ויום התחלת המפגשים:</label>
-      <input type="date" id="start-date" required><br>
-      <label>יום קבוע למפגשים:</label>
-      <input type="text" id="fixed-day" required><br>
-      <label>שעת התחלה:</label>
-      <input type="time" id="start-time" required><br>
-      <label>שעת סיום:</label>
-      <input type="time" id="end-time" required><br>
-      <label>אופני הלמידה:</label>
-      <input type="text" id="learning-mode" required><br>
-      <label>שם המנחה:</label>
-      <input type="text" id="mentor-name" required><br>
-      <label>האם נוצר קשר עם המרצה:</label>
-      <select id="contact-status" required>
-        <option value="">בחר...</option>
-        <option value="כן">כן</option>
-        <option value="לא">לא</option>
-      </select><br>
-      <label>סטטוס הסילבוס (קובץ סילבוס):</label>
-      <input type="file" id="syllabus-file" accept=".pdf,.doc,.docx"><br>
-      <button type="submit">שמור</button>
-    </form>
-    <table id="table-learning-solutions" border="1" style="width: 100%; margin-top: 10px;">
-      <thead>
-        <tr>
-          <th>שם פתרון</th>
-          <th>מדריך פדגוגי</th>
-          <th>מס'</th>
-          <th>תחום תוכן</th>
-          <th>שלב חינוך</th>
-          <th>שעות</th>
-          <th>יום התחלה</th>
-          <th>יום קבוע</th>
-          <th>שעות</th>
-          <th>מנחה</th>
-          <th>קשר מרצה</th>
-          <th>סילבוס</th>
-          <th>עריכה</th>
-          <th>מחיקה</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-    <button onclick="exportToExcel('learning-solutions')">📤 ייצוא לאקסל</button>
-    <input type="file" accept=".xlsx" onchange="importFromExcel(event, 'learning-solutions')">
-    <button onclick="closeModal('modal-learning-solutions')">❌ יציאה</button>
-  </div>
-</div>
-
-<script>
-  function openModal(id) {
-    document.getElementById(id).style.display = 'block';
-    loadTableData(id);
-  }
-
-  function closeModal(id) {
-    document.getElementById(id).style.display = 'none';
-  }
-
-  function loadTableData(modalId) {
-    // כאן תבוא קריאה ל-Firebase לפי modalId
-    // לצורך דוגמה – הטבלה ריקה
-  }
-
-  function exportToExcel(type) {
-    // פונקציה שתייצא את הנתונים לאקסל לפי סוג המודול (type)
-  }
-
-  function importFromExcel(event, type) {
-    // פונקציה שתייבא נתונים מהקובץ למודול המתאים
-  }
-</script>
-
-
 
 </body>
 </html>
