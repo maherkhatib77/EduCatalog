@@ -411,9 +411,183 @@ function printTable(tableId) {
   const newWin = window.open("");
   newWin.document.write("<html><head><title>הדפס טבלה</title></head><body dir='rtl'>");
   newWin.document.write(table.outerHTML);
-  newWin.document.write("</body></html>");
+  newWin.document.write("
+<script>
+function renderTable(containerId, dataObj, columns, editable = true, dbPath = "") {
+  const container = document.getElementById(containerId);
+  container.innerHTML = "";
+
+  const printBtn = document.createElement("button");
+  printBtn.textContent = "🖨️ הדפס טבלה";
+  printBtn.className = "bg-green-600 text-white rounded px-4 py-2 mb-2";
+  printBtn.onclick = () => printTable(containerId + "-table");
+  container.appendChild(printBtn);
+
+  const sortSelect = document.createElement("select");
+  sortSelect.className = "ml-2 mb-2 border rounded px-2 py-1";
+  columns.forEach(col => {
+    const opt = document.createElement("option");
+    opt.value = col;
+    opt.textContent = "מיין לפי " + col;
+    sortSelect.appendChild(opt);
+  });
+  sortSelect.onchange = () => renderSortedTable(containerId, dataObj, columns, sortSelect.value, editable, dbPath);
+  container.appendChild(sortSelect);
+
+  renderSortedTable(containerId, dataObj, columns, columns[0], editable, dbPath);
+}
+
+function renderSortedTable(containerId, dataObj, columns, sortBy, editable, dbPath) {
+  const container = document.getElementById(containerId);
+  const dataArray = Object.entries(dataObj || {});
+  dataArray.sort((a, b) => {
+    const aVal = a[1][sortBy] || "";
+    const bVal = b[1][sortBy] || "";
+    return aVal.localeCompare(bVal, 'he');
+  });
+
+  const tableId = containerId + "-table";
+  let html = `<table id="${tableId}" class="table-auto border w-full mt-2 text-right">
+    <thead><tr>` + columns.map(c => `<th class="border px-2 py-1 bg-gray-100">${c}</th>`).join('');
+
+  if (editable) html += `<th class="border px-2 py-1 bg-gray-100">פעולות</th>`;
+  html += `</tr></thead><tbody>`;
+
+  for (const [id, item] of dataArray) {
+    html += "<tr>";
+    columns.forEach(c => {
+      html += `<td class="border px-2 py-1">${item[c] || ""}</td>`;
+    });
+    if (editable) {
+      html += `<td class="border px-2 py-1">
+        <button onclick="editRow('${dbPath}', '${id}', ${JSON.stringify(item).replace(/"/g, '&quot;')})" class="text-blue-600">✏️</button>
+        <button onclick="deleteRow('${dbPath}', '${id}')" class="text-red-600 ml-2">🗑️</button>
+      </td>`;
+    }
+    html += "</tr>";
+  }
+
+  html += "</tbody></table>";
+  const tableContainer = document.createElement("div");
+  tableContainer.innerHTML = html;
+
+  const oldTable = document.getElementById(tableId);
+  if (oldTable) oldTable.remove();
+
+  container.appendChild(tableContainer);
+}
+
+function deleteRow(path, id) {
+  if (confirm("האם אתה בטוח שברצונך למחוק?")) {
+    import('./modules.js').then(m => {
+      m.removeItem(path + '/' + id);
+    });
+  }
+}
+
+function editRow(path, id, item) {
+  const newData = {};
+  for (const key in item) {
+    const val = prompt(`עדכן ערך עבור "${key}"`, item[key]);
+    if (val === null) return; // ביטול
+    newData[key] = val;
+  }
+  import('./modules.js').then(m => {
+    m.updateItem(path + '/' + id, newData);
+  });
+}
+</script>
+
+</body></html>");
   newWin.document.close();
   newWin.print();
+}
+</script>
+
+
+<script>
+function renderTable(containerId, dataObj, columns, editable = true, dbPath = "") {
+  const container = document.getElementById(containerId);
+  container.innerHTML = "";
+
+  const printBtn = document.createElement("button");
+  printBtn.textContent = "🖨️ הדפס טבלה";
+  printBtn.className = "bg-green-600 text-white rounded px-4 py-2 mb-2";
+  printBtn.onclick = () => printTable(containerId + "-table");
+  container.appendChild(printBtn);
+
+  const sortSelect = document.createElement("select");
+  sortSelect.className = "ml-2 mb-2 border rounded px-2 py-1";
+  columns.forEach(col => {
+    const opt = document.createElement("option");
+    opt.value = col;
+    opt.textContent = "מיין לפי " + col;
+    sortSelect.appendChild(opt);
+  });
+  sortSelect.onchange = () => renderSortedTable(containerId, dataObj, columns, sortSelect.value, editable, dbPath);
+  container.appendChild(sortSelect);
+
+  renderSortedTable(containerId, dataObj, columns, columns[0], editable, dbPath);
+}
+
+function renderSortedTable(containerId, dataObj, columns, sortBy, editable, dbPath) {
+  const container = document.getElementById(containerId);
+  const dataArray = Object.entries(dataObj || {});
+  dataArray.sort((a, b) => {
+    const aVal = a[1][sortBy] || "";
+    const bVal = b[1][sortBy] || "";
+    return aVal.localeCompare(bVal, 'he');
+  });
+
+  const tableId = containerId + "-table";
+  let html = `<table id="${tableId}" class="table-auto border w-full mt-2 text-right">
+    <thead><tr>` + columns.map(c => `<th class="border px-2 py-1 bg-gray-100">${c}</th>`).join('');
+
+  if (editable) html += `<th class="border px-2 py-1 bg-gray-100">פעולות</th>`;
+  html += `</tr></thead><tbody>`;
+
+  for (const [id, item] of dataArray) {
+    html += "<tr>";
+    columns.forEach(c => {
+      html += `<td class="border px-2 py-1">${item[c] || ""}</td>`;
+    });
+    if (editable) {
+      html += `<td class="border px-2 py-1">
+        <button onclick="editRow('${dbPath}', '${id}', ${JSON.stringify(item).replace(/"/g, '&quot;')})" class="text-blue-600">✏️</button>
+        <button onclick="deleteRow('${dbPath}', '${id}')" class="text-red-600 ml-2">🗑️</button>
+      </td>`;
+    }
+    html += "</tr>";
+  }
+
+  html += "</tbody></table>";
+  const tableContainer = document.createElement("div");
+  tableContainer.innerHTML = html;
+
+  const oldTable = document.getElementById(tableId);
+  if (oldTable) oldTable.remove();
+
+  container.appendChild(tableContainer);
+}
+
+function deleteRow(path, id) {
+  if (confirm("האם אתה בטוח שברצונך למחוק?")) {
+    import('./modules.js').then(m => {
+      m.removeItem(path + '/' + id);
+    });
+  }
+}
+
+function editRow(path, id, item) {
+  const newData = {};
+  for (const key in item) {
+    const val = prompt(`עדכן ערך עבור "${key}"`, item[key]);
+    if (val === null) return; // ביטול
+    newData[key] = val;
+  }
+  import('./modules.js').then(m => {
+    m.updateItem(path + '/' + id, newData);
+  });
 }
 </script>
 
