@@ -37,8 +37,72 @@
 
 <!-- כאן יוטמעו כל המודולים עצמם -->
 <div id="modals-container">
-<!-- כל הקוד שנבנה בקנבס יוטמע כאן -->
-<!-- כולל modal-hours, modal-guides, modal-mentors, וכו' -->
+<!-- מודול: היקף שעות אקדמאיות מוכר לגמול -->
+<div id="modal-hours" class="modal">
+  <div class="modal-content">
+    <h2>מודול היקף שעות אקדמאיות מוכר לגמול</h2>
+    <form id="form-hours">
+      <label>בחר היקף שעות:</label>
+      <select id="hours-input" required>
+        <option value="">בחר...</option>
+        <option value="30">30 שעות</option>
+        <option value="40">40 שעות</option>
+        <option value="60">60 שעות</option>
+        <option value="120">120 שעות</option>
+      </select>
+      <button type="submit">הוסף</button>
+    </form>
+    <table id="table-hours">
+      <thead>
+        <tr><th>היקף שעות</th><th>עריכה</th><th>מחיקה</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <button onclick="exportToExcel('hours')">📤 ייצוא לאקסל</button>
+    <input type="file" accept=".xlsx" onchange="importFromExcel(event, 'hours')">
+    <button onclick="closeModal('modal-hours')">❌ יציאה</button>
+  </div>
+</div>
+
+<!-- מודול: מידע כללי לאתר -->
+<div id="modal-site-info" class="modal">
+  <div class="modal-content">
+    <h2>מודול מידע כללי לאתר</h2>
+    <form id="form-site-info">
+      <label>כותרת עמוד ראשי:</label>
+      <input type="text" id="site-title" required><br>
+      <label>שנת לימודים:</label>
+      <input type="text" id="school-year" required><br>
+      <label>קובץ לוגו:</label>
+      <input type="file" id="site-logo" accept="image/*"><br>
+      <label>זכויות יוצרים:</label>
+      <input type="text" id="copyright-info"><br>
+      <label>פרטי יצירת קשר:</label>
+      <input type="text" id="contact-info"><br>
+      <label>ימי עבודה:</label>
+      <input type="text" id="working-days"><br>
+      <label>שעות פעילות:</label>
+      <input type="text" id="working-hours"><br>
+      <label>כתובת פיזית:</label>
+      <input type="text" id="physical-address"><br>
+      <label>קישור ל-Waze:</label>
+      <input type="url" id="waze-link"><br>
+      <label>קישור ל-Google Maps:</label>
+      <input type="url" id="maps-link"><br>
+      <button type="submit">שמור</button>
+    </form>
+    <table id="table-site-info">
+      <thead>
+        <tr><th>שדה</th><th>ערך</th><th>עריכה</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <button onclick="exportToExcel('site-info')">📤 ייצוא לאקסל</button>
+    <input type="file" accept=".xlsx" onchange="importFromExcel(event, 'site-info')">
+    <button onclick="closeModal('modal-site-info')">❌ יציאה</button>
+  </div>
+</div>
+
 </div>
 
 <script>
