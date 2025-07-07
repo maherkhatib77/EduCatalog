@@ -350,5 +350,72 @@ function filterCards(containerId, searchText) {
 }
 </script>
 
+
+<script>
+function renderTable(containerId, dataObj, columns) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = "";
+
+  // יצירת כפתור הדפסה
+  const printBtn = document.createElement("button");
+  printBtn.textContent = "🖨️ הדפס טבלה";
+  printBtn.className = "bg-green-600 text-white rounded px-4 py-2 mb-2";
+  printBtn.onclick = () => printTable(containerId + "-table");
+  container.appendChild(printBtn);
+
+  // יצירת Dropdown למיון
+  const sortSelect = document.createElement("select");
+  sortSelect.className = "ml-2 mb-2 border rounded px-2 py-1";
+  columns.forEach(col => {
+    const opt = document.createElement("option");
+    opt.value = col;
+    opt.textContent = "מיין לפי " + col;
+    sortSelect.appendChild(opt);
+  });
+  sortSelect.onchange = () => renderSortedTable(containerId, dataObj, columns, sortSelect.value);
+  container.appendChild(sortSelect);
+
+  renderSortedTable(containerId, dataObj, columns, columns[0]);
+}
+
+function renderSortedTable(containerId, dataObj, columns, sortBy) {
+  const container = document.getElementById(containerId);
+  const dataArray = Object.entries(dataObj || {});
+  dataArray.sort((a, b) => {
+    const aVal = a[1][sortBy] || "";
+    const bVal = b[1][sortBy] || "";
+    return aVal.localeCompare(bVal, 'he');
+  });
+
+  const tableId = containerId + "-table";
+  let html = `<table id="${tableId}" class="table-auto border w-full mt-2 text-right">
+    <thead><tr>` + columns.map(c => `<th class="border px-2 py-1 bg-gray-100">${c}</th>`).join('') + `</tr></thead><tbody>`;
+
+  for (const [id, item] of dataArray) {
+    html += "<tr>" + columns.map(c => `<td class="border px-2 py-1">${item[c] || ""}</td>`).join('') + "</tr>";
+  }
+
+  html += "</tbody></table>";
+  const tableContainer = document.createElement("div");
+  tableContainer.innerHTML = html;
+
+  // הסר טבלאות קודמות אם קיימות
+  const oldTable = document.getElementById(tableId);
+  if (oldTable) oldTable.remove();
+
+  container.appendChild(tableContainer);
+}
+
+function printTable(tableId) {
+  const table = document.getElementById(tableId);
+  const newWin = window.open("");
+  newWin.document.write("<html><head><title>הדפס טבלה</title></head><body dir='rtl'>");
+  newWin.document.write(table.outerHTML);
+  newWin.document.write("</body></html>");
+  newWin.document.close();
+  newWin.print();
+}
+</script>
+
 </body>
 </html>
