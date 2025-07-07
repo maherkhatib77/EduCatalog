@@ -2,198 +2,109 @@
 <html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <title>ממשק ניהול EduCatalog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>מערכת ניהול EduCatalog</title>
   <script type="module" src="../modules.js"></script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f4f4;
-      margin: 0;
-      padding: 0;
-    }
-    header {
-      background: #003366;
-      color: white;
-      padding: 1rem;
-      text-align: center;
-    }
-    nav {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 0.5rem;
-      margin: 1rem;
-    }
-    nav button {
-      padding: 0.5rem 1rem;
-      font-weight: bold;
-      border: none;
-      background: #0055a5;
-      color: white;
-      cursor: pointer;
-    }
-    .section {
-      display: none;
-      padding: 1rem;
-      background: white;
-      margin: 1rem;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    .active {
-      display: block;
-    }
-    .card {
-      border: 1px solid #ddd;
-      padding: 1rem;
-      margin-bottom: 0.5rem;
-      border-radius: 4px;
-      background: #fafafa;
-    }
-    form input, form button {
-      display: block;
-      margin: 0.5rem 0;
-      padding: 0.5rem;
-      width: 100%;
-      max-width: 400px;
-    }
-  </style>
-</head>
-<body>
-  <header>
-    <h1>ממשק ניהול - EduCatalog</h1>
-  </header>
-  
-  <nav>
-    <button onclick="showSection('hours')">היקף שעות</button>
-    <button onclick="showSection('guides')">מדריכים</button>
-    <button onclick="showSection('mentors')">מנחים</button>
-    <button onclick="showSection('modes')">אופני למידה</button>
-    <button onclick="showSection('days')">ימי מפגש</button>
-    <button onclick="showSection('levels')">שלבי חינוך</button>
-    <button onclick="showSection('fields')">תחומי פתרונות</button>
-    <button onclick="showSection('subjects')">תחומי דעת</button>
-    <button onclick="showSection('siteinfo')">מידע כללי לאתר</button>
-    <button onclick="showSection('learning')">פתרונות למידה</button>
-  </nav>
-
-  <section id="hours" class="section">
-    <h2>היקף שעות אקדמיות</h2>
-    <div id="hours-form"></div>
-    <div id="hours-list"></div>
-  </section>
-
-  <section id="guides" class="section">
-    <h2>מדריכים פדגוגיים</h2>
-    <div id="guides-form"></div>
-    <div id="guides-list"></div>
-  </section>
-
-  <section id="mentors" class="section">
-    <h2>מנחים</h2>
-    <div id="mentors-form"></div>
-    <div id="mentors-list"></div>
-  </section>
-
-  <section id="modes" class="section">
-    <h2>אופני למידה</h2>
-    <div id="modes-form"></div>
-    <div id="modes-list"></div>
-  </section>
-
-  <section id="days" class="section">
-    <h2>ימי מפגש</h2>
-    <div id="days-form"></div>
-    <div id="days-list"></div>
-  </section>
-
-  <section id="levels" class="section">
-    <h2>שלבי חינוך</h2>
-    <div id="levels-form"></div>
-    <div id="levels-list"></div>
-  </section>
-
-  <section id="fields" class="section">
-    <h2>תחומי פתרונות הלמידה</h2>
-    <div id="fields-form"></div>
-    <div id="fields-list"></div>
-  </section>
-
-  <section id="subjects" class="section">
-    <h2>תחומי דעת</h2>
-    <div id="subjects-form"></div>
-    <div id="subjects-list"></div>
-  </section>
-
-  <section id="siteinfo" class="section">
-    <h2>מידע כללי לאתר</h2>
-    <div id="siteinfo-form"></div>
-    <div id="siteinfo-list"></div>
-  </section>
-
-  <section id="learning" class="section">
-    <h2>פתרונות למידה</h2>
-    <div id="learning-form"></div>
-    <div id="learning-list"></div>
-  </section>
-
   <script type="module">
     import {
-      createLearningSolutionForm,
-      renderLearningSolutions,
-      addLearningSolution,
-      loadLearningSolutions,
-
-      createMentorForm,
-      renderMentors,
-      addMentor,
-      loadMentors,
-
-      createGuideForm,
-      renderGuides,
-      addGuide,
-      loadGuides,
-
-      createContentCategoryForm,
-      renderContentCategories,
-      addContentCategory,
-      loadContentCategories,
-
-      createHoursForm,
-      renderHours,
-      addHours,
-      loadHours
+      addLearningSolution, loadLearningSolutions, createLearningSolutionForm, renderLearningSolutions,
+      addMentor, loadMentors, createMentorForm, renderMentors,
+      addGuide, loadGuides, createGuideForm, renderGuides,
+      addHours, loadHours, createHoursForm, renderHours,
+      addMode, loadModes, createModesForm, renderModes,
+      addDay, loadDays, createDaysForm, renderDays,
+      addLevel, loadLevels, createLevelsForm, renderLevels,
+      addSubject, loadSubjects, createSubjectsForm, renderSubjects,
+      addSiteInfo, loadSiteInfo, createSiteInfoForm, renderSiteInfo
     } from '../modules.js';
 
-    // התחלה אוטומטית
-    showSection('hours');
+    window.createLearningSolutionForm = createLearningSolutionForm;
+    window.addLearningSolution = addLearningSolution;
+    window.loadLearningSolutions = loadLearningSolutions;
+    window.renderLearningSolutions = renderLearningSolutions;
 
-    // פתרונות למידה
-    createLearningSolutionForm('learning-form', data => addLearningSolution(data));
-    loadLearningSolutions(data => renderLearningSolutions('learning-list', data));
+    window.createMentorForm = createMentorForm;
+    window.addMentor = addMentor;
+    window.loadMentors = loadMentors;
+    window.renderMentors = renderMentors;
 
-    // מנחים
-    createMentorForm('mentors-form', data => addMentor(data));
-    loadMentors(data => renderMentors('mentors-list', data));
+    window.createGuideForm = createGuideForm;
+    window.addGuide = addGuide;
+    window.loadGuides = loadGuides;
+    window.renderGuides = renderGuides;
 
-    // מדריכים
-    createGuideForm('guides-form', data => addGuide(data));
-    loadGuides(data => renderGuides('guides-list', data));
+    window.createHoursForm = createHoursForm;
+    window.addHours = addHours;
+    window.loadHours = loadHours;
+    window.renderHours = renderHours;
 
-    // קטגוריות
-    createContentCategoryForm('fields-form', data => addContentCategory(data));
-    loadContentCategories(data => renderContentCategories('fields-list', data));
+    window.createModesForm = createModesForm;
+    window.addMode = addMode;
+    window.loadModes = loadModes;
+    window.renderModes = renderModes;
 
-    // היקף שעות
-    createHoursForm('hours-form', data => addHours(data));
-    loadHours(data => renderHours('hours-list', data));
+    window.createDaysForm = createDaysForm;
+    window.addDay = addDay;
+    window.loadDays = loadDays;
+    window.renderDays = renderDays;
+
+    window.createLevelsForm = createLevelsForm;
+    window.addLevel = addLevel;
+    window.loadLevels = loadLevels;
+    window.renderLevels = renderLevels;
+
+    window.createSubjectsForm = createSubjectsForm;
+    window.addSubject = addSubject;
+    window.loadSubjects = loadSubjects;
+    window.renderSubjects = renderSubjects;
+
+    window.createSiteInfoForm = createSiteInfoForm;
+    window.addSiteInfo = addSiteInfo;
+    window.loadSiteInfo = loadSiteInfo;
+    window.renderSiteInfo = renderSiteInfo;
   </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-800 font-sans">
+  <header class="bg-blue-700 text-white p-4 text-center text-2xl font-bold shadow">
+    מערכת ניהול EduCatalog
+  </header>
 
-  <script>
-    function showSection(id) {
-      document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
-      document.getElementById(id).classList.add('active');
-    }
-  </script>
+  <main class="p-4">
+    <!-- === כפתורי הפעלה למודולים (Tailwind + Icons) === -->
+    <div id="module-buttons" class="grid grid-cols-2 md:grid-cols-3 gap-4 p-4">
+      <button class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl shadow" onclick="createLearningSolutionForm('form-container', addLearningSolution); loadLearningSolutions(data => renderLearningSolutions('list-container', data));">
+        📘 פתרונות למידה
+      </button>
+      <button class="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-xl shadow" onclick="createMentorForm('form-container', addMentor); loadMentors(data => renderMentors('list-container', data));">
+        👥 מנחים
+      </button>
+      <button class="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl shadow" onclick="createGuideForm('form-container', addGuide); loadGuides(data => renderGuides('list-container', data));">
+        🧑‍🏫 מדריכים פדגוגיים
+      </button>
+      <button class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl shadow" onclick="createHoursForm('form-container', addHours); loadHours(data => renderHours('list-container', data));">
+        ⏱️ היקף שעות
+      </button>
+      <button class="flex items-center gap-2 bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-xl shadow" onclick="createModesForm('form-container', addMode); loadModes(data => renderModes('list-container', data));">
+        🔄 אופני למידה
+      </button>
+      <button class="flex items-center gap-2 bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-xl shadow" onclick="createDaysForm('form-container', addDay); loadDays(data => renderDays('list-container', data));">
+        📅 ימי מפגש
+      </button>
+      <button class="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl shadow" onclick="createLevelsForm('form-container', addLevel); loadLevels(data => renderLevels('list-container', data));">
+        🎓 שלבי חינוך
+      </button>
+      <button class="flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-xl shadow" onclick="createSubjectsForm('form-container', addSubject); loadSubjects(data => renderSubjects('list-container', data));">
+        📚 תחומי דעת
+      </button>
+      <button class="flex items-center gap-2 bg-gray-700 hover:bg-gray-800 text-white px-4 py-2 rounded-xl shadow" onclick="createSiteInfoForm('form-container', addSiteInfo); loadSiteInfo(data => renderSiteInfo('list-container', data));">
+        ⚙️ מידע כללי לאתר
+      </button>
+    </div>
+
+    <!-- === אזור הטפסים והתצוגות === -->
+    <div id="form-container" class="my-6"></div>
+    <div id="list-container" class="space-y-4"></div>
+  </main>
 </body>
 </html>
