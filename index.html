@@ -1,28 +1,92 @@
 <!DOCTYPE html>
-<html lang="he">
+<html lang="he" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>EduCatalog - פתרונות למידה</title>
-  <link rel="stylesheet" href="assets/css/style.css" />
+  <meta charset="UTF-8">
+  <title>EduCatalog - עמוד ראשי</title>
+  <style>
+    body {
+      background-color: #003366;
+      color: white;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 2rem;
+      text-align: right;
+    }
+    button {
+      background-color: white;
+      color: #003366;
+      border: none;
+      padding: 10px 20px;
+      font-size: 1rem;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    #loginModal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      right: 0;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.6);
+    }
+    #loginModalContent {
+      background-color: white;
+      color: black;
+      margin: 10% auto;
+      padding: 2rem;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+    }
+    input[type="text"], input[type="password"] {
+      width: 90%;
+      padding: 10px;
+      margin: 10px 0;
+      font-size: 1rem;
+    }
+    .error {
+      color: red;
+      font-size: 0.9rem;
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <h1>EduCatalog - קטלוג פתרונות למידה</h1>
-    <button id="loginButton">כניסת מנהל</button>
-  </header>
+  <h1>ברוכים הבאים ל־EduCatalog</h1>
+  <button onclick="document.getElementById('loginModal').style.display='block'">כניסת מנהל</button>
 
-  <main id="solutionContainer">
-    <!-- כאן יוצגו כרטיסיות פתרונות למידה -->
-  </main>
-
-  <div id="loginModal" class="modal">
-    <div class="modal-content">
-
-      <button onclick="window.location.href='dashboard/dashboard.html'">כניסת מנהל</button>
+  <div id="loginModal">
+    <div id="loginModalContent">
+      <h2>הזדהות מנהל</h2>
+      <input type="text" id="username" placeholder="שם משתמש"><br>
+      <input type="password" id="password" placeholder="סיסמה"><br>
+      <button onclick="checkLogin()">כניסה</button>
+      <p class="error" id="loginError"></p>
     </div>
   </div>
 
-  <script src="assets/js/index.js"></script>
+  <script>
+    function checkLogin() {
+      const user = document.getElementById('username').value.trim();
+      const pass = document.getElementById('password').value.trim();
+      const error = document.getElementById('loginError');
+
+      if (user === 'Pisga' && pass === 'Sara@2203') {
+        window.location.href = 'dashboard/dashboard.html';
+      } else {
+        error.textContent = 'שם משתמש או סיסמה שגויים';
+      }
+    }
+
+    // סגור את החלון בלחיצה מחוץ לתוכן
+    window.onclick = function(event) {
+      const modal = document.getElementById('loginModal');
+      if (event.target === modal) {
+        modal.style.display = 'none';
+      }
+    }
+  </script>
 </body>
 </html>
