@@ -77,7 +77,8 @@
   <h1 class="text-2xl font-bold mb-4">ניהול פתרונות למידה</h1>
   <div id="module-buttons" class="grid grid-cols-2 md:grid-cols-3 gap-4 p-4">
     <button class="bg-blue-600 text-white px-4 py-2 rounded" onclick="createLearningSolutionForm('form-container', addLearningSolution); loadLearningSolutions(data => renderLearningSolutions('list-container', data));">📘 פתרונות למידה</button>
-    <button class="bg-purple-600 text-white px-4 py-2 rounded" onclick="createMentorForm('form-container', addMentor); loadMentors(data => renderMentors('list-container', data));">👥 מנחים</button>
+    <button onclick="openMentorsPopup()" class="bg-purple-600 text-white px-4 py-2 rounded">👥 מנחים</button>
+
     <button class="bg-green-600 text-white px-4 py-2 rounded" onclick="createGuideForm('form-container', addGuide); loadGuides(data => renderGuides('list-container', data));">🧑‍🏫 מדריכים</button>
     <button class="bg-indigo-600 text-white px-4 py-2 rounded" onclick="createHoursForm('form-container', addHours); loadHours(data => renderHours('list-container', data));">⏱️ היקף שעות</button>
     <button class="bg-yellow-600 text-white px-4 py-2 rounded" onclick="createModesForm('form-container', addMode); loadModes(data => renderModes('list-container', data));">🔄 אופני למידה</button>
