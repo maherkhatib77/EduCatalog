@@ -69,6 +69,10 @@
   <!-- אזור דינמי לכל מודול -->
   <section id="module-container" class="p-6">
     <div id="mentors">
+<input type="text" placeholder="🔍 חיפוש..." 
+       oninput="filterCards('mentors', this.value)"
+       class="border rounded px-2 py-1 mb-2 w-full">
+
 <button onclick="loadAndExport('mentors', 'mentors')"
         class="bg-blue-600 text-white rounded px-4 py-2 mt-2 ml-2">
   📤 ייצוא ל-Excel
@@ -80,6 +84,10 @@
 </button>
 </div>
     <div id="guides">
+<input type="text" placeholder="🔍 חיפוש..." 
+       oninput="filterCards('guides', this.value)"
+       class="border rounded px-2 py-1 mb-2 w-full">
+
 <button onclick="loadAndExport('guides', 'guides')"
         class="bg-blue-600 text-white rounded px-4 py-2 mt-2 ml-2">
   📤 ייצוא ל-Excel
@@ -91,6 +99,10 @@
 </button>
 </div>
     <div id="learning_types">
+<input type="text" placeholder="🔍 חיפוש..." 
+       oninput="filterCards('learning_types', this.value)"
+       class="border rounded px-2 py-1 mb-2 w-full">
+
 <button onclick="loadAndExport('learning_types', 'learning_types')"
         class="bg-blue-600 text-white rounded px-4 py-2 mt-2 ml-2">
   📤 ייצוא ל-Excel
@@ -102,6 +114,10 @@
 </button>
 </div>
     <div id="days">
+<input type="text" placeholder="🔍 חיפוש..." 
+       oninput="filterCards('days', this.value)"
+       class="border rounded px-2 py-1 mb-2 w-full">
+
 <button onclick="loadAndExport('days', 'days')"
         class="bg-blue-600 text-white rounded px-4 py-2 mt-2 ml-2">
   📤 ייצוא ל-Excel
@@ -113,6 +129,10 @@
 </button>
 </div>
     <div id="stages">
+<input type="text" placeholder="🔍 חיפוש..." 
+       oninput="filterCards('stages', this.value)"
+       class="border rounded px-2 py-1 mb-2 w-full">
+
 <button onclick="loadAndExport('stages', 'stages')"
         class="bg-blue-600 text-white rounded px-4 py-2 mt-2 ml-2">
   📤 ייצוא ל-Excel
@@ -124,6 +144,10 @@
 </button>
 </div>
     <div id="categories">
+<input type="text" placeholder="🔍 חיפוש..." 
+       oninput="filterCards('categories', this.value)"
+       class="border rounded px-2 py-1 mb-2 w-full">
+
 <button onclick="loadAndExport('categories', 'categories')"
         class="bg-blue-600 text-white rounded px-4 py-2 mt-2 ml-2">
   📤 ייצוא ל-Excel
@@ -135,6 +159,10 @@
 </button>
 </div>
     <div id="subjects">
+<input type="text" placeholder="🔍 חיפוש..." 
+       oninput="filterCards('subjects', this.value)"
+       class="border rounded px-2 py-1 mb-2 w-full">
+
 <button onclick="loadAndExport('subjects', 'subjects')"
         class="bg-blue-600 text-white rounded px-4 py-2 mt-2 ml-2">
   📤 ייצוא ל-Excel
@@ -146,6 +174,10 @@
 </button>
 </div>
     <div id="site_info">
+<input type="text" placeholder="🔍 חיפוש..." 
+       oninput="filterCards('site_info', this.value)"
+       class="border rounded px-2 py-1 mb-2 w-full">
+
 <button onclick="loadAndExport('site_info', 'site_info')"
         class="bg-blue-600 text-white rounded px-4 py-2 mt-2 ml-2">
   📤 ייצוא ל-Excel
@@ -157,6 +189,10 @@
 </button>
 </div>
     <div id="credits">
+<input type="text" placeholder="🔍 חיפוש..." 
+       oninput="filterCards('credits', this.value)"
+       class="border rounded px-2 py-1 mb-2 w-full">
+
 <button onclick="loadAndExport('credits', 'credits')"
         class="bg-blue-600 text-white rounded px-4 py-2 mt-2 ml-2">
   📤 ייצוא ל-Excel
@@ -168,6 +204,10 @@
 </button>
 </div>
     <div id="solutions">
+<input type="text" placeholder="🔍 חיפוש..." 
+       oninput="filterCards('solutions', this.value)"
+       class="border rounded px-2 py-1 mb-2 w-full">
+
 <button onclick="loadAndExport('solutions', 'solutions')"
         class="bg-blue-600 text-white rounded px-4 py-2 mt-2 ml-2">
   📤 ייצוא ל-Excel
@@ -296,6 +336,18 @@
       });
     });
   }
+</script>
+
+
+<script>
+function filterCards(containerId, searchText) {
+  const cards = document.querySelectorAll('#' + containerId + ' .card');
+  searchText = searchText.toLowerCase();
+  cards.forEach(card => {
+    const content = card.textContent.toLowerCase();
+    card.style.display = content.includes(searchText) ? '' : 'none';
+  });
+}
 </script>
 
 </body>
