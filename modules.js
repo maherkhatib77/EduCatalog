@@ -146,3 +146,27 @@ export function renderModes(cId, data) {
     c.innerHTML += `<div class='card'>${item.type}</div>`;
   }
 }
+
+// === מודול 6: ימי מפגש ===
+export function addDay(data) { set(push(ref(db, 'meeting_days')), data); }
+export function loadDays(cb) { onValue(ref(db, 'meeting_days'), s => cb(s.val())); }
+export function createDaysForm(cId, onSubmit) {
+  document.getElementById(cId).innerHTML = `
+    <form id="days-form">
+      <input name="day" placeholder="לדוג': ראשון, שני, שלישי וכו'" required>
+      <button type="submit">שמור</button>
+    </form>`;
+  document.getElementById('days-form').onsubmit = e => {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(e.target).entries());
+    onSubmit(data);
+    e.target.reset();
+  };
+}
+export function renderDays(cId, data) {
+  const c = document.getElementById(cId);
+  c.innerHTML = '';
+  for (const [id, item] of Object.entries(data)) {
+    c.innerHTML += `<div class='card'>${item.day}</div>`;
+  }
+}
