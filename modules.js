@@ -44,94 +44,7 @@ export function deleteLearningSolution(id) {
   remove(ref(db, `learning_solutions/${id}`));
 }
 
-// ============================
-// מודול 2: מנחים
-// ============================
-export function addMentor(data) {
-  const newRef = push(ref(db, 'mentors'));
-  set(newRef, data);
-}
-
-export function loadMentors(callback) {
-  const mentorsRef = ref(db, 'mentors');
-  onValue(mentorsRef, snapshot => {
-    const data = snapshot.val();
-    callback(data);
-  });
-}
-
-export function updateMentor(id, data) {
-  update(ref(db, `mentors/${id}`), data);
-}
-
-export function deleteMentor(id) {
-  remove(ref(db, `mentors/${id}`));
-}
-
-// ============================
-// מודול 3: מדריכים פדגוגיים
-// ============================
-export function addGuide(data) {
-  const newRef = push(ref(db, 'guides'));
-  set(newRef, data);
-}
-
-export function loadGuides(callback) {
-  const guidesRef = ref(db, 'guides');
-  onValue(guidesRef, snapshot => {
-    const data = snapshot.val();
-    callback(data);
-  });
-}
-
-export function updateGuide(id, data) {
-  update(ref(db, `guides/${id}`), data);
-}
-
-export function deleteGuide(id) {
-  remove(ref(db, `guides/${id}`));
-}
-
-// ============================
-// מודול 4: קטגוריות תוכן
-// ============================
-export function addContentCategory(data) {
-  const newRef = push(ref(db, 'content_categories'));
-  set(newRef, data);
-}
-
-export function loadContentCategories(callback) {
-  const catRef = ref(db, 'content_categories');
-  onValue(catRef, snapshot => {
-    const data = snapshot.val();
-    callback(data);
-  });
-}
-
-export function updateContentCategory(id, data) {
-  update(ref(db, `content_categories/${id}`), data);
-}
-
-export function deleteContentCategory(id) {
-  remove(ref(db, `content_categories/${id}`));
-}
-
-// ============================
-// ממשק גרפי - פתרונות למידה
-// ============================
-
-window.renderLearningSolutions = function(containerId, solutions) {
-  const container = document.getElementById(containerId);
-  container.innerHTML = '';
-  for (const [id, sol] of Object.entries(solutions)) {
-    const div = document.createElement('div');
-    div.className = 'solution-card';
-    div.innerHTML = `<h4>${sol.solution_name}</h4><p>${sol.summary}</p>`;
-    container.appendChild(div);
-  }
-}
-
-window.createLearningSolutionForm = function(containerId, onSubmit) {
+export function createLearningSolutionForm(containerId, onSubmit) {
   const container = document.getElementById(containerId);
   container.innerHTML = `
     <form id="learning-form">
@@ -150,22 +63,34 @@ window.createLearningSolutionForm = function(containerId, onSubmit) {
   };
 }
 
-// ============================
-// ממשק גרפי - מנחים
-// ============================
-
-window.renderMentors = function(containerId, mentors) {
+export function renderLearningSolutions(containerId, solutions) {
   const container = document.getElementById(containerId);
   container.innerHTML = '';
-  for (const [id, mentor] of Object.entries(mentors)) {
+  for (const [id, sol] of Object.entries(solutions)) {
     const div = document.createElement('div');
-    div.className = 'mentor-card';
-    div.innerHTML = `<h4>${mentor.name}</h4><p>${mentor.expertise || ''}</p>`;
+    div.className = 'card';
+    div.innerHTML = `<h4>${sol.solution_name}</h4><p>${sol.summary}</p>`;
     container.appendChild(div);
   }
 }
 
-window.createMentorForm = function(containerId, onSubmit) {
+// ============================
+// מודול 2: מנחים
+// ============================
+export function addMentor(data) {
+  const newRef = push(ref(db, 'mentors'));
+  set(newRef, data);
+}
+
+export function loadMentors(callback) {
+  const mentorsRef = ref(db, 'mentors');
+  onValue(mentorsRef, snapshot => {
+    const data = snapshot.val();
+    callback(data);
+  });
+}
+
+export function createMentorForm(containerId, onSubmit) {
   const container = document.getElementById(containerId);
   container.innerHTML = `
     <form id="mentor-form">
@@ -184,22 +109,34 @@ window.createMentorForm = function(containerId, onSubmit) {
   };
 }
 
-// ============================
-// ממשק גרפי - מדריכים פדגוגיים
-// ============================
-
-window.renderGuides = function(containerId, guides) {
+export function renderMentors(containerId, mentors) {
   const container = document.getElementById(containerId);
   container.innerHTML = '';
-  for (const [id, guide] of Object.entries(guides)) {
+  for (const [id, mentor] of Object.entries(mentors)) {
     const div = document.createElement('div');
-    div.className = 'guide-card';
-    div.innerHTML = `<h4>${guide.name}</h4><p>${guide.region || ''}</p>`;
+    div.className = 'card';
+    div.innerHTML = `<h4>${mentor.name}</h4><p>${mentor.expertise || ''}</p>`;
     container.appendChild(div);
   }
 }
 
-window.createGuideForm = function(containerId, onSubmit) {
+// ============================
+// מודול 3: מדריכים פדגוגיים
+// ============================
+export function addGuide(data) {
+  const newRef = push(ref(db, 'guides'));
+  set(newRef, data);
+}
+
+export function loadGuides(callback) {
+  const guidesRef = ref(db, 'guides');
+  onValue(guidesRef, snapshot => {
+    const data = snapshot.val();
+    callback(data);
+  });
+}
+
+export function createGuideForm(containerId, onSubmit) {
   const container = document.getElementById(containerId);
   container.innerHTML = `
     <form id="guide-form">
@@ -218,30 +155,42 @@ window.createGuideForm = function(containerId, onSubmit) {
   };
 }
 
-// ============================
-// ממשק גרפי - קטגוריות תוכן
-// ============================
-
-window.renderContentCategories = function(containerId, categories) {
+export function renderGuides(containerId, guides) {
   const container = document.getElementById(containerId);
   container.innerHTML = '';
-  for (const [id, cat] of Object.entries(categories)) {
+  for (const [id, guide] of Object.entries(guides)) {
     const div = document.createElement('div');
-    div.className = 'category-card';
-    div.innerHTML = `<h4>${cat.name}</h4>`;
+    div.className = 'card';
+    div.innerHTML = `<h4>${guide.name}</h4><p>${guide.region || ''}</p>`;
     container.appendChild(div);
   }
 }
 
-window.createContentCategoryForm = function(containerId, onSubmit) {
+// ============================
+// מודול 4: היקף שעות אקדמיות
+// ============================
+export function addHours(data) {
+  const newRef = push(ref(db, 'hours'));
+  set(newRef, data);
+}
+
+export function loadHours(callback) {
+  const hoursRef = ref(db, 'hours');
+  onValue(hoursRef, snapshot => {
+    const data = snapshot.val();
+    callback(data);
+  });
+}
+
+export function createHoursForm(containerId, onSubmit) {
   const container = document.getElementById(containerId);
   container.innerHTML = `
-    <form id="category-form">
-      <input name="name" placeholder="שם קטגוריה" required>
+    <form id="hours-form">
+      <input name="amount" placeholder="לדוגמה: 30 / 60 / 120 שעות" required>
       <button type="submit">שמור</button>
     </form>
   `;
-  const form = document.getElementById('category-form');
+  const form = document.getElementById('hours-form');
   form.onsubmit = e => {
     e.preventDefault();
     const formData = new FormData(form);
@@ -249,4 +198,15 @@ window.createContentCategoryForm = function(containerId, onSubmit) {
     onSubmit(data);
     form.reset();
   };
+}
+
+export function renderHours(containerId, data) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  for (const [id, item] of Object.entries(data)) {
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.textContent = `${item.amount} שעות`;
+    container.appendChild(div);
+  }
 }
