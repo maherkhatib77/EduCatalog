@@ -304,64 +304,31 @@ export function renderSiteInfo(cId, data) {
   renderTable(cId, {single: data}, ['title','year','contact','work_days','hours','address','waze','maps']);
 }
 
-
-// === מודול 10: תחומי פתרונות למידה ===
-import { ref, set, push, onValue, update, remove } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
-import { db } from './firebase-config.js';
-
-export function addCategory(data) { set(push(ref(db, 'categories')), data); }
-export function updateCategory(id, data) { update(ref(db, 'categories/' + id), data); }
-export function deleteCategory(id) { remove(ref(db, 'categories/' + id)); }
-export function loadCategories(cb) { onValue(ref(db, 'categories'), s => cb(s.val())); }
-
-export function createCategoriesForm(cId, onSubmit) {
+// === מודול 10: פתרונות למידה ===
+export function addSolution(data) { set(push(ref(db, 'solutions')), data); }
+export function loadSolutions(cb) { onValue(ref(db, 'solutions'), s => cb(s.val())); }
+export function createSolutionsForm(cId, onSubmit) {
   document.getElementById(cId).innerHTML = `
-    <form id="categories-form" class="space-y-2">
-      <input name="category" placeholder="לדוג': נושאי רוחב, תוכניות ייחודיות..." class="border p-2 w-full" required>
-      <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">שמור</button>
-    </form>
-    <input type="file" id="excel-upload" accept=".xlsx,.xls" class="mt-4" />
-    <button id="import-excel" class="bg-green-600 text-white px-4 py-2 rounded mt-2">📥 ייבוא מאקסל</button>
-  `;
-
-  document.getElementById('categories-form').onsubmit = e => {
+    <form id="solutions-form">
+      <input name="name" placeholder="שם פתרון למידה" required>
+      <input name="guide" placeholder="שם מדריך פדגוגי">
+      <input name="instructor" placeholder="שם המנחה">
+      <input name="education_stage" placeholder="שלב חינוך">
+      <input name="start_date" placeholder="תאריך התחלה">
+      <input name="hours" placeholder="היקף שעות">
+      <button type="submit">שמור</button>
+    </form>`;
+  document.getElementById('solutions-form').onsubmit = e => {
     e.preventDefault();
     const data = Object.fromEntries(new FormData(e.target).entries());
     onSubmit(data);
     e.target.reset();
   };
-
-  document.getElementById('import-excel').onclick = async () => {
-    const fileInput = document.getElementById('excel-upload');
-    if (!fileInput.files[0]) return alert('בחר קובץ Excel');
-
-    const reader = new FileReader();
-    reader.onload = async (e) => {
-      const data = new Uint8Array(e.target.result);
-      const workbook = XLSX.read(data, { type: 'array' });
-      const sheet = workbook.Sheets[workbook.SheetNames[0]];
-      const rows = XLSX.utils.sheet_to_json(sheet);
-      rows.forEach(row => addCategory({ category: row.category || row["קטגוריה"] }));
-    };
-    reader.readAsArrayBuffer(fileInput.files[0]);
-  }
+}
+export function renderSolutions(cId, data) {
+  renderTable(cId, data, ['name','guide','instructor','education_stage','start_date','hours']);
 }
 
-export function renderCategories(cId, data) {
-  const c = document.getElementById(cId);
-  c.innerHTML = '';
-  for (const [id, item] of Object.entries(data)) {
-    const div = document.createElement('div');
-    div.className = 'card flex justify-between items-center p-2 border rounded';
-    div.innerHTML = `
-      <span>${item.category}</span>
-      <div class="flex gap-2">
-        <button class="text-sm bg-yellow-500 text-white px-2 py-1 rounded" onclick="editCategory('${id}', '${item.category}')">ערוך</button>
-        <button class="text-sm bg-red-600 text-white px-2 py-1 rounded" onclick="deleteCategory('${id}')">מחק</button>
-      </div>`;
-    c.appendChild(div);
-  }
-}
 
 // פונקציה גלובלית לעריכה
 window.editCategory = function(id, oldValue) {
