@@ -255,3 +255,47 @@ export function renderSiteInfo(cId, data) {
       <p><a href='${data.waze}' target='_blank'>Waze</a> | <a href='${data.maps}' target='_blank'>Google Maps</a></p>
     </div>`;
 }
+
+// === מודול 10: פתרונות למידה ===
+export function addLearningSolution(data) {
+  const newRef = push(ref(db, 'learning_solutions'));
+  set(newRef, data);
+}
+export function loadLearningSolutions(callback) {
+  onValue(ref(db, 'learning_solutions'), snapshot => callback(snapshot.val()));
+}
+export function createLearningSolutionForm(containerId, onSubmit) {
+  document.getElementById(containerId).innerHTML = `
+    <form id="learning-form">
+      <input name="solution_name" placeholder="שם פתרון" required>
+      <input name="summary" placeholder="תקציר">
+      <input name="guide" placeholder="מדריך פדגוגי">
+      <input name="mentor" placeholder="שם מנחה">
+      <input name="level" placeholder="שלב חינוך">
+      <input name="date" placeholder="תאריך התחלה">
+      <input name="hours" placeholder="היקף שעות">
+      <button type="submit">שמור</button>
+    </form>`;
+  document.getElementById('learning-form').onsubmit = e => {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(e.target).entries());
+    onSubmit(data);
+    e.target.reset();
+  };
+}
+export function renderLearningSolutions(containerId, data) {
+  const c = document.getElementById(containerId);
+  c.innerHTML = '';
+  for (const [id, item] of Object.entries(data)) {
+    c.innerHTML += `
+      <div class='card'>
+        <h4>${item.solution_name}</h4>
+        <p>${item.summary}</p>
+        <p><strong>מדריך:</strong> ${item.guide || ''}</p>
+        <p><strong>מנחה:</strong> ${item.mentor || ''}</p>
+        <p><strong>שלב:</strong> ${item.level || ''}</p>
+        <p><strong>תאריך:</strong> ${item.date || ''}</p>
+        <p><strong>שעות:</strong> ${item.hours || ''}</p>
+      </div>`;
+  }
+}
