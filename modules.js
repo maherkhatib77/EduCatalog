@@ -273,11 +273,7 @@ export function createSubjectsForm(cId, onSubmit) {
   };
 }
 export function renderSubjects(cId, data) {
-  const c = document.getElementById(cId);
-  c.innerHTML = '';
-  for (const [id, item] of Object.entries(data)) {
-    c.innerHTML += `<div class='card'>${item.subject}</div>`;
-  }
+  renderTable(cId, data, ['subject']);
 }
 
 // === מודול 9: מידע כללי לאתר ===
@@ -305,17 +301,9 @@ export function createSiteInfoForm(cId, onSubmit) {
   };
 }
 export function renderSiteInfo(cId, data) {
-  const c = document.getElementById(cId);
-  c.innerHTML = `
-    <div class='card'>
-      <h4>${data.title}</h4>
-      <p>שנה: ${data.year}</p>
-      <p>צור קשר: ${data.contact}</p>
-      <p>ימים: ${data.work_days}, שעות: ${data.hours}</p>
-      <p>כתובת: ${data.address}</p>
-      <p><a href='${data.waze}' target='_blank'>Waze</a> | <a href='${data.maps}' target='_blank'>Google Maps</a></p>
-    </div>`;
+  renderTable(cId, {single: data}, ['title','year','contact','work_days','hours','address','waze','maps']);
 }
+
 
 // === מודול 10: תחומי פתרונות למידה ===
 import { ref, set, push, onValue, update, remove } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
