@@ -68,16 +68,116 @@
 
   <!-- אזור דינמי לכל מודול -->
   <section id="module-container" class="p-6">
-    <div id="mentors"></div>
-    <div id="guides"></div>
-    <div id="learning_types"></div>
-    <div id="days"></div>
-    <div id="stages"></div>
-    <div id="categories"></div>
-    <div id="subjects"></div>
-    <div id="site_info"></div>
-    <div id="credits"></div>
-    <div id="solutions"></div>
+    <div id="mentors">
+<button onclick="loadAndExport('mentors', 'mentors')"
+        class="bg-blue-600 text-white rounded px-4 py-2 mt-2 ml-2">
+  📤 ייצוא ל-Excel
+</button>
+
+<button onclick="importExcelToModule('mentors', addMentor)"
+        class="bg-green-600 text-white rounded px-4 py-2 mt-2 mb-4">
+  📥 ייבוא מקובץ Excel
+</button>
+</div>
+    <div id="guides">
+<button onclick="loadAndExport('guides', 'guides')"
+        class="bg-blue-600 text-white rounded px-4 py-2 mt-2 ml-2">
+  📤 ייצוא ל-Excel
+</button>
+
+<button onclick="importExcelToModule('guides', addGuide)"
+        class="bg-green-600 text-white rounded px-4 py-2 mt-2 mb-4">
+  📥 ייבוא מקובץ Excel
+</button>
+</div>
+    <div id="learning_types">
+<button onclick="loadAndExport('learning_types', 'learning_types')"
+        class="bg-blue-600 text-white rounded px-4 py-2 mt-2 ml-2">
+  📤 ייצוא ל-Excel
+</button>
+
+<button onclick="importExcelToModule('learning_types', addLearningType)"
+        class="bg-green-600 text-white rounded px-4 py-2 mt-2 mb-4">
+  📥 ייבוא מקובץ Excel
+</button>
+</div>
+    <div id="days">
+<button onclick="loadAndExport('days', 'days')"
+        class="bg-blue-600 text-white rounded px-4 py-2 mt-2 ml-2">
+  📤 ייצוא ל-Excel
+</button>
+
+<button onclick="importExcelToModule('days', addDay)"
+        class="bg-green-600 text-white rounded px-4 py-2 mt-2 mb-4">
+  📥 ייבוא מקובץ Excel
+</button>
+</div>
+    <div id="stages">
+<button onclick="loadAndExport('stages', 'stages')"
+        class="bg-blue-600 text-white rounded px-4 py-2 mt-2 ml-2">
+  📤 ייצוא ל-Excel
+</button>
+
+<button onclick="importExcelToModule('stages', addStage)"
+        class="bg-green-600 text-white rounded px-4 py-2 mt-2 mb-4">
+  📥 ייבוא מקובץ Excel
+</button>
+</div>
+    <div id="categories">
+<button onclick="loadAndExport('categories', 'categories')"
+        class="bg-blue-600 text-white rounded px-4 py-2 mt-2 ml-2">
+  📤 ייצוא ל-Excel
+</button>
+
+<button onclick="importExcelToModule('categories', addCategory)"
+        class="bg-green-600 text-white rounded px-4 py-2 mt-2 mb-4">
+  📥 ייבוא מקובץ Excel
+</button>
+</div>
+    <div id="subjects">
+<button onclick="loadAndExport('subjects', 'subjects')"
+        class="bg-blue-600 text-white rounded px-4 py-2 mt-2 ml-2">
+  📤 ייצוא ל-Excel
+</button>
+
+<button onclick="importExcelToModule('subjects', addSubject)"
+        class="bg-green-600 text-white rounded px-4 py-2 mt-2 mb-4">
+  📥 ייבוא מקובץ Excel
+</button>
+</div>
+    <div id="site_info">
+<button onclick="loadAndExport('site_info', 'site_info')"
+        class="bg-blue-600 text-white rounded px-4 py-2 mt-2 ml-2">
+  📤 ייצוא ל-Excel
+</button>
+
+<button onclick="importExcelToModule('site_info', addSiteInfo)"
+        class="bg-green-600 text-white rounded px-4 py-2 mt-2 mb-4">
+  📥 ייבוא מקובץ Excel
+</button>
+</div>
+    <div id="credits">
+<button onclick="loadAndExport('credits', 'credits')"
+        class="bg-blue-600 text-white rounded px-4 py-2 mt-2 ml-2">
+  📤 ייצוא ל-Excel
+</button>
+
+<button onclick="importExcelToModule('credits', addCredit)"
+        class="bg-green-600 text-white rounded px-4 py-2 mt-2 mb-4">
+  📥 ייבוא מקובץ Excel
+</button>
+</div>
+    <div id="solutions">
+<button onclick="loadAndExport('solutions', 'solutions')"
+        class="bg-blue-600 text-white rounded px-4 py-2 mt-2 ml-2">
+  📤 ייצוא ל-Excel
+</button>
+
+<button onclick="importExcelToModule('solutions', addSolution)"
+        class="bg-green-600 text-white rounded px-4 py-2 mt-2 mb-4">
+  📥 ייבוא מקובץ Excel
+</button>
+</div>
   </section>
 
   <script type="module">
@@ -167,6 +267,34 @@
       reader.readAsArrayBuffer(file);
     };
     input.click();
+  }
+</script>
+
+
+<script>
+  function exportDataToExcel(data, filename) {
+    const ws = XLSX.utils.json_to_sheet(Object.values(data));
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Data");
+    XLSX.writeFile(wb, filename + ".xlsx");
+  }
+</script>
+
+
+<script>
+  function loadAndExport(path, filename) {
+    import('./modules.js').then(module => {
+      const db = module.db;
+      import("https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js").then(() => {
+        import("https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js").then(() => {
+          import("https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js").then(() => {
+            module.loadDataOnce(path).then(data => {
+              exportDataToExcel(data || {}, filename);
+            });
+          });
+        });
+      });
+    });
   }
 </script>
 
