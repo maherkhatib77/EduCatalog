@@ -256,49 +256,30 @@ export function renderSiteInfo(cId, data) {
     </div>`;
 }
 
-// === מודול 10: פתרונות למידה ===
-export function addLearningSolution(data) {
-  const newRef = push(ref(db, 'learning_solutions'));
-  set(newRef, data);
-}
-export function loadLearningSolutions(callback) {
-  onValue(ref(db, 'learning_solutions'), snapshot => callback(snapshot.val()));
-}
-export function createLearningSolutionForm(containerId, onSubmit) {
-  document.getElementById(containerId).innerHTML = `
-    <form id="learning-form">
-      <input name="solution_name" placeholder="שם פתרון" required>
-      <input name="summary" placeholder="תקציר">
-      <input name="guide" placeholder="מדריך פדגוגי">
-      <input name="mentor" placeholder="שם מנחה">
-      <input name="level" placeholder="שלב חינוך">
-      <input name="date" placeholder="תאריך התחלה">
-      <input name="hours" placeholder="היקף שעות">
+// === מודול 10: תחומי פתרונות למידה ===
+export function addCategory(data) { set(push(ref(db, 'categories')), data); }
+export function loadCategories(cb) { onValue(ref(db, 'categories'), s => cb(s.val())); }
+export function createCategoriesForm(cId, onSubmit) {
+  document.getElementById(cId).innerHTML = `
+    <form id="categories-form">
+      <input name="category" placeholder="לדוג': נושאי רוחב, תוכניות ייחודיות..." required>
       <button type="submit">שמור</button>
     </form>`;
-  document.getElementById('learning-form').onsubmit = e => {
+  document.getElementById('categories-form').onsubmit = e => {
     e.preventDefault();
     const data = Object.fromEntries(new FormData(e.target).entries());
     onSubmit(data);
     e.target.reset();
   };
 }
-export function renderLearningSolutions(containerId, data) {
-  const c = document.getElementById(containerId);
+export function renderCategories(cId, data) {
+  const c = document.getElementById(cId);
   c.innerHTML = '';
   for (const [id, item] of Object.entries(data)) {
-    c.innerHTML += `
-      <div class='card'>
-        <h4>${item.solution_name}</h4>
-        <p>${item.summary}</p>
-        <p><strong>מדריך:</strong> ${item.guide || ''}</p>
-        <p><strong>מנחה:</strong> ${item.mentor || ''}</p>
-        <p><strong>שלב:</strong> ${item.level || ''}</p>
-        <p><strong>תאריך:</strong> ${item.date || ''}</p>
-        <p><strong>שעות:</strong> ${item.hours || ''}</p>
-      </div>`;
+    c.innerHTML += `<div class='card'>${item.category}</div>`;
   }
 }
+
 
 <!-- === כפתורי הפעלה למודולים (Tailwind + Icons) === -->
 <div id="module-buttons" class="grid grid-cols-2 md:grid-cols-3 gap-4 p-4">
