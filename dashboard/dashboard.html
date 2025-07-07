@@ -145,5 +145,30 @@
     }
   </script>
 
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+  // פונקציה כללית ליבוא אקסל לכל מודול לפי שם שדה בסיסי
+  function importExcelToModule(moduleId, addFunction) {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.xlsx,.xls';
+    input.onchange = (e) => {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        const data = new Uint8Array(evt.target.result);
+        const workbook = XLSX.read(data, {type: 'array'});
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        const json = XLSX.utils.sheet_to_json(sheet);
+        json.forEach(row => addFunction(row));
+        alert('ייבוא הסתיים בהצלחה!');
+      };
+      reader.readAsArrayBuffer(file);
+    };
+    input.click();
+  }
+</script>
+
 </body>
 </html>
