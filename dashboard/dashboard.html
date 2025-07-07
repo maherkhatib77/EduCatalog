@@ -65,29 +65,22 @@
   </header>
   
   <nav>
-    <button onclick="showSection('learning')">פתרונות למידה</button>
-    <button onclick="showSection('mentors')">מנחים</button>
-    <button onclick="showSection('guides')">מדריכים</button>
-    <button onclick="showSection('categories')">קטגוריות תוכן</button>
     <button onclick="showSection('hours')">היקף שעות</button>
+    <button onclick="showSection('guides')">מדריכים</button>
+    <button onclick="showSection('mentors')">מנחים</button>
     <button onclick="showSection('modes')">אופני למידה</button>
     <button onclick="showSection('days')">ימי מפגש</button>
     <button onclick="showSection('levels')">שלבי חינוך</button>
     <button onclick="showSection('fields')">תחומי פתרונות</button>
     <button onclick="showSection('subjects')">תחומי דעת</button>
     <button onclick="showSection('siteinfo')">מידע כללי לאתר</button>
+    <button onclick="showSection('learning')">פתרונות למידה</button>
   </nav>
 
-  <section id="learning" class="section">
-    <h2>פתרונות למידה</h2>
-    <div id="learning-form"></div>
-    <div id="learning-list"></div>
-  </section>
-
-  <section id="mentors" class="section">
-    <h2>מנחים</h2>
-    <div id="mentors-form"></div>
-    <div id="mentors-list"></div>
+  <section id="hours" class="section">
+    <h2>היקף שעות אקדמיות</h2>
+    <div id="hours-form"></div>
+    <div id="hours-list"></div>
   </section>
 
   <section id="guides" class="section">
@@ -96,45 +89,52 @@
     <div id="guides-list"></div>
   </section>
 
-  <section id="categories" class="section">
-    <h2>קטגוריות תוכן</h2>
-    <div id="categories-form"></div>
-    <div id="categories-list"></div>
-  </section>
-
-  <section id="hours" class="section">
-    <h2>היקף שעות אקדמיות</h2>
-    <p>כאן נוכל להוסיף טופס להזנת היקפים כגון 30, 60, 120 שעות וכו'</p>
+  <section id="mentors" class="section">
+    <h2>מנחים</h2>
+    <div id="mentors-form"></div>
+    <div id="mentors-list"></div>
   </section>
 
   <section id="modes" class="section">
     <h2>אופני למידה</h2>
-    <p>פנים אל פנים, סינכרוני, א-סינכרוני, היברידי וכו'</p>
+    <div id="modes-form"></div>
+    <div id="modes-list"></div>
   </section>
 
   <section id="days" class="section">
     <h2>ימי מפגש</h2>
-    <p>ראשון עד שבת</p>
+    <div id="days-form"></div>
+    <div id="days-list"></div>
   </section>
 
   <section id="levels" class="section">
     <h2>שלבי חינוך</h2>
-    <p>קדם-יסודי, יסודי, תיכון, על-יסודי, חינוך מיוחד, כללי</p>
+    <div id="levels-form"></div>
+    <div id="levels-list"></div>
   </section>
 
   <section id="fields" class="section">
     <h2>תחומי פתרונות הלמידה</h2>
-    <p>נושאי רוחב, בעלי תפקידים, תחומי דעת, תוכניות ייחודיות</p>
+    <div id="fields-form"></div>
+    <div id="fields-list"></div>
   </section>
 
   <section id="subjects" class="section">
     <h2>תחומי דעת</h2>
-    <p>שפה עברית, שפה ערבית וכו'</p>
+    <div id="subjects-form"></div>
+    <div id="subjects-list"></div>
   </section>
 
   <section id="siteinfo" class="section">
     <h2>מידע כללי לאתר</h2>
-    <p>כותרת, שנת לימודים, לוגו, זכויות יוצרים, פרטי קשר, שעות פעילות, כתובת, קישורים ל-Waze/Maps</p>
+    <div id="siteinfo-form"></div>
+    <div id="siteinfo-list"></div>
+  </section>
+
+  <section id="learning" class="section">
+    <h2>פתרונות למידה</h2>
+    <div id="learning-form"></div>
+    <div id="learning-list"></div>
   </section>
 
   <script type="module">
@@ -157,11 +157,16 @@
       createContentCategoryForm,
       renderContentCategories,
       addContentCategory,
-      loadContentCategories
+      loadContentCategories,
+
+      createHoursForm,
+      renderHours,
+      addHours,
+      loadHours
     } from '../modules.js';
 
     // התחלה אוטומטית
-    showSection('learning');
+    showSection('hours');
 
     // פתרונות למידה
     createLearningSolutionForm('learning-form', data => addLearningSolution(data));
@@ -176,8 +181,12 @@
     loadGuides(data => renderGuides('guides-list', data));
 
     // קטגוריות
-    createContentCategoryForm('categories-form', data => addContentCategory(data));
-    loadContentCategories(data => renderContentCategories('categories-list', data));
+    createContentCategoryForm('fields-form', data => addContentCategory(data));
+    loadContentCategories(data => renderContentCategories('fields-list', data));
+
+    // היקף שעות
+    createHoursForm('hours-form', data => addHours(data));
+    loadHours(data => renderHours('hours-list', data));
   </script>
 
   <script>
