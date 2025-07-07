@@ -299,3 +299,20 @@ export function renderLearningSolutions(containerId, data) {
       </div>`;
   }
 }
+
+<!-- === כפתורי הפעלה למודולים === -->
+<div id="module-buttons" class="grid grid-cols-2 gap-4">
+  <button onclick="createLearningSolutionForm('form-container', addLearningSolution); loadLearningSolutions(data => renderLearningSolutions('list-container', data));">פתרונות למידה</button>
+  <button onclick="createMentorForm('form-container', addMentor); loadMentors(data => renderMentors('list-container', data));">מנחים</button>
+  <button onclick="createGuideForm('form-container', addGuide); loadGuides(data => renderGuides('list-container', data));">מדריכים פדגוגיים</button>
+  <button onclick="createHoursForm('form-container', addHours); loadHours(data => renderHours('list-container', data));">היקף שעות</button>
+  <button onclick="createModesForm('form-container', addMode); loadModes(data => renderModes('list-container', data));">אופני למידה</button>
+  <button onclick="createDaysForm('form-container', addDay); loadDays(data => renderDays('list-container', data));">ימי מפגש</button>
+  <button onclick="createLevelsForm('form-container', addLevel); loadLevels(data => renderLevels('list-container', data));">שלבי חינוך</button>
+  <button onclick="createSubjectsForm('form-container', addSubject); loadSubjects(data => renderSubjects('list-container', data));">תחומי דעת</button>
+  <button onclick="createSiteInfoForm('form-container', addSiteInfo); loadSiteInfo(data => renderSiteInfo('list-container', data));">מידע כללי לאתר</button>
+</div>
+
+<!-- === אזור הטפסים והתצוגות === -->
+<div id="form-container" class="my-4"></div>
+<div id="list-container" class="space-y-2"></div>
