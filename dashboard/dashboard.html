@@ -591,5 +591,169 @@ function editRow(path, id, item) {
 }
 </script>
 
+<!-- התחלה של מבנה מודול בסיסי עם חלון קופץ -->
+<!-- מודול: היקף שעות אקדמאיות מוכר לגמול -->
+<button onclick="openModal('modal-hours')">היקף שעות אקדמאיות מוכר לגמול</button>
+<div id="modal-hours" class="modal" style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5);">
+  <div style="background: white; margin: 10% auto; padding: 20px; width: 90%; max-width: 800px; border-radius: 10px;">
+    <h2>מודול היקף שעות אקדמאיות מוכר לגמול</h2>
+    <form id="form-hours">
+      <label>בחר היקף שעות:</label>
+      <select id="hours-input" required>
+        <option value="">בחר...</option>
+        <option value="30">30 שעות</option>
+        <option value="40">40 שעות</option>
+        <option value="60">60 שעות</option>
+        <option value="120">120 שעות</option>
+      </select>
+      <button type="submit">הוסף</button>
+    </form>
+    <table id="table-hours" border="1" style="width: 100%; margin-top: 10px;">
+      <thead>
+        <tr>
+          <th>היקף שעות</th>
+          <th>עריכה</th>
+          <th>מחיקה</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <button onclick="exportToExcel('hours')">📤 ייצוא לאקסל</button>
+    <input type="file" accept=".xlsx" onchange="importFromExcel(event, 'hours')">
+    <button onclick="closeModal('modal-hours')">❌ יציאה</button>
+  </div>
+</div>
+
+<!-- מודול: מדריכים פדגוגיים -->
+<button onclick="openModal('modal-instructors')">מדריכים פדגוגיים</button>
+<div id="modal-instructors" class="modal" style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5);">
+  <div style="background: white; margin: 5% auto; padding: 20px; width: 90%; max-width: 900px; border-radius: 10px;">
+    <h2>מודול מדריכים פדגוגיים</h2>
+    <form id="form-instructors">
+      <label>שם פרטי:</label>
+      <input type="text" id="instructor-firstname" required><br>
+      <label>שם משפחה:</label>
+      <input type="text" id="instructor-lastname" required><br>
+      <label>מספר זהות:</label>
+      <input type="text" id="instructor-id" required><br>
+      <label>כתובת דוא"ל:</label>
+      <input type="email" id="instructor-email" required><br>
+      <label>סוג הרשאה:</label>
+      <input type="text" id="instructor-role" required><br>
+      <button type="submit">הוסף</button>
+    </form>
+    <table id="table-instructors" border="1" style="width: 100%; margin-top: 10px;">
+      <thead>
+        <tr>
+          <th>שם פרטי</th>
+          <th>שם משפחה</th>
+          <th>מספר זהות</th>
+          <th>דוא"ל</th>
+          <th>סוג הרשאה</th>
+          <th>עריכה</th>
+          <th>מחיקה</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <button onclick="exportToExcel('instructors')">📤 ייצוא לאקסל</button>
+    <input type="file" accept=".xlsx" onchange="importFromExcel(event, 'instructors')">
+    <button onclick="closeModal('modal-instructors')">❌ יציאה</button>
+  </div>
+</div>
+
+<!-- מודול: מנחים -->
+<button onclick="openModal('modal-mentors')">מנחים</button>
+<div id="modal-mentors" class="modal" style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5);">
+  <div style="background: white; margin: 5% auto; padding: 20px; width: 90%; max-width: 900px; border-radius: 10px;">
+    <h2>מודול מנחים</h2>
+    <form id="form-mentors">
+      <label>מספר זהות:</label>
+      <input type="text" id="mentor-id" required><br>
+      <label>שם מלא:</label>
+      <input type="text" id="mentor-name" required><br>
+      <label>טלפון נייד:</label>
+      <input type="tel" id="mentor-phone" required><br>
+      <label>כתובת דוא"ל:</label>
+      <input type="email" id="mentor-email" required><br>
+      <button type="submit">הוסף</button>
+    </form>
+    <table id="table-mentors" border="1" style="width: 100%; margin-top: 10px;">
+      <thead>
+        <tr>
+          <th>מספר זהות</th>
+          <th>שם מלא</th>
+          <th>טלפון נייד</th>
+          <th>דוא"ל</th>
+          <th>עריכה</th>
+          <th>מחיקה</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <button onclick="exportToExcel('mentors')">📤 ייצוא לאקסל</button>
+    <input type="file" accept=".xlsx" onchange="importFromExcel(event, 'mentors')">
+    <button onclick="closeModal('modal-mentors')">❌ יציאה</button>
+  </div>
+</div>
+
+<!-- מודול: אופני הלמידה -->
+<button onclick="openModal('modal-modes')">אופני הלמידה</button>
+<div id="modal-modes" class="modal" style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5);">
+  <div style="background: white; margin: 5% auto; padding: 20px; width: 90%; max-width: 800px; border-radius: 10px;">
+    <h2>מודול אופני הלמידה</h2>
+    <form id="form-modes">
+      <label>בחר אופן למידה:</label>
+      <select id="mode-input" required>
+        <option value="">בחר...</option>
+        <option value="פנים אל פנים">פנים אל פנים</option>
+        <option value="סינכרוני">סינכרוני</option>
+        <option value="א-סינכרוני">א-סינכרוני</option>
+        <option value="היברידי">היברידי</option>
+        <option value="אחר">אחר</option>
+      </select>
+      <button type="submit">הוסף</button>
+    </form>
+    <table id="table-modes" border="1" style="width: 100%; margin-top: 10px;">
+      <thead>
+        <tr>
+          <th>אופן למידה</th>
+          <th>עריכה</th>
+          <th>מחיקה</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <button onclick="exportToExcel('modes')">📤 ייצוא לאקסל</button>
+    <input type="file" accept=".xlsx" onchange="importFromExcel(event, 'modes')">
+    <button onclick="closeModal('modal-modes')">❌ יציאה</button>
+  </div>
+</div>
+
+<script>
+  function openModal(id) {
+    document.getElementById(id).style.display = 'block';
+    loadTableData(id);
+  }
+
+  function closeModal(id) {
+    document.getElementById(id).style.display = 'none';
+  }
+
+  function loadTableData(modalId) {
+    // כאן תבוא קריאה ל-Firebase לפי modalId
+    // לצורך דוגמה – הטבלה ריקה
+  }
+
+  function exportToExcel(type) {
+    // פונקציה שתייצא את הנתונים לאקסל לפי סוג המודול (type)
+  }
+
+  function importFromExcel(event, type) {
+    // פונקציה שתייבא נתונים מהקובץ למודול המתאים
+  }
+</script>
+
+
 </body>
 </html>
