@@ -1,114 +1,93 @@
+
 <!DOCTYPE html>
-<html lang="he" dir="rtl">
+<html lang="he">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>מערכת ניהול EduCatalog</title>
-  <script type="module" src="../modules.js"></script>
+  <title>ניהול פתרונות למידה</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script type="module" src="modules.js"></script>
   <script type="module">
     import {
-      addLearningSolution, loadLearningSolutions, createLearningSolutionForm, renderLearningSolutions,
-      addMentor, loadMentors, createMentorForm, renderMentors,
-      addGuide, loadGuides, createGuideForm, renderGuides,
-      addHours, loadHours, createHoursForm, renderHours,
-      addMode, loadModes, createModesForm, renderModes,
-      addDay, loadDays, createDaysForm, renderDays,
-      addLevel, loadLevels, createLevelsForm, renderLevels,
-      addSubject, loadSubjects, createSubjectsForm, renderSubjects,
-      addSiteInfo, loadSiteInfo, createSiteInfoForm, renderSiteInfo
-    } from '../modules.js';
+      createLearningSolutionForm, loadLearningSolutions, renderLearningSolutions, addLearningSolution,
+      createMentorForm, loadMentors, renderMentors, addMentor,
+      createGuideForm, loadGuides, renderGuides, addGuide,
+      createHoursForm, loadHours, renderHours, addHours,
+      createModesForm, loadModes, renderModes, addMode,
+      createDaysForm, loadDays, renderDays, addDay,
+      createLevelsForm, loadLevels, renderLevels, addLevel,
+      createSubjectsForm, loadSubjects, renderSubjects, addSubject,
+      createCategoriesForm, loadCategories, renderCategories, addCategory,
+      createSiteInfoForm, loadSiteInfo, renderSiteInfo, addSiteInfo
+    } from './modules.js';
 
     window.createLearningSolutionForm = createLearningSolutionForm;
-    window.addLearningSolution = addLearningSolution;
     window.loadLearningSolutions = loadLearningSolutions;
     window.renderLearningSolutions = renderLearningSolutions;
+    window.addLearningSolution = addLearningSolution;
 
     window.createMentorForm = createMentorForm;
-    window.addMentor = addMentor;
     window.loadMentors = loadMentors;
     window.renderMentors = renderMentors;
+    window.addMentor = addMentor;
 
     window.createGuideForm = createGuideForm;
-    window.addGuide = addGuide;
     window.loadGuides = loadGuides;
     window.renderGuides = renderGuides;
+    window.addGuide = addGuide;
 
     window.createHoursForm = createHoursForm;
-    window.addHours = addHours;
     window.loadHours = loadHours;
     window.renderHours = renderHours;
+    window.addHours = addHours;
 
     window.createModesForm = createModesForm;
-    window.addMode = addMode;
     window.loadModes = loadModes;
     window.renderModes = renderModes;
+    window.addMode = addMode;
 
     window.createDaysForm = createDaysForm;
-    window.addDay = addDay;
     window.loadDays = loadDays;
     window.renderDays = renderDays;
+    window.addDay = addDay;
 
     window.createLevelsForm = createLevelsForm;
-    window.addLevel = addLevel;
     window.loadLevels = loadLevels;
     window.renderLevels = renderLevels;
+    window.addLevel = addLevel;
 
     window.createSubjectsForm = createSubjectsForm;
-    window.addSubject = addSubject;
     window.loadSubjects = loadSubjects;
     window.renderSubjects = renderSubjects;
+    window.addSubject = addSubject;
+
+    window.createCategoriesForm = createCategoriesForm;
+    window.loadCategories = loadCategories;
+    window.renderCategories = renderCategories;
+    window.addCategory = addCategory;
 
     window.createSiteInfoForm = createSiteInfoForm;
-    window.addSiteInfo = addSiteInfo;
     window.loadSiteInfo = loadSiteInfo;
     window.renderSiteInfo = renderSiteInfo;
+    window.addSiteInfo = addSiteInfo;
   </script>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 text-gray-800 font-sans">
-  <header class="bg-blue-700 text-white p-4 text-center text-2xl font-bold shadow">
-    מערכת ניהול EduCatalog
-  </header>
-
-  <main class="p-4">
-<!-- === כפתורי הפעלה למודולים (Tailwind + Icons) כולל תחומי פתרונות למידה === -->
-<div id="module-buttons" class="grid grid-cols-2 md:grid-cols-3 gap-4 p-4">
-  <button class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl shadow" onclick="createLearningSolutionForm('form-container', addLearningSolution); loadLearningSolutions(data => renderLearningSolutions('list-container', data));">
-    📘 פתרונות למידה
-  </button>
-  <button class="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-xl shadow" onclick="createMentorForm('form-container', addMentor); loadMentors(data => renderMentors('list-container', data));">
-    👥 מנחים
-  </button>
-  <button class="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl shadow" onclick="createGuideForm('form-container', addGuide); loadGuides(data => renderGuides('list-container', data));">
-    🧑‍🏫 מדריכים פדגוגיים
-  </button>
-  <button class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl shadow" onclick="createHoursForm('form-container', addHours); loadHours(data => renderHours('list-container', data));">
-    ⏱️ היקף שעות
-  </button>
-  <button class="flex items-center gap-2 bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-xl shadow" onclick="createModesForm('form-container', addMode); loadModes(data => renderModes('list-container', data));">
-    🔄 אופני למידה
-  </button>
-  <button class="flex items-center gap-2 bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-xl shadow" onclick="createDaysForm('form-container', addDay); loadDays(data => renderDays('list-container', data));">
-    📅 ימי מפגש
-  </button>
-  <button class="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl shadow" onclick="createLevelsForm('form-container', addLevel); loadLevels(data => renderLevels('list-container', data));">
-    🎓 שלבי חינוך
-  </button>
-  <button class="flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-xl shadow" onclick="createSubjectsForm('form-container', addSubject); loadSubjects(data => renderSubjects('list-container', data));">
-    📚 תחומי דעת
-  </button>
-  <button class="flex items-center gap-2 bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-xl shadow" onclick="createCategoriesForm('form-container', addCategory); loadCategories(data => renderCategories('list-container', data));">
-    🧩 תחומי פתרונות למידה
-  </button>
-  <button class="flex items-center gap-2 bg-gray-700 hover:bg-gray-800 text-white px-4 py-2 rounded-xl shadow" onclick="createSiteInfoForm('form-container', addSiteInfo); loadSiteInfo(data => renderSiteInfo('list-container', data));">
-    ⚙️ מידע כללי לאתר
-  </button>
-</div>
-
-<!-- === אזור הטפסים והתצוגות === -->
-<div id="form-container" class="my-6"></div>
-<div id="list-container" class="space-y-4"></div>
-
-  </main>
+<body class="bg-gray-100 p-6 font-sans">
+  <h1 class="text-2xl font-bold mb-4">ניהול פתרונות למידה</h1>
+  <div id="module-buttons" class="grid grid-cols-2 md:grid-cols-3 gap-4 p-4">
+    <button class="bg-blue-600 text-white px-4 py-2 rounded" onclick="createLearningSolutionForm('form-container', addLearningSolution); loadLearningSolutions(data => renderLearningSolutions('list-container', data));">📘 פתרונות למידה</button>
+    <button class="bg-purple-600 text-white px-4 py-2 rounded" onclick="createMentorForm('form-container', addMentor); loadMentors(data => renderMentors('list-container', data));">👥 מנחים</button>
+    <button class="bg-green-600 text-white px-4 py-2 rounded" onclick="createGuideForm('form-container', addGuide); loadGuides(data => renderGuides('list-container', data));">🧑‍🏫 מדריכים</button>
+    <button class="bg-indigo-600 text-white px-4 py-2 rounded" onclick="createHoursForm('form-container', addHours); loadHours(data => renderHours('list-container', data));">⏱️ היקף שעות</button>
+    <button class="bg-yellow-600 text-white px-4 py-2 rounded" onclick="createModesForm('form-container', addMode); loadModes(data => renderModes('list-container', data));">🔄 אופני למידה</button>
+    <button class="bg-pink-600 text-white px-4 py-2 rounded" onclick="createDaysForm('form-container', addDay); loadDays(data => renderDays('list-container', data));">📅 ימי מפגש</button>
+    <button class="bg-red-600 text-white px-4 py-2 rounded" onclick="createLevelsForm('form-container', addLevel); loadLevels(data => renderLevels('list-container', data));">🎓 שלבי חינוך</button>
+    <button class="bg-teal-600 text-white px-4 py-2 rounded" onclick="createSubjectsForm('form-container', addSubject); loadSubjects(data => renderSubjects('list-container', data));">📚 תחומי דעת</button>
+    <button class="bg-orange-600 text-white px-4 py-2 rounded" onclick="createCategoriesForm('form-container', addCategory); loadCategories(data => renderCategories('list-container', data));">🧩 תחומי פתרונות למידה</button>
+    <button class="bg-gray-700 text-white px-4 py-2 rounded" onclick="createSiteInfoForm('form-container', addSiteInfo); loadSiteInfo(data => renderSiteInfo('list-container', data));">⚙️ מידע כללי לאתר</button>
+  </div>
+  <div id="form-container" class="mt-4"></div>
+  <div id="list-container" class="mt-6 space-y-4"></div>
 </body>
 </html>
