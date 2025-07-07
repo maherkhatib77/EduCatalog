@@ -37,6 +37,136 @@
 
 <!-- כאן יוטמעו כל המודולים עצמם -->
 <div id="modals-container">
+<!-- מודול: מדריכים פדגוגיים -->
+<div id="modal-guides" class="modal">
+  <div class="modal-content">
+    <h2>מודול מדריכים פדגוגיים</h2>
+    <form id="form-guides">
+      <label>שם פרטי:</label><input type="text" required>
+      <label>שם משפחה:</label><input type="text" required>
+      <label>מספר זהות:</label><input type="text" required>
+      <label>דוא"ל:</label><input type="email">
+      <label>סוג הרשאה:</label><input type="text">
+      <button type="submit">הוסף</button>
+    </form>
+    <table><thead><tr><th>שם</th><th>משפחה</th><th>זהות</th><th>דוא"ל</th><th>הרשאה</th></tr></thead><tbody></tbody></table>
+    <button onclick="closeModal('modal-guides')">❌ יציאה</button>
+  </div>
+</div>
+
+<!-- מודול: מנחים -->
+<div id="modal-mentors" class="modal">
+  <div class="modal-content">
+    <h2>מודול מנחים</h2>
+    <form id="form-mentors">
+      <label>מספר זהות:</label><input type="text">
+      <label>שם מלא:</label><input type="text">
+      <label>טלפון נייד:</label><input type="tel">
+      <label>דוא"ל:</label><input type="email">
+      <button type="submit">הוסף</button>
+    </form>
+    <table><thead><tr><th>זהות</th><th>שם</th><th>טלפון</th><th>דוא"ל</th></tr></thead><tbody></tbody></table>
+    <button onclick="closeModal('modal-mentors')">❌ יציאה</button>
+  </div>
+</div>
+
+<!-- מודול: אופני למידה -->
+<div id="modal-learning-modes" class="modal">
+  <div class="modal-content">
+    <h2>מודול אופני למידה</h2>
+    <form id="form-learning-modes">
+      <label>בחר אופן:</label>
+      <select><option>פנים אל פנים</option><option>סינכרוני</option><option>א-סינכרוני</option><option>היברידי</option><option>אחר</option></select>
+      <button type="submit">הוסף</button>
+    </form>
+    <table><thead><tr><th>אופן</th></tr></thead><tbody></tbody></table>
+    <button onclick="closeModal('modal-learning-modes')">❌ יציאה</button>
+  </div>
+</div>
+
+<!-- מודול: ימי מפגש -->
+<div id="modal-days" class="modal">
+  <div class="modal-content">
+    <h2>מודול ימי מפגש</h2>
+    <form id="form-days">
+      <label>בחר יום:</label>
+      <select><option>ראשון</option><option>שני</option><option>שלישי</option><option>רביעי</option><option>חמישי</option><option>שישי</option><option>שבת</option></select>
+      <button type="submit">הוסף</button>
+    </form>
+    <table><thead><tr><th>יום</th></tr></thead><tbody></tbody></table>
+    <button onclick="closeModal('modal-days')">❌ יציאה</button>
+  </div>
+</div>
+
+<!-- מודול: שלבי חינוך -->
+<div id="modal-stages" class="modal">
+  <div class="modal-content">
+    <h2>מודול שלבי חינוך</h2>
+    <form id="form-stages">
+      <select><option>קדם-יסודי</option><option>יסודי</option><option>על-יסודי</option><option>תיכון</option><option>חינוך מיוחד</option><option>כללי</option></select>
+      <button type="submit">הוסף</button>
+    </form>
+    <table><thead><tr><th>שלב</th></tr></thead><tbody></tbody></table>
+    <button onclick="closeModal('modal-stages')">❌ יציאה</button>
+  </div>
+</div>
+
+<!-- מודול: תחומי פתרונות הלמידה -->
+<div id="modal-solution-domains" class="modal">
+  <div class="modal-content">
+    <h2>מודול תחומי פתרונות הלמידה</h2>
+    <form id="form-solution-domains">
+      <select><option>נושאי רוחב</option><option>בעלי תפקידים</option><option>תחומי דעת</option><option>תוכניות ייחודיות</option><option>אחר</option></select>
+      <button type="submit">הוסף</button>
+    </form>
+    <table><thead><tr><th>תחום</th></tr></thead><tbody></tbody></table>
+    <button onclick="closeModal('modal-solution-domains')">❌ יציאה</button>
+  </div>
+</div>
+
+<!-- מודול: תחומי דעת -->
+<div id="modal-subjects" class="modal">
+  <div class="modal-content">
+    <h2>מודול תחומי דעת</h2>
+    <form id="form-subjects">
+      <label>הכנס תחום דעת:</label>
+      <input type="text" required>
+      <button type="submit">הוסף</button>
+    </form>
+    <table><thead><tr><th>תחום דעת</th></tr></thead><tbody></tbody></table>
+    <button onclick="closeModal('modal-subjects')">❌ יציאה</button>
+  </div>
+</div>
+
+<!-- מודול: פתרונות למידה -->
+<div id="modal-learning-solutions" class="modal">
+  <div class="modal-content">
+    <h2>מודול פתרונות למידה</h2>
+    <form id="form-learning-solutions">
+      <input placeholder="שם מדריך פדגוגי">
+      <input placeholder="מס' פתרון למידה">
+      <input placeholder="שם פתרון הלמידה">
+      <textarea placeholder="תקציר"></textarea>
+      <textarea placeholder="מטרות"></textarea>
+      <input placeholder="תחום תוכן">
+      <input placeholder="שלב חינוך">
+      <input placeholder="היקף שעות">
+      <input placeholder="תאריך התחלה">
+      <input placeholder="יום קבוע">
+      <input placeholder="שעת התחלה">
+      <input placeholder="שעת סיום">
+      <input placeholder="אופני למידה">
+      <input placeholder="שם מנחה">
+      <input placeholder="האם נוצר קשר עם המרצה?">
+      <label>סילבוס:</label><input type="file">
+      <button type="submit">הוסף</button>
+    </form>
+    <table><thead><tr><th>פתרון</th></tr></thead><tbody></tbody></table>
+    <button onclick="closeModal('modal-learning-solutions')">❌ יציאה</button>
+  </div>
+</div>
+
+
 <!-- מודול: היקף שעות אקדמאיות מוכר לגמול -->
 <div id="modal-hours" class="modal">
   <div class="modal-content">
@@ -102,6 +232,7 @@
     <button onclick="closeModal('modal-site-info')">❌ יציאה</button>
   </div>
 </div>
+
 
 </div>
 
