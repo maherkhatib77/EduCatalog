@@ -624,109 +624,76 @@ function editRow(path, id, item) {
   </div>
 </div>
 
-<!-- מודול: מדריכים פדגוגיים -->
-<button onclick="openModal('modal-instructors')">מדריכים פדגוגיים</button>
-<div id="modal-instructors" class="modal" style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5);">
-  <div style="background: white; margin: 5% auto; padding: 20px; width: 90%; max-width: 900px; border-radius: 10px;">
-    <h2>מודול מדריכים פדגוגיים</h2>
-    <form id="form-instructors">
-      <label>שם פרטי:</label>
-      <input type="text" id="instructor-firstname" required><br>
-      <label>שם משפחה:</label>
-      <input type="text" id="instructor-lastname" required><br>
-      <label>מספר זהות:</label>
-      <input type="text" id="instructor-id" required><br>
-      <label>כתובת דוא"ל:</label>
-      <input type="email" id="instructor-email" required><br>
-      <label>סוג הרשאה:</label>
-      <input type="text" id="instructor-role" required><br>
-      <button type="submit">הוסף</button>
-    </form>
-    <table id="table-instructors" border="1" style="width: 100%; margin-top: 10px;">
-      <thead>
-        <tr>
-          <th>שם פרטי</th>
-          <th>שם משפחה</th>
-          <th>מספר זהות</th>
-          <th>דוא"ל</th>
-          <th>סוג הרשאה</th>
-          <th>עריכה</th>
-          <th>מחיקה</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-    <button onclick="exportToExcel('instructors')">📤 ייצוא לאקסל</button>
-    <input type="file" accept=".xlsx" onchange="importFromExcel(event, 'instructors')">
-    <button onclick="closeModal('modal-instructors')">❌ יציאה</button>
-  </div>
-</div>
+<!-- ... שאר המודולים שכבר הוזנו ... -->
 
-<!-- מודול: מנחים -->
-<button onclick="openModal('modal-mentors')">מנחים</button>
-<div id="modal-mentors" class="modal" style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5);">
-  <div style="background: white; margin: 5% auto; padding: 20px; width: 90%; max-width: 900px; border-radius: 10px;">
-    <h2>מודול מנחים</h2>
-    <form id="form-mentors">
-      <label>מספר זהות:</label>
-      <input type="text" id="mentor-id" required><br>
-      <label>שם מלא:</label>
+<!-- מודול: פתרונות למידה -->
+<button onclick="openModal('modal-learning-solutions')">פתרונות למידה</button>
+<div id="modal-learning-solutions" class="modal" style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); overflow-y: auto;">
+  <div style="background: white; margin: 3% auto; padding: 20px; width: 95%; max-width: 1000px; border-radius: 10px;">
+    <h2>מודול פתרונות למידה</h2>
+    <form id="form-learning-solutions">
+      <label>שם המדריך הפדגוגי:</label>
+      <input type="text" id="pedagogical-guide" required><br>
+      <label>פתרון למידה מס':</label>
+      <input type="text" id="solution-number" required><br>
+      <label>שם פתרון הלמידה:</label>
+      <input type="text" id="solution-name" required><br>
+      <label>תקציר פתרון הלמידה:</label>
+      <textarea id="solution-summary" required></textarea><br>
+      <label>מטרות פתרון הלמידה:</label>
+      <textarea id="solution-goals" required></textarea><br>
+      <label>תחום התוכן:</label>
+      <input type="text" id="content-domain" required><br>
+      <label>שלב חינוך:</label>
+      <input type="text" id="education-stage" required><br>
+      <label>היקף שעות אקדמיות מוכר לגמול:</label>
+      <input type="text" id="academic-hours" required><br>
+      <label>תאריך ויום התחלת המפגשים:</label>
+      <input type="date" id="start-date" required><br>
+      <label>יום קבוע למפגשים:</label>
+      <input type="text" id="fixed-day" required><br>
+      <label>שעת התחלה:</label>
+      <input type="time" id="start-time" required><br>
+      <label>שעת סיום:</label>
+      <input type="time" id="end-time" required><br>
+      <label>אופני הלמידה:</label>
+      <input type="text" id="learning-mode" required><br>
+      <label>שם המנחה:</label>
       <input type="text" id="mentor-name" required><br>
-      <label>טלפון נייד:</label>
-      <input type="tel" id="mentor-phone" required><br>
-      <label>כתובת דוא"ל:</label>
-      <input type="email" id="mentor-email" required><br>
-      <button type="submit">הוסף</button>
-    </form>
-    <table id="table-mentors" border="1" style="width: 100%; margin-top: 10px;">
-      <thead>
-        <tr>
-          <th>מספר זהות</th>
-          <th>שם מלא</th>
-          <th>טלפון נייד</th>
-          <th>דוא"ל</th>
-          <th>עריכה</th>
-          <th>מחיקה</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-    <button onclick="exportToExcel('mentors')">📤 ייצוא לאקסל</button>
-    <input type="file" accept=".xlsx" onchange="importFromExcel(event, 'mentors')">
-    <button onclick="closeModal('modal-mentors')">❌ יציאה</button>
-  </div>
-</div>
-
-<!-- מודול: אופני הלמידה -->
-<button onclick="openModal('modal-modes')">אופני הלמידה</button>
-<div id="modal-modes" class="modal" style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5);">
-  <div style="background: white; margin: 5% auto; padding: 20px; width: 90%; max-width: 800px; border-radius: 10px;">
-    <h2>מודול אופני הלמידה</h2>
-    <form id="form-modes">
-      <label>בחר אופן למידה:</label>
-      <select id="mode-input" required>
+      <label>האם נוצר קשר עם המרצה:</label>
+      <select id="contact-status" required>
         <option value="">בחר...</option>
-        <option value="פנים אל פנים">פנים אל פנים</option>
-        <option value="סינכרוני">סינכרוני</option>
-        <option value="א-סינכרוני">א-סינכרוני</option>
-        <option value="היברידי">היברידי</option>
-        <option value="אחר">אחר</option>
-      </select>
-      <button type="submit">הוסף</button>
+        <option value="כן">כן</option>
+        <option value="לא">לא</option>
+      </select><br>
+      <label>סטטוס הסילבוס (קובץ סילבוס):</label>
+      <input type="file" id="syllabus-file" accept=".pdf,.doc,.docx"><br>
+      <button type="submit">שמור</button>
     </form>
-    <table id="table-modes" border="1" style="width: 100%; margin-top: 10px;">
+    <table id="table-learning-solutions" border="1" style="width: 100%; margin-top: 10px;">
       <thead>
         <tr>
-          <th>אופן למידה</th>
+          <th>שם פתרון</th>
+          <th>מדריך פדגוגי</th>
+          <th>מס'</th>
+          <th>תחום תוכן</th>
+          <th>שלב חינוך</th>
+          <th>שעות</th>
+          <th>יום התחלה</th>
+          <th>יום קבוע</th>
+          <th>שעות</th>
+          <th>מנחה</th>
+          <th>קשר מרצה</th>
+          <th>סילבוס</th>
           <th>עריכה</th>
           <th>מחיקה</th>
         </tr>
       </thead>
       <tbody></tbody>
     </table>
-    <button onclick="exportToExcel('modes')">📤 ייצוא לאקסל</button>
-    <input type="file" accept=".xlsx" onchange="importFromExcel(event, 'modes')">
-    <button onclick="closeModal('modal-modes')">❌ יציאה</button>
+    <button onclick="exportToExcel('learning-solutions')">📤 ייצוא לאקסל</button>
+    <input type="file" accept=".xlsx" onchange="importFromExcel(event, 'learning-solutions')">
+    <button onclick="closeModal('modal-learning-solutions')">❌ יציאה</button>
   </div>
 </div>
 
@@ -753,6 +720,7 @@ function editRow(path, id, item) {
     // פונקציה שתייבא נתונים מהקובץ למודול המתאים
   }
 </script>
+
 
 
 </body>
