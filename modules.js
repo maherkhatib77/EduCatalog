@@ -6,6 +6,13 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getDatabase, ref, push, set, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
+import {
+  createCategoriesForm,
+  loadCategories,
+  renderCategories,
+  addCategory
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
 const firebaseConfig = {
   apiKey: "AIza...",
   authDomain: "educatalog-63603.firebaseapp.com",
