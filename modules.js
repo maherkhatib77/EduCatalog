@@ -56,30 +56,84 @@ export function renderLearningSolutions(containerId, data) {
   }
 }
 
-// === מודול 2: מנחים ===
+// === מודול 3: מנחים (Mentors) עם פופאפ ===
+import { ref, set, push, onValue, update, remove } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+import { db } from './firebase-config.js';
+
 export function addMentor(data) { set(push(ref(db, 'mentors')), data); }
+export function updateMentor(id, data) { update(ref(db, 'mentors/' + id), data); }
+export function deleteMentor(id) { remove(ref(db, 'mentors/' + id)); }
 export function loadMentors(cb) { onValue(ref(db, 'mentors'), s => cb(s.val())); }
-export function createMentorForm(cId, onSubmit) {
-  document.getElementById(cId).innerHTML = `
-    <form id="mentor-form">
-      <input name="name" placeholder="שם מנחה" required>
-      <input name="expertise" placeholder="תחום התמחות">
-      <button type="submit">שמור</button>
-    </form>`;
-  document.getElementById('mentor-form').onsubmit = e => {
+
+export function openMentorsPopup() {
+  const popup = document.createElement('div');
+  popup.id = 'mentors-popup';
+  popup.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+  popup.innerHTML = `
+    <div class='bg-white rounded shadow p-6 w-full max-w-xl'>
+      <h2 class='text-xl font-bold mb-4'>ניהול מנחים</h2>
+      <form id="mentors-form" class="space-y-2 mb-4">
+        <input name="name" placeholder="שם מנחה" class="border p-2 w-full" required>
+        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">➕ הוסף מנחה</button>
+      </form>
+      <input type="file" id="mentors-excel" accept=".xlsx,.xls" class="mb-2" />
+      <button id="import-mentors" class="bg-green-600 text-white px-4 py-2 rounded mb-4">📥 ייבוא מאקסל</button>
+      <div id='mentors-list' class='space-y-2'></div>
+      <button onclick="document.getElementById('mentors-popup').remove()" class="mt-4 text-red-600">❌ סגור</button>
+    </div>`;
+  document.body.appendChild(popup);
+
+  // טופס הוספה
+  document.getElementById('mentors-form').onsubmit = e => {
     e.preventDefault();
     const data = Object.fromEntries(new FormData(e.target).entries());
-    onSubmit(data);
+    addMentor(data);
     e.target.reset();
   };
+
+  // ייבוא מאקסל
+  document.getElementById('import-mentors').onclick = () => {
+    const file = document.getElementById('mentors-excel').files[0];
+    if (!file) return alert('בחר קובץ');
+    const reader = new FileReader();
+    reader.onload = e => {
+      const data = new Uint8Array(e.target.result);
+      const wb = XLSX.read(data, { type: 'array' });
+      const sheet = wb.Sheets[wb.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(sheet);
+      rows.forEach(row => addMentor({ name: row.name || row["שם"] }));
+    };
+    reader.readAsArrayBuffer(file);
+  };
+
+  // טען והצג
+  loadMentors(data => renderMentorsList(data));
 }
-export function renderMentors(cId, data) {
-  const c = document.getElementById(cId);
+
+function renderMentorsList(data) {
+  const c = document.getElementById('mentors-list');
   c.innerHTML = '';
   for (const [id, item] of Object.entries(data)) {
-    c.innerHTML += `<div class='card'><h4>${item.name}</h4><p>${item.expertise || ''}</p></div>`;
+    const div = document.createElement('div');
+    div.className = 'border p-2 rounded flex justify-between items-center';
+    div.innerHTML = `
+      <span>${item.name}</span>
+      <div class='flex gap-2'>
+        <button class='text-sm text-yellow-600' onclick='editMentor("${id}", "${item.name}")'>✏️</button>
+        <button class='text-sm text-red-600' onclick='deleteMentor("${id}")'>🗑️</button>
+      </div>`;
+    c.appendChild(div);
   }
 }
+
+// פעולות עריכה ומחיקה
+window.editMentor = function(id, oldValue) {
+  const name = prompt("עדכן שם מנחה:", oldValue);
+  if (name) updateMentor(id, { name });
+}
+
+window.deleteMentor = deleteMentor;
+window.openMentorsPopup = openMentorsPopup;
 
 // === מודול 3: מדריכים פדגוגיים ===
 export function addGuide(data) { set(push(ref(db, 'guides')), data); }
