@@ -38,3 +38,9 @@ button {
   width: 300px;
   border-radius: 5px;
 }
+
+#loginModalContent {
+  background-color: white;
+  color: black;
+  padding: 2rem;
+}
