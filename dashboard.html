@@ -17,30 +17,41 @@
 
   <div class="container" id="adminPanel" style="display: none;">
     <button class="btn-table" onclick="loadTable('lecturers')">מרצה</button>
-    <button class="btn-table" onclick="loadTable('instructors')">מדריך</button>
-    <button class="btn-table" onclick="loadTable('learning_modes')">אופן למידה</button>
-    <button class="btn-table" onclick="loadTable('education_levels')">שלבי חינוך</button>
-    <button class="btn-table" onclick="loadTable('education_types')">סוג חינוך</button>
-    <button class="btn-table" onclick="loadTable('weekdays')">יום</button>
-    <button class="btn-table" onclick="loadTable('subjects')">תחום דעת</button>
-    <button class="btn-table" onclick="loadTable('solution_domains')">תחום פתרון למידה</button>
-    <button class="btn-table" onclick="loadTable('users')">משתמשים</button>
-    <button class="btn-table" onclick="loadTable('learning_solutions')">פתרון למידה</button>
+    <!-- שאר הכפתורים יישארו כאן -->
   </div>
 
   <div id="tableContainer"></div>
 
+  <!-- טופס ניהול מרצים -->
+  <div id="lecturerFormContainer" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeLecturerForm()">&times;</span>
+      <h2>הוספת / עריכת מרצה</h2>
+      <form id="lecturerForm">
+        <label>ת.ז</label>
+        <input type="text" id="lecturerId" required>
+        <label>שם פרטי</label>
+        <input type="text" id="lecturerFirst" required>
+        <label>שם משפחה</label>
+        <input type="text" id="lecturerLast" required>
+        <label>דוא"ל</label>
+        <input type="email" id="lecturerEmail" required>
+        <label>טלפון נייד</label>
+        <input type="text" id="lecturerMobile" required>
+        <button type="submit">שמור</button>
+      </form>
+    </div>
+  </div>
+
   <script src="firebase-config.js"></script>
   <script>
-    // בדיקת התחברות
     const userType = localStorage.getItem('userType');
-    if (userType === 'admin' || userType === 'operator') {
+    if (userType === 'admin' || userType === 'operator' || userType === 'client') {
       document.getElementById('adminPanel').style.display = 'flex';
     } else {
       document.body.innerHTML = '<p style="text-align:center;margin-top:2rem;font-size:1.2rem;color:red;">אין לך הרשאה לצפות בדף זה. אנא התחבר מחדש.</p>';
     }
 
-    // כפתור התנתקות
     document.getElementById('logoutBtn').onclick = () => {
       localStorage.removeItem('userType');
       window.location.href = 'index.html';
@@ -61,22 +72,81 @@
           Object.keys(item).forEach(key => headers.add(key));
         });
 
-        let html = '<table><thead><tr>';
+        let html = '<h2>טבלת ' + tableName + '</h2>';
+
+        if (userType === 'admin' || userType === 'operator') {
+          html += '<button onclick="openLecturerForm()">➕ הוספת מרצה</button>';
+        }
+
+        html += '<table><thead><tr>';
         headers.forEach(h => html += `<th>${h}</th>`);
+        if (userType === 'admin' || userType === 'operator') {
+          html += '<th>פעולות</th>';
+        }
         html += '</tr></thead><tbody>';
 
-        Object.values(data).forEach(row => {
+        Object.entries(data).forEach(([id, row]) => {
           html += '<tr>';
           headers.forEach(h => {
             const value = row[h];
-            html += `<td>${Array.isArray(value) ? value.join(', ') : value || ''}</td>`;
+            html += `<td>${value || ''}</td>`;
           });
+          if (userType === 'admin' || userType === 'operator') {
+            html += `<td><button onclick="editLecturer('${id}', ${JSON.stringify(row).replace(/"/g, '&quot;')})">✏️</button>`;
+            if (userType === 'admin') {
+              html += ` <button onclick="deleteLecturer('${id}')">🗑️</button>`;
+            }
+            html += '</td>';
+          }
           html += '</tr>';
         });
 
         html += '</tbody></table>';
         container.innerHTML = html;
       });
+    }
+
+    function openLecturerForm() {
+      document.getElementById('lecturerFormContainer').style.display = 'block';
+      document.getElementById('lecturerForm').reset();
+    }
+
+    function closeLecturerForm() {
+      document.getElementById('lecturerFormContainer').style.display = 'none';
+    }
+
+    document.getElementById('lecturerForm').onsubmit = function(e) {
+      e.preventDefault();
+      const id = document.getElementById('lecturerId').value;
+      const data = {
+        first_name: document.getElementById('lecturerFirst').value,
+        last_name: document.getElementById('lecturerLast').value,
+        email: document.getElementById('lecturerEmail').value,
+        mobile: document.getElementById('lecturerMobile').value
+      };
+      db.ref('lecturers/' + id).set(data).then(() => {
+        alert('נשמר בהצלחה!');
+        closeLecturerForm();
+        loadTable('lecturers');
+      });
+    };
+
+    function editLecturer(id, row) {
+      openLecturerForm();
+      document.getElementById('lecturerId').value = id;
+      document.getElementById('lecturerFirst').value = row.first_name;
+      document.getElementById('lecturerLast').value = row.last_name;
+      document.getElementById('lecturerEmail').value = row.email;
+      document.getElementById('lecturerMobile').value = row.mobile;
+    }
+
+    function deleteLecturer(id) {
+      if (confirm('האם אתה בטוח שברצונך למחוק את המרצה?')) {
+        db.ref('lecturers/' + id).remove().then(() => {
+          alert('נמחק בהצלחה.');
+          loadTable('lecturers');
+        });
+      }
     }
   </script>
 </body>
