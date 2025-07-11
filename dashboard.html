@@ -49,6 +49,7 @@
 
   <div class="container" id="adminPanel" style="display: none;">
     <button class="btn-table" onclick="loadLecturers()">מרצה</button>
+    <button class="btn-table" onclick="loadInstructors()">מדריך</button>
   </div>
 
   <div id="tableContainer"></div>
@@ -74,6 +75,29 @@
     </div>
   </div>
 
+  <!-- טופס ניהול מדריכים -->
+  <div id="instructorFormContainer" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeInstructorForm()">&times;</span>
+      <h2>הוספת / עריכת מדריך</h2>
+      <form id="instructorForm">
+        <label>ת.ז</label>
+        <input type="text" id="instructorId" required>
+        <label>שם פרטי</label>
+        <input type="text" id="instructorFirst" required>
+        <label>שם משפחה</label>
+        <input type="text" id="instructorLast" required>
+        <label>דוא"ל</label>
+        <input type="email" id="instructorEmail" required>
+        <label>טלפון נייד</label>
+        <input type="text" id="instructorMobile" required>
+        <label>תפקיד</label>
+        <input type="text" id="instructorRole" required>
+        <button type="submit">שמור</button>
+      </form>
+    </div>
+  </div>
+
   <script>
     const userType = localStorage.getItem('userType');
     if (["admin", "operator", "client"].includes(userType)) {
@@ -87,36 +111,37 @@
       window.location.href = 'index.html';
     };
 
-    function loadLecturers() {
+    // ----- INSTRUCTORS TABLE -----
+    function loadInstructors() {
       const container = document.getElementById('tableContainer');
       container.innerHTML = '<p>טוען נתונים...</p>';
 
-      db.ref('lecturers').once('value').then(snapshot => {
+      db.ref('instructors').once('value').then(snapshot => {
         const data = snapshot.val();
         if (!data) {
           container.innerHTML = '<p>אין נתונים להצגה</p>';
           return;
         }
 
-        let html = '<h2 style="text-align:center">טבלת מרצים</h2>';
+        let html = '<h2 style="text-align:center">טבלת מדריכים</h2>';
         if (["admin", "operator"].includes(userType)) {
-          html += '<div style="text-align:center; margin-bottom: 1rem;"><button onclick="openLecturerForm()">➕ הוספת מרצה</button></div>';
+          html += '<div style="text-align:center; margin-bottom: 1rem;"><button onclick="openInstructorForm()">➕ הוספת מדריך</button></div>';
         }
 
         html += '<table class="styled-table"><thead><tr>';
-        html += '<th>ת.ז</th><th>שם פרטי</th><th>שם משפחה</th><th>דוא"ל</th><th>טלפון</th>';
+        html += '<th>ת.ז</th><th>שם פרטי</th><th>שם משפחה</th><th>דוא"ל</th><th>טלפון</th><th>תפקיד</th>';
         if (["admin", "operator"].includes(userType)) html += '<th>פעולות</th>';
         html += '</tr></thead><tbody>';
 
         for (const id in data) {
           const row = data[id];
           if (typeof row !== 'object') continue;
-          html += `<tr><td>${id}</td><td>${row.first_name}</td><td>${row.last_name}</td><td>${row.email}</td><td>${row.mobile}</td>`;
+          html += `<tr><td>${id}</td><td>${row.first_name}</td><td>${row.last_name}</td><td>${row.email}</td><td>${row.mobile}</td><td>${row.role}</td>`;
           if (["admin", "operator"].includes(userType)) {
             html += `<td>
-              <button onclick="editLecturer('${id}', '${row.first_name}', '${row.last_name}', '${row.email}', '${row.mobile}')">✏️</button>`;
+              <button onclick="editInstructor('${id}', '${row.first_name}', '${row.last_name}', '${row.email}', '${row.mobile}', '${row.role}')">✏️</button>`;
             if (userType === 'admin') {
-              html += ` <button onclick="deleteLecturer('${id}')">🗑️</button>`;
+              html += ` <button onclick="deleteInstructor('${id}')">🗑️</button>`;
             }
             html += '</td>';
           }
@@ -128,45 +153,47 @@
       });
     }
 
-    function openLecturerForm() {
-      document.getElementById('lecturerFormContainer').style.display = 'block';
-      document.getElementById('lecturerForm').reset();
+    function openInstructorForm() {
+      document.getElementById('instructorFormContainer').style.display = 'block';
+      document.getElementById('instructorForm').reset();
     }
 
-    function closeLecturerForm() {
-      document.getElementById('lecturerFormContainer').style.display = 'none';
+    function closeInstructorForm() {
+      document.getElementById('instructorFormContainer').style.display = 'none';
     }
 
-    document.getElementById('lecturerForm').onsubmit = function(e) {
+    document.getElementById('instructorForm').onsubmit = function(e) {
       e.preventDefault();
-      const id = document.getElementById('lecturerId').value;
+      const id = document.getElementById('instructorId').value;
       const data = {
-        first_name: document.getElementById('lecturerFirst').value,
-        last_name: document.getElementById('lecturerLast').value,
-        email: document.getElementById('lecturerEmail').value,
-        mobile: document.getElementById('lecturerMobile').value
+        first_name: document.getElementById('instructorFirst').value,
+        last_name: document.getElementById('instructorLast').value,
+        email: document.getElementById('instructorEmail').value,
+        mobile: document.getElementById('instructorMobile').value,
+        role: document.getElementById('instructorRole').value
       };
-      db.ref('lecturers/' + id).set(data).then(() => {
+      db.ref('instructors/' + id).set(data).then(() => {
         alert('נשמר בהצלחה!');
-        closeLecturerForm();
-        loadLecturers();
+        closeInstructorForm();
+        loadInstructors();
       });
     };
 
-    function editLecturer(id, first, last, email, mobile) {
-      openLecturerForm();
-      document.getElementById('lecturerId').value = id;
-      document.getElementById('lecturerFirst').value = first;
-      document.getElementById('lecturerLast').value = last;
-      document.getElementById('lecturerEmail').value = email;
-      document.getElementById('lecturerMobile').value = mobile;
+    function editInstructor(id, first, last, email, mobile, role) {
+      openInstructorForm();
+      document.getElementById('instructorId').value = id;
+      document.getElementById('instructorFirst').value = first;
+      document.getElementById('instructorLast').value = last;
+      document.getElementById('instructorEmail').value = email;
+      document.getElementById('instructorMobile').value = mobile;
+      document.getElementById('instructorRole').value = role;
     }
 
-    function deleteLecturer(id) {
-      if (confirm('האם אתה בטוח שברצונך למחוק את המרצה?')) {
-        db.ref('lecturers/' + id).remove().then(() => {
+    function deleteInstructor(id) {
+      if (confirm('האם אתה בטוח שברצונך למחוק את המדריך?')) {
+        db.ref('instructors/' + id).remove().then(() => {
           alert('נמחק בהצלחה.');
-          loadLecturers();
+          loadInstructors();
         });
       }
     }
