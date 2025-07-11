@@ -1,143 +1,170 @@
-// learningSolutions.js
+function loadLearningSolutions() {
+  const userType = localStorage.getItem("userType");
+  const container = document.getElementById("table-container");
 
-const learningSolutionsSchema = [
-  { label: "מספר פתרון הלמידה", field: "solution_id", type: "short_answer" },
-  { label: "שם פתרון הלמידה", field: "solution_name", type: "short_answer" },
-  {
-    label: "שם יוצר פתרון הלמידה",
-    field: "creator_name",
-    type: "dropdown",
-    source: "instructors",
-    display_field: "first_name + ' ' + last_name"
-  },
-  { label: "תאריך מפגש ראשון", field: "start_date", type: "date" },
-  { label: "זמני המפגש – התחלה", field: "start_time", type: "time" },
-  { label: "זמני המפגש – סיום", field: "end_time", type: "time" },
-  {
-    label: "יום המפגש הקבוע",
-    field: "weekday",
-    type: "dropdown",
-    source: "weekdays",
-    display_field: "name"
-  },
-  {
-    label: "שלבי חינוך",
-    field: "education_level",
-    type: "dropdown",
-    source: "education_levels",
-    display_field: "title"
-  },
-  {
-    label: "סוג חינוך",
-    field: "education_type",
-    type: "dropdown",
-    source: "education_types",
-    display_field: "title"
-  },
-  {
-    label: "היקף שעות אקדמיות מוכר לגמול",
-    field: "hour_credits",
-    type: "dropdown",
-    source: "hour_credits",
-    display_field: "hours"
-  },
-  {
-    label: "תחום דעת",
-    field: "subject",
-    type: "dropdown",
-    source: "subjects",
-    display_field: "name"
-  },
-  {
-    label: "תחום פתרון למידה",
-    field: "solution_domain",
-    type: "dropdown",
-    source: "solution_domains",
-    display_field: "name"
-  },
-  {
-    label: "אופן למידה",
-    field: "learning_mode",
-    type: "dropdown",
-    source: "learning_modes",
-    display_field: "title"
-  },
-  { label: "קישור סילבוס", field: "syllabus_link", type: "short_answer" },
-  { label: "תקציר פתרון הלמידה", field: "solution_summary", type: "rich_text" },
-  { label: "מטרות פתרון הלמידה", field: "solution_goals", type: "rich_text" }
-];
+  container.innerHTML = `
+    <h2>Learning Solutions</h2>
+    ${userType === "admin" || userType === "operator" ? '<button onclick="openLearningSolutionForm()">➕ הוסף פתרון למידה</button>' : ""}
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Name</th><th>Creator</th><th>Date</th><th>Weekday</th><th>Levels</th><th>Hours</th><th>Subject</th><th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="learning-solutions-body"></tbody>
+    </table>
 
-function createLearningSolutionForm(containerId) {
-  const container = document.getElementById(containerId);
-  if (!container) return;
+    <div id="learningSolutionModal" class="modal">
+      <div class="modal-content scrollable-form">
+        <span class="close" onclick="closeLearningSolutionForm()">&times;</span>
+        <h3 id="learningSolutionFormTitle">הוסף פתרון למידה</h3>
+        <input type="text" id="solutionId" placeholder="מספר פתרון למידה">
+        <input type="text" id="solutionName" placeholder="שם פתרון למידה">
+        <select id="creatorName"></select>
+        <input type="date" id="firstMeetingDate">
+        <input type="time" id="startTime">
+        <input type="time" id="endTime">
+        <select id="weekday"></select>
+        <select id="educationLevels" multiple></select>
+        <select id="educationTypes" multiple></select>
+        <select id="hoursCount"></select>
+        <select id="subject"></select>
+        <select id="solutionDomain"></select>
+        <select id="learningMode"></select>
+        <input type="url" id="syllabusLink" placeholder="קישור לסילבוס">
+        <textarea id="summary" placeholder="תקציר פתרון הלמידה"></textarea>
+        <textarea id="objectives" placeholder="מטרות פתרון הלמידה"></textarea>
+        <button onclick="saveLearningSolution()">שמור</button>
+      </div>
+    </div>
+  `;
 
-  learningSolutionsSchema.forEach(field => {
-    const fieldWrapper = document.createElement("div");
-    fieldWrapper.className = "form-group";
-
-    const label = document.createElement("label");
-    label.textContent = field.label;
-    fieldWrapper.appendChild(label);
-
-    let input;
-    switch (field.type) {
-      case "short_answer":
-        input = document.createElement("input");
-        input.type = "text";
-        break;
-      case "date":
-        input = document.createElement("input");
-        input.type = "date";
-        break;
-      case "time":
-        input = document.createElement("input");
-        input.type = "time";
-        break;
-      case "rich_text":
-        input = document.createElement("textarea");
-        input.rows = 4;
-        break;
-      case "dropdown":
-        input = document.createElement("select");
-        input.innerHTML = `<option disabled selected>בחר...</option>`;
-        loadDropdownOptions(field.source, field.display_field, input);
-        break;
-      default:
-        input = document.createElement("input");
-        input.type = "text";
-    }
-
-    input.id = field.field;
-    input.name = field.field;
-    input.className = "form-control";
-
-    fieldWrapper.appendChild(input);
-    container.appendChild(fieldWrapper);
+  const tbody = document.getElementById("learning-solutions-body");
+  db.ref("learning_solutions").once("value", snapshot => {
+    tbody.innerHTML = "";
+    snapshot.forEach(child => {
+      const id = child.key;
+      const d = child.val();
+      tbody.innerHTML += `
+        <tr>
+          <td>${d.solution_name || ""}</td>
+          <td>${d.creator_name || ""}</td>
+          <td>${d.first_meeting_date || ""}</td>
+          <td>${d.weekday || ""}</td>
+          <td>${(d.education_levels || []).join(", ")}</td>
+          <td>${d.hours_count || ""}</td>
+          <td>${d.subject || ""}</td>
+          <td>
+            ${(userType === "admin" || userType === "operator") ? `<button onclick="editLearningSolution('${id}')">✎</button>` : ""}
+            ${(userType === "admin") ? `<button onclick="deleteLearningSolution('${id}')">🗑</button>` : ""}
+          </td>
+        </tr>`;
+    });
   });
 }
 
-function loadDropdownOptions(sourceTable, displayField, selectElement) {
-  // Replace with actual Firebase call
-  fetch(`https://educatalog-63603-default-rtdb.firebaseio.com/${sourceTable}.json`)
-    .then(res => res.json())
-    .then(data => {
-      Object.entries(data || {}).forEach(([key, value]) => {
-        const option = document.createElement("option");
-        option.value = key;
-        option.textContent = parseDisplayField(value, displayField);
-        selectElement.appendChild(option);
-      });
-    });
+function openLearningSolutionForm() {
+  document.getElementById("learningSolutionFormTitle").textContent = "הוסף פתרון למידה";
+  document.getElementById("solutionId").disabled = false;
+  const ids = ["solutionId","solutionName","firstMeetingDate","startTime","endTime","syllabusLink","summary","objectives"];
+  ids.forEach(id => document.getElementById(id).value = "");
+  ["creatorName","weekday","educationLevels","educationTypes","hoursCount","subject","solutionDomain","learningMode"]
+    .forEach(id => document.getElementById(id).innerHTML = "");
+  populateAllDropdowns();
+  document.getElementById("learningSolutionModal").style.display = "block";
 }
 
-function parseDisplayField(data, displayField) {
-  if (displayField.includes("+")) {
-    return displayField.split("+").map(part => {
-      const key = part.trim().replace(/['"]/g, "");
-      return data[key] || "";
-    }).join(" ").trim();
+function editLearningSolution(id) {
+  db.ref("learning_solutions/" + id).once("value").then(snap => {
+    const d = snap.val();
+    document.getElementById("learningSolutionFormTitle").textContent = "ערוך פתרון למידה";
+    document.getElementById("solutionId").value = id;
+    document.getElementById("solutionId").disabled = true;
+    document.getElementById("solutionName").value = d.solution_name || "";
+    document.getElementById("firstMeetingDate").value = d.first_meeting_date || "";
+    document.getElementById("startTime").value = d.start_time || "";
+    document.getElementById("endTime").value = d.end_time || "";
+    document.getElementById("syllabusLink").value = d.syllabus_link || "";
+    document.getElementById("summary").value = d.summary || "";
+    document.getElementById("objectives").value = d.objectives || "";
+    populateAllDropdowns();
+    setTimeout(() => {
+      document.getElementById("creatorName").value = d.creator_name || "";
+      document.getElementById("weekday").value = d.weekday || "";
+      document.getElementById("hoursCount").value = d.hours_count || "";
+      document.getElementById("subject").value = d.subject || "";
+      document.getElementById("solutionDomain").value = d.solution_domain || "";
+      document.getElementById("learningMode").value = d.learning_mode || "";
+    }, 300);
+    document.getElementById("learningSolutionModal").style.display = "block";
+  });
+}
+
+function saveLearningSolution() {
+  const id = document.getElementById("solutionId").value;
+  const data = {
+    solution_name: document.getElementById("solutionName").value,
+    creator_name: document.getElementById("creatorName").value,
+    first_meeting_date: document.getElementById("firstMeetingDate").value,
+    start_time: document.getElementById("startTime").value,
+    end_time: document.getElementById("endTime").value,
+    weekday: document.getElementById("weekday").value,
+    education_levels: Array.from(document.getElementById("educationLevels").selectedOptions).map(o => o.value),
+    education_types: Array.from(document.getElementById("educationTypes").selectedOptions).map(o => o.value),
+    hours_count: document.getElementById("hoursCount").value,
+    subject: document.getElementById("subject").value,
+    solution_domain: document.getElementById("solutionDomain").value,
+    learning_mode: document.getElementById("learningMode").value,
+    syllabus_link: document.getElementById("syllabusLink").value,
+    summary: document.getElementById("summary").value,
+    objectives: document.getElementById("objectives").value
+  };
+  if (id && data.solution_name && data.first_meeting_date) {
+    db.ref("learning_solutions/" + id).set(data);
+    closeLearningSolutionForm();
+    loadLearningSolutions();
+  } else {
+    alert("שדות חובה: מספר פתרון, שם, תאריך");
   }
-  return data[displayField] || "";
 }
 
-export { learningSolutionsSchema, createLearningSolutionForm };
+function deleteLearningSolution(id) {
+  if (confirm("למחוק את פתרון הלמידה?")) {
+    db.ref("learning_solutions/" + id).remove();
+    loadLearningSolutions();
+  }
+}
+
+function closeLearningSolutionForm() {
+  document.getElementById("learningSolutionModal").style.display = "none";
+}
+
+// Drop-down dynamic population
+function populateSelect(selectId, path, field = "title", multi = false) {
+  const select = document.getElementById(selectId);
+  select.innerHTML = multi ? "" : "<option value=''>בחר</option>";
+  db.ref(path).once("value", snapshot => {
+    snapshot.forEach(child => {
+      const key = child.key;
+      const data = child.val();
+      const label = data[field] || key;
+      const option = document.createElement("option");
+      option.value = key;
+      option.textContent = label;
+      select.appendChild(option);
+    });
+  });
+}
+
+function populateAllDropdowns() {
+  populateSelect("creatorName", "instructors", "first_name");
+  populateSelect("weekday", "weekdays", "name");
+  populateSelect("educationLevels", "education_levels", "title", true);
+  populateSelect("educationTypes", "education_types", "title", true);
+  populateSelect("hoursCount", "hour_credits", "hours");
+  populateSelect("subject", "subjects", "name");
+  populateSelect("solutionDomain", "solution_domains", "name");
+  populateSelect("learningMode", "learning_modes", "title");
+}
+
+window.loadLearningSolutions = loadLearningSolutions;
