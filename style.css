@@ -65,3 +65,23 @@ button {
   font-size: 20px;
   cursor: pointer;
 }
+.scrollable-form {
+  max-height: 80vh;
+  overflow-y: auto;
+  padding: 10px;
+}
+
+.scrollable-form input,
+.scrollable-form select,
+.scrollable-form textarea {
+  display: block;
+  width: 95%;
+  margin: 10px auto;
+  padding: 8px;
+  font-size: 14px;
+}
+
+.scrollable-form textarea {
+  min-height: 60px;
+  resize: vertical;
+}
