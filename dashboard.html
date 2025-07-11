@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>לוח ניהול</title>
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;500;700&display=swap" rel="stylesheet">
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
   <style>
     body {
       font-family: 'Heebo', sans-serif;
@@ -43,6 +45,27 @@
     .btn-table:hover {
       background-color: #005a9e;
     }
+    #tableContainer {
+      width: 90%;
+      margin: 2rem auto;
+      background-color: white;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 0.75rem;
+      text-align: right;
+      border: 1px solid #ccc;
+    }
+    th {
+      background-color: #e6f0ff;
+    }
   </style>
 </head>
 <body>
@@ -50,16 +73,64 @@
     מערכת ניהול טבלאות
   </header>
   <div class="container">
-    <button class="btn-table">מרצה</button>
-    <button class="btn-table">מדריך</button>
-    <button class="btn-table">אופן למידה</button>
-    <button class="btn-table">שלבי חינוך</button>
-    <button class="btn-table">סוג חינוך</button>
-    <button class="btn-table">יום</button>
-    <button class="btn-table">תחום דעת</button>
-    <button class="btn-table">תחום פתרון למידה</button>
-    <button class="btn-table">משתמשים</button>
-    <button class="btn-table">פתרון למידה</button>
+    <button class="btn-table" onclick="loadTable('lecturers')">מרצה</button>
+    <button class="btn-table" onclick="loadTable('instructors')">מדריך</button>
+    <button class="btn-table" onclick="loadTable('learning_modes')">אופן למידה</button>
+    <button class="btn-table" onclick="loadTable('education_levels')">שלבי חינוך</button>
+    <button class="btn-table" onclick="loadTable('education_types')">סוג חינוך</button>
+    <button class="btn-table" onclick="loadTable('weekdays')">יום</button>
+    <button class="btn-table" onclick="loadTable('subjects')">תחום דעת</button>
+    <button class="btn-table" onclick="loadTable('solution_domains')">תחום פתרון למידה</button>
+    <button class="btn-table" onclick="loadTable('users')">משתמשים</button>
+    <button class="btn-table" onclick="loadTable('learning_solutions')">פתרון למידה</button>
   </div>
+  <div id="tableContainer"></div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCgRQhK0u4xXRj4YOJhEtRm9nRxA_X8ALk",
+      authDomain: "educatalog-63603.firebaseapp.com",
+      databaseURL: "https://educatalog-63603-default-rtdb.firebaseio.com",
+      projectId: "educatalog-63603",
+      storageBucket: "educatalog-63603.appspot.com",
+      messagingSenderId: "577201627806",
+      appId: "1:577201627806:web:bd9d6346134d7c3dff518f"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    function loadTable(tableName) {
+      const container = document.getElementById('tableContainer');
+      container.innerHTML = '<p>טוען נתונים...</p>';
+
+      db.ref(tableName).once('value').then(snapshot => {
+        const data = snapshot.val();
+        if (!data) {
+          container.innerHTML = '<p>אין נתונים להצגה</p>';
+          return;
+        }
+        const headers = new Set();
+        Object.values(data).forEach(item => {
+          Object.keys(item).forEach(key => headers.add(key));
+        });
+
+        let html = '<table><thead><tr>';
+        headers.forEach(h => html += `<th>${h}</th>`);
+        html += '</tr></thead><tbody>';
+
+        Object.values(data).forEach(row => {
+          html += '<tr>';
+          headers.forEach(h => {
+            const value = row[h];
+            html += `<td>${Array.isArray(value) ? value.join(', ') : value || ''}</td>`;
+          });
+          html += '</tr>';
+        });
+
+        html += '</tbody></table>';
+        container.innerHTML = html;
+      });
+    }
+  </script>
 </body>
 </html>
