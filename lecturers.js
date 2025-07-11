@@ -51,3 +51,6 @@ function loadLecturers() {
       console.error("Error loading lecturers:", error);
     });
 }
+
+// חשיפת הפונקציה ל-scope גלובלי
+window.loadLecturers = loadLecturers;
