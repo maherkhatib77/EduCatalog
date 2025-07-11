@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduCatalog - עמוד ראשי</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>EduCatalog - פורטל פתרונות למידה</h1>
+    <button id="adminLoginBtn">כניסת מנהל</button>
+  </header>
+
+  <!-- טופס התחברות -->
+  <div id="loginModal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="closeModal">&times;</span>
+      <h2>התחברות מנהל</h2>
+      <form id="loginForm">
+        <label for="username">שם משתמש</label>
+        <input type="text" id="username" required>
+
+        <label for="password">סיסמה</label>
+        <input type="password" id="password" required>
+
+        <button type="submit">התחבר</button>
+      </form>
+      <p id="errorMsg" class="error"></p>
+    </div>
+  </div>
+
+  <script src="auth.js"></script>
+</body>
+</html>
