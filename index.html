@@ -1,35 +1,27 @@
+
 <!DOCTYPE html>
-<html lang="he" dir="rtl">
+<html lang="he">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EduCatalog - עמוד ראשי</title>
+  <title>EduCatalog - פתרונות למידה</title>
   <link rel="stylesheet" href="style.css">
+  <script src="auth.js" defer></script>
 </head>
 <body>
   <header>
+    <button onclick="openLoginModal()">כניסת מנהל</button>
     <h1>EduCatalog - פורטל פתרונות למידה</h1>
-    <button id="adminLoginBtn">כניסת מנהל</button>
   </header>
 
-  <!-- טופס התחברות -->
+  <!-- מודל התחברות -->
   <div id="loginModal" class="modal">
     <div class="modal-content">
-      <span class="close" id="closeModal">&times;</span>
+      <span class="close" onclick="closeLoginModal()">&times;</span>
       <h2>התחברות מנהל</h2>
-      <form id="loginForm">
-        <label for="username">שם משתמש</label>
-        <input type="text" id="username" required>
-
-        <label for="password">סיסמה</label>
-        <input type="password" id="password" required>
-
-        <button type="submit">התחבר</button>
-      </form>
-      <p id="errorMsg" class="error"></p>
+      <input type="text" id="username" placeholder="שם משתמש">
+      <input type="password" id="password" placeholder="סיסמה">
+      <button onclick="login()">התחבר</button>
     </div>
   </div>
-
-  <script src="auth.js"></script>
 </body>
 </html>

@@ -6,11 +6,16 @@ function login() {
     localStorage.setItem("userType", "admin");
     window.location.href = "dashboard.html";
   } else {
-    alert("Incorrect login details");
+    alert("פרטי התחברות שגויים");
   }
 }
-
 function logout() {
   localStorage.removeItem("userType");
   window.location.href = "index.html";
+}
+function openLoginModal() {
+  document.getElementById("loginModal").style.display = "block";
+}
+function closeLoginModal() {
+  document.getElementById("loginModal").style.display = "none";
 }
