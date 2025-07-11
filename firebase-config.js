@@ -1,3 +1,4 @@
+
 const firebaseConfig = {
   apiKey: "AIzaSyCgRQhK0u4xXRj4YOJhEtRm9nRxA_X8ALk",
   authDomain: "educatalog-63603.firebaseapp.com",
