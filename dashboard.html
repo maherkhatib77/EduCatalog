@@ -5,74 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>לוח ניהול</title>
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
-  <style>
-    body {
-      font-family: 'Heebo', sans-serif;
-      background-color: #f5f9ff;
-      margin: 0;
-      padding: 0;
-      direction: rtl;
-      color: #003366;
-    }
-    header {
-      background-color: #003366;
-      color: white;
-      padding: 1rem;
-      text-align: center;
-      font-size: 1.5rem;
-      font-weight: 700;
-    }
-    .container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      padding: 2rem;
-      gap: 1.5rem;
-    }
-    .btn-table {
-      background-color: #0070c0;
-      color: white;
-      border: none;
-      padding: 1rem 2rem;
-      font-size: 1.2rem;
-      border-radius: 12px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-    .btn-table:hover {
-      background-color: #005a9e;
-    }
-    #tableContainer {
-      width: 90%;
-      margin: 2rem auto;
-      background-color: white;
-      padding: 1rem;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      overflow-x: auto;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    th, td {
-      padding: 0.75rem;
-      text-align: right;
-      border: 1px solid #ccc;
-    }
-    th {
-      background-color: #e6f0ff;
-    }
-  </style>
 </head>
 <body>
   <header>
-    מערכת ניהול טבלאות
+    <span>מערכת ניהול טבלאות</span>
+    <button id="logoutBtn" style="float:left; background-color:#c62828; margin-right: 1rem;">התנתקות</button>
   </header>
-  <div class="container">
+
+  <div class="container" id="adminPanel" style="display: none;">
     <button class="btn-table" onclick="loadTable('lecturers')">מרצה</button>
     <button class="btn-table" onclick="loadTable('instructors')">מדריך</button>
     <button class="btn-table" onclick="loadTable('learning_modes')">אופן למידה</button>
@@ -84,20 +27,24 @@
     <button class="btn-table" onclick="loadTable('users')">משתמשים</button>
     <button class="btn-table" onclick="loadTable('learning_solutions')">פתרון למידה</button>
   </div>
+
   <div id="tableContainer"></div>
 
+  <script src="firebase-config.js"></script>
   <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyCgRQhK0u4xXRj4YOJhEtRm9nRxA_X8ALk",
-      authDomain: "educatalog-63603.firebaseapp.com",
-      databaseURL: "https://educatalog-63603-default-rtdb.firebaseio.com",
-      projectId: "educatalog-63603",
-      storageBucket: "educatalog-63603.appspot.com",
-      messagingSenderId: "577201627806",
-      appId: "1:577201627806:web:bd9d6346134d7c3dff518f"
+    // בדיקת התחברות
+    const userType = localStorage.getItem('userType');
+    if (userType === 'admin' || userType === 'operator') {
+      document.getElementById('adminPanel').style.display = 'flex';
+    } else {
+      document.body.innerHTML = '<p style="text-align:center;margin-top:2rem;font-size:1.2rem;color:red;">אין לך הרשאה לצפות בדף זה. אנא התחבר מחדש.</p>';
+    }
+
+    // כפתור התנתקות
+    document.getElementById('logoutBtn').onclick = () => {
+      localStorage.removeItem('userType');
+      window.location.href = 'index.html';
     };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
 
     function loadTable(tableName) {
       const container = document.getElementById('tableContainer');
