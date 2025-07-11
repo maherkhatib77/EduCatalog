@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="style.css">
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <script src="firebase-config.js"></script>
 </head>
 <body>
   <header>
@@ -16,8 +17,7 @@
   </header>
 
   <div class="container" id="adminPanel" style="display: none;">
-    <button class="btn-table" onclick="loadTable('lecturers')">מרצה</button>
-    <!-- שאר הכפתורים יישארו כאן -->
+    <button class="btn-table" onclick="loadLecturers()">מרצה</button>
   </div>
 
   <div id="tableContainer"></div>
@@ -43,10 +43,9 @@
     </div>
   </div>
 
-  <script src="firebase-config.js"></script>
   <script>
     const userType = localStorage.getItem('userType');
-    if (userType === 'admin' || userType === 'operator' || userType === 'client') {
+    if (["admin", "operator", "client"].includes(userType)) {
       document.getElementById('adminPanel').style.display = 'flex';
     } else {
       document.body.innerHTML = '<p style="text-align:center;margin-top:2rem;font-size:1.2rem;color:red;">אין לך הרשאה לצפות בדף זה. אנא התחבר מחדש.</p>';
@@ -57,49 +56,41 @@
       window.location.href = 'index.html';
     };
 
-    function loadTable(tableName) {
+    function loadLecturers() {
       const container = document.getElementById('tableContainer');
       container.innerHTML = '<p>טוען נתונים...</p>';
 
-      db.ref(tableName).once('value').then(snapshot => {
+      db.ref('lecturers').once('value').then(snapshot => {
         const data = snapshot.val();
         if (!data) {
           container.innerHTML = '<p>אין נתונים להצגה</p>';
           return;
         }
-        const headers = new Set();
-        Object.values(data).forEach(item => {
-          Object.keys(item).forEach(key => headers.add(key));
-        });
 
-        let html = '<h2>טבלת ' + tableName + '</h2>';
-
-        if (userType === 'admin' || userType === 'operator') {
+        let html = '<h2>טבלת מרצים</h2>';
+        if (["admin", "operator"].includes(userType)) {
           html += '<button onclick="openLecturerForm()">➕ הוספת מרצה</button>';
         }
 
         html += '<table><thead><tr>';
-        headers.forEach(h => html += `<th>${h}</th>`);
-        if (userType === 'admin' || userType === 'operator') {
-          html += '<th>פעולות</th>';
-        }
+        html += '<th>ת.ז</th><th>שם פרטי</th><th>שם משפחה</th><th>דוא"ל</th><th>טלפון</th>';
+        if (["admin", "operator"].includes(userType)) html += '<th>פעולות</th>';
         html += '</tr></thead><tbody>';
 
-        Object.entries(data).forEach(([id, row]) => {
-          html += '<tr>';
-          headers.forEach(h => {
-            const value = row[h];
-            html += `<td>${value || ''}</td>`;
-          });
-          if (userType === 'admin' || userType === 'operator') {
-            html += `<td><button onclick="editLecturer('${id}', ${JSON.stringify(row).replace(/"/g, '&quot;')})">✏️</button>`;
+        for (const id in data) {
+          const row = data[id];
+          if (typeof row !== 'object') continue;
+          html += `<tr><td>${id}</td><td>${row.first_name}</td><td>${row.last_name}</td><td>${row.email}</td><td>${row.mobile}</td>`;
+          if (["admin", "operator"].includes(userType)) {
+            html += `<td>
+              <button onclick="editLecturer('${id}', '${row.first_name}', '${row.last_name}', '${row.email}', '${row.mobile}')">✏️</button>`;
             if (userType === 'admin') {
               html += ` <button onclick="deleteLecturer('${id}')">🗑️</button>`;
             }
             html += '</td>';
           }
           html += '</tr>';
-        });
+        }
 
         html += '</tbody></table>';
         container.innerHTML = html;
@@ -127,24 +118,24 @@
       db.ref('lecturers/' + id).set(data).then(() => {
         alert('נשמר בהצלחה!');
         closeLecturerForm();
-        loadTable('lecturers');
+        loadLecturers();
       });
     };
 
-    function editLecturer(id, row) {
+    function editLecturer(id, first, last, email, mobile) {
       openLecturerForm();
       document.getElementById('lecturerId').value = id;
-      document.getElementById('lecturerFirst').value = row.first_name;
-      document.getElementById('lecturerLast').value = row.last_name;
-      document.getElementById('lecturerEmail').value = row.email;
-      document.getElementById('lecturerMobile').value = row.mobile;
+      document.getElementById('lecturerFirst').value = first;
+      document.getElementById('lecturerLast').value = last;
+      document.getElementById('lecturerEmail').value = email;
+      document.getElementById('lecturerMobile').value = mobile;
     }
 
     function deleteLecturer(id) {
       if (confirm('האם אתה בטוח שברצונך למחוק את המרצה?')) {
         db.ref('lecturers/' + id).remove().then(() => {
           alert('נמחק בהצלחה.');
-          loadTable('lecturers');
+          loadLecturers();
         });
       }
     }
