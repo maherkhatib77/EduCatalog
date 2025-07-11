@@ -48,7 +48,13 @@ function loadLearningSolutions() {
       const d = child.val();
       tbody.innerHTML += `
         <tr>
-          <td>${id}</td>
+          <td>${d.solution_name || ""}</td>
+          <td>${d.creator_name || ""}</td>
+          <td>${d.first_meeting_date || ""}</td>
+          <td>${d.weekday || ""}</td>
+          <td>${(d.education_levels || []).join(", ")}</td>
+          <td>${d.hours_count || ""}</td>
+          <td>${d.subject || ""}</td>
           <td>${d.solution_name || ""}</td>
           <td>${d.creator_name || ""}</td>
           <td>${d.first_meeting_date || ""}</td>
