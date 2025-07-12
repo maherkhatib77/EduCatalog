@@ -1,15 +1,18 @@
 
 let popupData = [];
 let popupIndex = 0;
+let fullData = [];
 
 function openLearningSolutionPopup() {
   db.ref("learning_solutions").once("value", snapshot => {
     popupData = [];
+    fullData = [];
     snapshot.forEach(child => {
       const d = child.val();
       d.id = child.key;
-      popupData.push(d);
+      fullData.push(d);
     });
+    popupData = [...fullData];
     if (popupData.length > 0) {
       popupIndex = 0;
       renderPopupCard();
@@ -62,12 +65,30 @@ function nextPopupCard() {
 
 function filterPopupResults() {
   const term = document.getElementById("popupSearch").value.toLowerCase();
-  const filtered = popupData.filter(d => (d.solution_name || "").toLowerCase().includes(term));
-  if (filtered.length > 0) {
-    popupData = filtered;
-    popupIndex = 0;
+  popupData = fullData.filter(d =>
+    (d.solution_name || "").toLowerCase().includes(term) ||
+    (d.subject || "").toLowerCase().includes(term) ||
+    (d.creator_name || "").toLowerCase().includes(term)
+  );
+  popupIndex = 0;
+  if (popupData.length > 0) {
     renderPopupCard();
+  } else {
+    document.getElementById("popupContent").innerHTML = "<p>לא נמצאו תוצאות</p>";
+    document.getElementById("popupCounter").textContent = "0 / 0";
   }
+}
+
+function printAllLearningSolutions() {
+  let html = "<html><head><title>רשימת פתרונות למידה</title></head><body dir='rtl'><h2>רשימת פתרונות למידה</h2><table border='1' cellpadding='5'><thead><tr><th>שם</th><th>מנחה</th><th>תאריך</th><th>שעות</th><th>תחום</th></tr></thead><tbody>";
+  fullData.forEach(d => {
+    html += `<tr><td>${d.solution_name || ""}</td><td>${d.creator_name || ""}</td><td>${d.first_meeting_date || ""}</td><td>${d.hours_count || ""}</td><td>${d.subject || ""}</td></tr>`;
+  });
+  html += "</tbody></table></body></html>";
+  const w = window.open("", "_blank");
+  w.document.write(html);
+  w.document.close();
+  w.print();
 }
 
 window.openLearningSolutionPopup = openLearningSolutionPopup;

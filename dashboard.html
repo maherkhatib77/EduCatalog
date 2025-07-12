@@ -1,6 +1,6 @@
 
 <!DOCTYPE html>
-<html lang="he">
+<html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8">
   <title>Dashboard</title>
@@ -25,11 +25,12 @@
       background: #fefefe;
       padding: 20px;
       width: 90%;
-      max-width: 600px;
+      max-width: 700px;
       border-radius: 10px;
       overflow-y: auto;
       max-height: 90vh;
       direction: rtl;
+      text-align: right;
     }
 
     .modal-header {
@@ -63,7 +64,22 @@
     }
 
     .search-bar {
-      margin-bottom: 10px;
+      margin: 10px 0;
+    }
+
+    .search-bar input {
+      width: 100%;
+      padding: 5px;
+    }
+
+    .action-bar {
+      display: flex;
+      justify-content: space-between;
+      margin: 10px 0;
+    }
+
+    .action-bar button {
+      padding: 6px 10px;
     }
   </style>
 </head>
@@ -97,7 +113,11 @@
         <span class="close" onclick="closeLearningSolutionPopup()">&times;</span>
       </div>
       <div class="search-bar">
-        <input type="text" id="popupSearch" placeholder="חפש לפי שם..." oninput="filterPopupResults()" style="width:100%; padding:5px;">
+        <input type="text" id="popupSearch" placeholder="חיפוש לפי שם, תחום, מנחה..." oninput="filterPopupResults()">
+      </div>
+      <div class="action-bar">
+        <button onclick="openLearningSolutionForm()">➕ הוסף פתרון</button>
+        <button onclick="printAllLearningSolutions()">🖨️ הדפס</button>
       </div>
       <div class="modal-body" id="popupContent"></div>
       <div class="modal-footer">
