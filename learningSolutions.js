@@ -63,6 +63,11 @@ function populateSelect(id, path, field, secondField = null, multi = false) {
         const option = document.createElement("option");
         option.value = label;
         option.textContent = label;
+    if (multi && Array.isArray(d[id]) && d[id].includes(label)) {
+      option.selected = true;
+    } else if (!multi && d[id] === label) {
+      option.selected = true;
+    }
         select.appendChild(option);
       }
     });
