@@ -10,6 +10,62 @@
   <script src="firebase-config.js"></script>
   <style>
     .hidden { display: none; }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      right: 0; left: 0; top: 0; bottom: 0;
+      background-color: rgba(0,0,0,0.6);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: #fefefe;
+      padding: 20px;
+      width: 90%;
+      max-width: 600px;
+      border-radius: 10px;
+      overflow-y: auto;
+      max-height: 90vh;
+      direction: rtl;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-header h3 {
+      margin: 0;
+    }
+
+    .modal-body p {
+      margin: 10px 0;
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 20px;
+    }
+
+    .modal-footer button {
+      padding: 5px 10px;
+    }
+
+    .close {
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    .search-bar {
+      margin-bottom: 10px;
+    }
+
   </style>
 </head>
 <body>
@@ -18,33 +74,32 @@
     <button onclick="logout()">התנתקות</button>
   </header>
   <div style="padding: 20px;">
-    <button onclick="loadLecturers()">מרצה</button>
-    <button onclick="loadInstructors()">מדריך</button>
-    <button onclick="loadLearningModes()">אופן למידה</button>
-    <button onclick="loadEducationLevels()">שלבי חינוך</button>
-    <button onclick="loadEducationTypes()">סוג חינוך</button>
-    <button onclick="loadWeekdays()">יום</button>
-    <button onclick="loadHourCredits()">היקף שעות</button>
-    <button onclick="loadSubjects()">תחום דעת</button>
-    <button onclick="loadSolutionDomains()">תחום פתרון הלמידה</button>
-    <button onclick="loadUsers()">משתמשים</button>
     <button onclick="loadLearningSolutions()">פתרון למידה (טבלה)</button>
-    <button onclick="loadLearningSolutionsAsCards()">פתרון למידה (כרטיסים)</button>
+    <button onclick="openLearningSolutionPopup()">פתרון למידה (Popup)</button>
   </div>
+
   <div id="table-container"></div>
-  <div id="card-container" class="hidden" style="margin-top: 30px;"></div>
+
+  <!-- Popup Modal -->
+  <div id="learningSolutionPopup" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="popupTitle">פתרון למידה</h3>
+        <span class="close" onclick="closeLearningSolutionPopup()">&times;</span>
+      </div>
+      <div class="search-bar">
+        <input type="text" id="popupSearch" placeholder="חפש לפי שם..." oninput="filterPopupResults()" style="width:100%; padding:5px;">
+      </div>
+      <div class="modal-body" id="popupContent"></div>
+      <div class="modal-footer">
+        <button onclick="prevPopupCard()">◀</button>
+        <span id="popupCounter">1 / 1</span>
+        <button onclick="nextPopupCard()">▶</button>
+      </div>
+    </div>
+  </div>
 
   <script src="auth.js"></script>
-  <script src="lecturers.js"></script>
-  <script src="instructors.js"></script>
-  <script src="learningModes.js"></script>
-  <script src="educationLevels.js"></script>
-  <script src="educationTypes.js"></script>
-  <script src="weekdays.js"></script>
-  <script src="hourCredits.js"></script>
-  <script src="subjects.js"></script>
-  <script src="solutionDomains.js"></script>
-  <script src="users.js"></script>
   <script src="learningSolutions.js"></script>
 </body>
 </html>
