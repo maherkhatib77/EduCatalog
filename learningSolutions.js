@@ -2,6 +2,7 @@
 let popupData = [];
 let popupIndex = 0;
 let fullData = [];
+let editingId = null;
 
 function openLearningSolutionPopup() {
   db.ref("learning_solutions").once("value", snapshot => {
@@ -31,6 +32,8 @@ function renderPopupCard() {
   const d = popupData[popupIndex];
   const content = document.getElementById("popupContent");
   const counter = document.getElementById("popupCounter");
+  editingId = null;
+
   content.innerHTML = `
     <p><strong>שם:</strong> ${d.solution_name || ""}</p>
     <p><strong>מנחה:</strong> ${d.creator_name || ""}</p>
@@ -42,25 +45,77 @@ function renderPopupCard() {
     <p><strong>מטרות:</strong> ${d.objectives || ""}</p>
     <p><strong>תקציר:</strong> ${d.summary || ""}</p>
     <div style="margin-top: 10px;">
-      <button onclick="editLearningSolution('${d.id}')">✎ ערוך</button>
+      <button onclick="showSolutionForm('${d.id}')">✎ ערוך</button>
       <button onclick="deleteLearningSolution('${d.id}')">🗑 מחק</button>
     </div>
   `;
   counter.textContent = `${popupIndex + 1} / ${popupData.length}`;
 }
 
-function prevPopupCard() {
-  if (popupIndex > 0) {
-    popupIndex--;
-    renderPopupCard();
+function showSolutionForm(id = null) {
+  let d = {
+    solution_name: "",
+    creator_name: "",
+    first_meeting_date: "",
+    weekday: "",
+    education_levels: [],
+    hours_count: "",
+    subject: "",
+    objectives: "",
+    summary: ""
+  };
+
+  if (id) {
+    d = popupData.find(item => item.id === id) || d;
+    editingId = id;
   }
+
+  document.getElementById("popupContent").innerHTML = `
+    <h4>${id ? "עריכת פתרון" : "הוספת פתרון חדש"}</h4>
+    <input type="text" id="formSolutionName" placeholder="שם פתרון" value="${d.solution_name || ""}" style="width:100%;margin-bottom:5px;">
+    <input type="text" id="formCreator" placeholder="שם מנחה" value="${d.creator_name || ""}" style="width:100%;margin-bottom:5px;">
+    <input type="date" id="formDate" value="${d.first_meeting_date || ""}" style="width:100%;margin-bottom:5px;">
+    <input type="text" id="formWeekday" placeholder="יום" value="${d.weekday || ""}" style="width:100%;margin-bottom:5px;">
+    <input type="text" id="formLevels" placeholder="שלבי חינוך (מופרד בפסיקים)" value="${(d.education_levels || []).join(",")}" style="width:100%;margin-bottom:5px;">
+    <input type="text" id="formHours" placeholder="שעות" value="${d.hours_count || ""}" style="width:100%;margin-bottom:5px;">
+    <input type="text" id="formSubject" placeholder="תחום דעת" value="${d.subject || ""}" style="width:100%;margin-bottom:5px;">
+    <textarea id="formObjectives" placeholder="מטרות" style="width:100%;margin-bottom:5px;">${d.objectives || ""}</textarea>
+    <textarea id="formSummary" placeholder="תקציר" style="width:100%;margin-bottom:5px;">${d.summary || ""}</textarea>
+    <div>
+      <button onclick="savePopupSolution()">💾 שמור</button>
+      <button onclick="renderPopupCard()">ביטול</button>
+    </div>
+  `;
 }
 
-function nextPopupCard() {
-  if (popupIndex < popupData.length - 1) {
-    popupIndex++;
-    renderPopupCard();
-  }
+function savePopupSolution() {
+  const name = document.getElementById("formSolutionName").value;
+  const creator = document.getElementById("formCreator").value;
+  const date = document.getElementById("formDate").value;
+  const weekday = document.getElementById("formWeekday").value;
+  const levels = document.getElementById("formLevels").value.split(",").map(s => s.trim());
+  const hours = document.getElementById("formHours").value;
+  const subject = document.getElementById("formSubject").value;
+  const objectives = document.getElementById("formObjectives").value;
+  const summary = document.getElementById("formSummary").value;
+
+  const data = {
+    solution_name: name,
+    creator_name: creator,
+    first_meeting_date: date,
+    weekday,
+    education_levels: levels,
+    hours_count: hours,
+    subject,
+    objectives,
+    summary
+  };
+
+  const id = editingId || Date.now().toString();
+  db.ref("learning_solutions/" + id).set(data).then(() => {
+    alert("נשמר בהצלחה!");
+    openLearningSolutionPopup(); // רענון
+  });
 }
 
 function filterPopupResults() {
