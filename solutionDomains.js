@@ -1,38 +1,36 @@
-
 function loadSolutionDomains() {
   const userType = localStorage.getItem("userType");
   const container = document.getElementById("table-container");
   container.innerHTML = `
     <h2>Solution Domains</h2>
-    ${userType === "admin" || userType === "operator" ? '<button onclick="openSolutionDomainForm()">➕ הוסף תחום פתרון</button>' : ""}
+    ${(userType === "admin" || userType === "operator") ? '<button onclick="openSolutionDomainForm()">➕ הוסף תחום פתרון</button>' : ""}
     <table class="data-table">
-      <thead><tr><th>ID</th><th>Domain</th><th>Actions</th></tr></thead>
+      <thead><tr><th>Title</th><th>Actions</th></tr></thead>
       <tbody id="solution-domains-body"></tbody>
     </table>
     <div id="solutionDomainModal" class="modal">
       <div class="modal-content">
         <span class="close" onclick="closeSolutionDomainForm()">&times;</span>
         <h3 id="solutionDomainFormTitle">הוסף תחום פתרון</h3>
-        <input type="text" id="solutionDomainId" placeholder="קוד תחום">
-        <input type="text" id="solutionDomainName" placeholder="שם תחום פתרון">
+        <input type="hidden" id="solutionDomainKey">
+        <input type="text" id="solutionDomainTitle" placeholder="כותרת תחום הפתרון">
         <button onclick="saveSolutionDomain()">שמור</button>
       </div>
     </div>
   `;
 
   const tbody = document.getElementById("solution-domains-body");
-  db.ref("solution_domains").once("value", snapshot => {
+  firebase.database().ref("solution_domains").once("value", snapshot => {
     tbody.innerHTML = "";
     snapshot.forEach(child => {
-      const id = child.key;
+      const key = child.key;
       const d = child.val();
       tbody.innerHTML += `
         <tr>
-          <td>${id}</td>
-          <td>${d.name}</td>
+          <td>${d.Title}</td>
           <td>
-            ${(userType === "admin" || userType === "operator") ? `<button onclick="editSolutionDomain('${id}')">✎</button>` : ""}
-            ${(userType === "admin") ? `<button onclick="deleteSolutionDomain('${id}')">🗑</button>` : ""}
+            ${(userType === "admin" || userType === "operator") ? `<button onclick="editSolutionDomain('${key}')">✎</button>` : ""}
+            ${(userType === "admin") ? `<button onclick="deleteSolutionDomain('${key}')">🗑</button>` : ""}
           </td>
         </tr>`;
     });
@@ -41,40 +39,52 @@ function loadSolutionDomains() {
 
 function openSolutionDomainForm() {
   document.getElementById("solutionDomainFormTitle").textContent = "הוסף תחום פתרון";
-  document.getElementById("solutionDomainId").disabled = false;
-  document.getElementById("solutionDomainId").value = "";
-  document.getElementById("solutionDomainName").value = "";
+  document.getElementById("solutionDomainKey").value = "";
+  document.getElementById("solutionDomainTitle").value = "";
   document.getElementById("solutionDomainModal").style.display = "block";
 }
 
-function editSolutionDomain(id) {
-  db.ref("solution_domains/" + id).once("value").then(snap => {
+function editSolutionDomain(key) {
+  firebase.database().ref("solution_domains/" + key).once("value").then(snap => {
     const data = snap.val();
     document.getElementById("solutionDomainFormTitle").textContent = "ערוך תחום פתרון";
-    document.getElementById("solutionDomainId").value = id;
-    document.getElementById("solutionDomainId").disabled = true;
-    document.getElementById("solutionDomainName").value = data.name;
+    document.getElementById("solutionDomainKey").value = key;
+    document.getElementById("solutionDomainTitle").value = data.Title;
     document.getElementById("solutionDomainModal").style.display = "block";
   });
 }
 
 function saveSolutionDomain() {
-  const id = document.getElementById("solutionDomainId").value;
-  const name = document.getElementById("solutionDomainName").value;
+  const key = document.getElementById("solutionDomainKey").value;
+  const title = document.getElementById("solutionDomainTitle").value;
 
-  if (id && name) {
-    db.ref("solution_domains/" + id).set({ name });
-    closeSolutionDomainForm();
-    loadSolutionDomains();
+  if (!title.trim()) {
+    alert("יש להזין כותרת תחום פתרון");
+    return;
+  }
+
+  const ref = firebase.database().ref("solution_domains");
+
+  if (key) {
+    // עדכון
+    ref.child(key).update({ Title: title }).then(() => {
+      closeSolutionDomainForm();
+      loadSolutionDomains();
+    });
   } else {
-    alert("יש למלא גם קוד וגם שם התחום");
+    // הוספה
+    ref.push({ Title: title }).then(() => {
+      closeSolutionDomainForm();
+      loadSolutionDomains();
+    });
   }
 }
 
-function deleteSolutionDomain(id) {
+function deleteSolutionDomain(key) {
   if (confirm("למחוק את תחום הפתרון?")) {
-    db.ref("solution_domains/" + id).remove();
-    loadSolutionDomains();
+    firebase.database().ref("solution_domains/" + key).remove().then(() => {
+      loadSolutionDomains();
+    });
   }
 }
 
