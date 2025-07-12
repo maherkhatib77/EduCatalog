@@ -60,8 +60,11 @@ function showSolutionForm(id = null) {
     first_meeting_date: "",
     weekday: "",
     education_levels: [],
+    education_types: [],
     hours_count: "",
     subject: "",
+    solution_domain: "",
+    learning_mode: "",
     objectives: "",
     summary: "",
     syllabus_link: ""
@@ -79,22 +82,31 @@ function showSolutionForm(id = null) {
     <input type="text" id="formSolutionName" value="${d.solution_name || ""}" style="width:100%;margin-bottom:5px;">
 
     <label>שם המנחה:</label>
-    <input type="text" id="formCreator" value="${d.creator_name || ""}" style="width:100%;margin-bottom:5px;">
+    <select id="formCreator" style="width:100%;margin-bottom:5px;"></select>
 
     <label>תאריך התחלה:</label>
     <input type="date" id="formDate" value="${d.first_meeting_date || ""}" style="width:100%;margin-bottom:5px;">
 
     <label>תחום דעת:</label>
-    <input type="text" id="formSubject" value="${d.subject || ""}" style="width:100%;margin-bottom:5px;">
+    <select id="formSubject" style="width:100%;margin-bottom:5px;"></select>
 
     <label>יום קבוע:</label>
-    <input type="text" id="formWeekday" value="${d.weekday || ""}" style="width:100%;margin-bottom:5px;">
+    <select id="formWeekday" style="width:100%;margin-bottom:5px;"></select>
 
     <label>שלבי חינוך:</label>
-    <input type="text" id="formLevels" placeholder="יסודי, חטיבה, תיכון" value="${(d.education_levels || []).join(',')}" style="width:100%;margin-bottom:5px;">
+    <select id="formLevels" multiple style="width:100%;margin-bottom:5px;"></select>
+
+    <label>סוג חינוך:</label>
+    <select id="formTypes" multiple style="width:100%;margin-bottom:5px;"></select>
 
     <label>היקף שעות:</label>
-    <input type="text" id="formHours" value="${d.hours_count || ""}" style="width:100%;margin-bottom:5px;">
+    <select id="formHours" style="width:100%;margin-bottom:5px;"></select>
+
+    <label>תחום פתרון למידה:</label>
+    <select id="formDomain" style="width:100%;margin-bottom:5px;"></select>
+
+    <label>אופן למידה:</label>
+    <select id="formMode" style="width:100%;margin-bottom:5px;"></select>
 
     <label>קישור לסילבוס:</label>
     <input type="url" id="formSyllabus" value="${d.syllabus_link || ""}" style="width:100%;margin-bottom:5px;">
@@ -110,6 +122,30 @@ function showSolutionForm(id = null) {
       <button onclick="renderPopupCard()">ביטול</button>
     </div>
   `;
+
+  populateSelect("formCreator", "instructors", "first_name", "last_name");
+  populateSelect("formWeekday", "weekdays", "name");
+  populateSelect("formLevels", "education_levels", "title", null, true);
+  populateSelect("formTypes", "education_types", "title", null, true);
+  populateSelect("formHours", "hour_credits", "hours");
+  populateSelect("formSubject", "subjects", "name");
+  populateSelect("formDomain", "solution_domains", "name");
+  populateSelect("formMode", "learning_modes", "title");
+}
+
+function populateSelect(id, path, field, secondField = null, multi = false) {
+  const select = document.getElementById(id);
+  select.innerHTML = multi ? "" : "<option value=''>בחר</option>";
+  db.ref(path).once("value", snapshot => {
+    snapshot.forEach(child => {
+      const data = child.val();
+      const label = secondField ? `${data[field] || ""} ${data[secondField] || ""}`.trim() : data[field];
+      const option = document.createElement("option");
+      option.value = label;
+      option.textContent = label;
+      select.appendChild(option);
+    });
+  });
 }
 
 window.openLearningSolutionPopup = openLearningSolutionPopup;
