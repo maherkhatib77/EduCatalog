@@ -1,38 +1,36 @@
-
 function loadSubjects() {
   const userType = localStorage.getItem("userType");
   const container = document.getElementById("table-container");
   container.innerHTML = `
     <h2>Subjects</h2>
-    ${userType === "admin" || userType === "operator" ? '<button onclick="openSubjectForm()">➕ הוסף תחום דעת</button>' : ""}
+    ${(userType === "admin" || userType === "operator") ? '<button onclick="openSubjectForm()">➕ הוסף מקצוע</button>' : ""}
     <table class="data-table">
-      <thead><tr><th>ID</th><th>Name</th><th>Actions</th></tr></thead>
+      <thead><tr><th>Title</th><th>Actions</th></tr></thead>
       <tbody id="subjects-body"></tbody>
     </table>
     <div id="subjectModal" class="modal">
       <div class="modal-content">
         <span class="close" onclick="closeSubjectForm()">&times;</span>
-        <h3 id="subjectFormTitle">הוסף תחום דעת</h3>
-        <input type="text" id="subjectId" placeholder="קוד מקצוע">
-        <input type="text" id="subjectName" placeholder="שם מקצוע">
+        <h3 id="subjectFormTitle">הוסף מקצוע</h3>
+        <input type="hidden" id="subjectKey">
+        <input type="text" id="subjectTitle" placeholder="כותרת מקצוע">
         <button onclick="saveSubject()">שמור</button>
       </div>
     </div>
   `;
 
   const tbody = document.getElementById("subjects-body");
-  db.ref("subjects").once("value", snapshot => {
+  firebase.database().ref("subjects").once("value", snapshot => {
     tbody.innerHTML = "";
     snapshot.forEach(child => {
-      const id = child.key;
+      const key = child.key;
       const d = child.val();
       tbody.innerHTML += `
         <tr>
-          <td>${id}</td>
-          <td>${d.name}</td>
+          <td>${d.Title}</td>
           <td>
-            ${(userType === "admin" || userType === "operator") ? `<button onclick="editSubject('${id}')">✎</button>` : ""}
-            ${(userType === "admin") ? `<button onclick="deleteSubject('${id}')">🗑</button>` : ""}
+            ${(userType === "admin" || userType === "operator") ? `<button onclick="editSubject('${key}')">✎</button>` : ""}
+            ${(userType === "admin") ? `<button onclick="deleteSubject('${key}')">🗑</button>` : ""}
           </td>
         </tr>`;
     });
@@ -40,41 +38,53 @@ function loadSubjects() {
 }
 
 function openSubjectForm() {
-  document.getElementById("subjectFormTitle").textContent = "הוסף תחום דעת";
-  document.getElementById("subjectId").disabled = false;
-  document.getElementById("subjectId").value = "";
-  document.getElementById("subjectName").value = "";
+  document.getElementById("subjectFormTitle").textContent = "הוסף מקצוע";
+  document.getElementById("subjectKey").value = "";
+  document.getElementById("subjectTitle").value = "";
   document.getElementById("subjectModal").style.display = "block";
 }
 
-function editSubject(id) {
-  db.ref("subjects/" + id).once("value").then(snap => {
+function editSubject(key) {
+  firebase.database().ref("subjects/" + key).once("value").then(snap => {
     const data = snap.val();
-    document.getElementById("subjectFormTitle").textContent = "ערוך תחום דעת";
-    document.getElementById("subjectId").value = id;
-    document.getElementById("subjectId").disabled = true;
-    document.getElementById("subjectName").value = data.name;
+    document.getElementById("subjectFormTitle").textContent = "ערוך מקצוע";
+    document.getElementById("subjectKey").value = key;
+    document.getElementById("subjectTitle").value = data.Title;
     document.getElementById("subjectModal").style.display = "block";
   });
 }
 
 function saveSubject() {
-  const id = document.getElementById("subjectId").value;
-  const name = document.getElementById("subjectName").value;
+  const key = document.getElementById("subjectKey").value;
+  const title = document.getElementById("subjectTitle").value;
 
-  if (id && name) {
-    db.ref("subjects/" + id).set({ name });
-    closeSubjectForm();
-    loadSubjects();
+  if (!title.trim()) {
+    alert("יש להזין כותרת מקצוע");
+    return;
+  }
+
+  const ref = firebase.database().ref("subjects");
+
+  if (key) {
+    // עדכון רשומה קיימת
+    ref.child(key).update({ Title: title }).then(() => {
+      closeSubjectForm();
+      loadSubjects();
+    });
   } else {
-    alert("יש למלא גם קוד וגם שם המקצוע");
+    // הוספת רשומה חדשה
+    ref.push({ Title: title }).then(() => {
+      closeSubjectForm();
+      loadSubjects();
+    });
   }
 }
 
-function deleteSubject(id) {
-  if (confirm("למחוק את תחום הדעת?")) {
-    db.ref("subjects/" + id).remove();
-    loadSubjects();
+function deleteSubject(key) {
+  if (confirm("למחוק את המקצוע?")) {
+    firebase.database().ref("subjects/" + key).remove().then(() => {
+      loadSubjects();
+    });
   }
 }
 
