@@ -1,4 +1,3 @@
-
 let popupData = [];
 let popupIndex = 0;
 let fullData = [];
@@ -150,3 +149,42 @@ function populateSelect(id, path, field, secondField = null, multi = false) {
 
 window.openLearningSolutionPopup = openLearningSolutionPopup;
 window.closeLearningSolutionPopup = closeLearningSolutionPopup;
+
+function openLearningSolutionPopup() {
+  db.ref("learning_solutions").once("value", snapshot => {
+    popupData = [];
+    fullData = [];
+    snapshot.forEach(child => {
+      const d = child.val();
+      d.id = child.key;
+      fullData.push(d);
+    });
+    popupData = [...fullData];
+    if (popupData.length > 0) {
+      popupIndex = 0;
+      renderPopupCard();
+      document.getElementById("learningSolutionPopup").style.display = "flex";
+    } else {
+      alert("אין פתרונות להצגה.");
+    }
+  });
+}
+
+function renderPopupCard() {
+  const d = popupData[popupIndex];
+  const content = document.getElementById("popupContent");
+  const counter = document.getElementById("popupCounter");
+  content.innerHTML = `
+    <p><strong>שם:</strong> ${d.solution_name || ""}</p>
+    <p><strong>מנחה:</strong> ${d.creator_name || ""}</p>
+    <p><strong>תאריך:</strong> ${d.first_meeting_date || ""}</p>
+    <div style="margin-top: 10px;">
+      <button onclick="showSolutionForm('${d.id}')">✎ ערוך</button>
+    </div>
+  `;
+  counter.textContent = `${popupIndex + 1} / ${popupData.length}`;
+}
+
+window.openLearningSolutionPopup = openLearningSolutionPopup;
+window.renderPopupCard = renderPopupCard;
+window.showSolutionForm = showSolutionForm;
