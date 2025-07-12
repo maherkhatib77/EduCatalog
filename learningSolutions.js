@@ -244,3 +244,8 @@ function nextCard() {
     renderCardView();
   }
 }
+
+
+// חשיפת הפונקציות לכפתורים בדף
+window.loadLearningSolutions = loadLearningSolutions;
+window.loadLearningSolutionsAsCards = loadLearningSolutionsAsCards;
