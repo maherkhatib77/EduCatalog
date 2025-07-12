@@ -1,46 +1,27 @@
+
 <!DOCTYPE html>
 <html lang="he">
 <head>
   <meta charset="UTF-8">
-  <title>פתרונות למידה</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body { direction: rtl; font-family: Arial; padding: 20px; }
-    .form-group { margin-bottom: 10px; }
-    label { display: block; margin-bottom: 4px; }
-    input, select, textarea, button {
-      width: 100%; padding: 8px; box-sizing: border-box;
-    }
-    .scrollable-form {
-      max-height: 80vh;
-      overflow-y: auto;
-      border: 1px solid #ccc;
-      padding: 15px;
-      border-radius: 10px;
-    }
-  </style>
+  <title>EduCatalog - פתרונות למידה</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="auth.js" defer></script>
 </head>
 <body>
+  <header>
+    <button onclick="openLoginModal()">כניסת מנהל</button>
+    <h1>EduCatalog - פורטל פתרונות למידה</h1>
+  </header>
 
-  <h1>טופס פתרון למידה</h1>
-  <div id="solutions-container"></div>
-
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-
-  <!-- קובץ הקונפיגורציה -->
-  <script src="/firebase-config.js?v=3"></script>
-
-  <!-- קובצי העזר -->
-  <script type="module" src="/utils.js?v=3"></script>
-
-  <!-- טעינת המודול הראשי -->
-  <script type="module">
-    import { renderLearningSolutionsModule } from './learningSolutions.js?v=3';
-    const container = document.getElementById('solutions-container');
-    renderLearningSolutionsModule(container);
-  </script>
-
+  <!-- מודל התחברות -->
+  <div id="loginModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeLoginModal()">&times;</span>
+      <h2>התחברות מנהל</h2>
+      <input type="text" id="username" placeholder="שם משתמש">
+      <input type="password" id="password" placeholder="סיסמה">
+      <button onclick="login()">התחבר</button>
+    </div>
+  </div>
 </body>
 </html>

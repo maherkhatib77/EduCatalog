@@ -1,4 +1,3 @@
-// firebase-config.js
 
 const firebaseConfig = {
   apiKey: "AIzaSyCgRQhK0u4xXRj4YOJhEtRm9nRxA_X8ALk",
@@ -9,6 +8,5 @@ const firebaseConfig = {
   messagingSenderId: "577201627806",
   appId: "1:577201627806:web:bd9d6346134d7c3dff518f"
 };
-
-// אתחול Firebase
 firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
