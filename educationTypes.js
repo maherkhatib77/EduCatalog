@@ -1,38 +1,36 @@
-
 function loadEducationTypes() {
   const userType = localStorage.getItem("userType");
   const container = document.getElementById("table-container");
   container.innerHTML = `
     <h2>Education Types</h2>
-    ${userType === "admin" || userType === "operator" ? '<button onclick="openEducationTypeForm()">➕ הוסף סוג חינוך</button>' : ""}
+    ${(userType === "admin" || userType === "operator") ? '<button onclick="openEducationTypeForm()">➕ הוסף סוג חינוך</button>' : ""}
     <table class="data-table">
-      <thead><tr><th>ID</th><th>Title</th><th>Actions</th></tr></thead>
+      <thead><tr><th>Title</th><th>Actions</th></tr></thead>
       <tbody id="education-types-body"></tbody>
     </table>
     <div id="educationTypeModal" class="modal">
       <div class="modal-content">
         <span class="close" onclick="closeEducationTypeForm()">&times;</span>
         <h3 id="educationTypeFormTitle">הוסף סוג חינוך</h3>
-        <input type="text" id="educationTypeId" placeholder="קוד סוג">
-        <input type="text" id="educationTypeTitle" placeholder="כותרת סוג חינוך">
+        <input type="hidden" id="educationTypeKey">
+        <input type="text" id="educationTypeTitle" placeholder="כותרת סוג החינוך">
         <button onclick="saveEducationType()">שמור</button>
       </div>
     </div>
   `;
 
   const tbody = document.getElementById("education-types-body");
-  db.ref("education_types").once("value", snapshot => {
+  firebase.database().ref("education_types").once("value", snapshot => {
     tbody.innerHTML = "";
     snapshot.forEach(child => {
-      const id = child.key;
+      const key = child.key;
       const d = child.val();
       tbody.innerHTML += `
         <tr>
-          <td>${id}</td>
-          <td>${d.title}</td>
+          <td>${d.Title}</td>
           <td>
-            ${(userType === "admin" || userType === "operator") ? `<button onclick="editEducationType('${id}')">✎</button>` : ""}
-            ${(userType === "admin") ? `<button onclick="deleteEducationType('${id}')">🗑</button>` : ""}
+            ${(userType === "admin" || userType === "operator") ? `<button onclick="editEducationType('${key}')">✎</button>` : ""}
+            ${(userType === "admin") ? `<button onclick="deleteEducationType('${key}')">🗑</button>` : ""}
           </td>
         </tr>`;
     });
@@ -41,40 +39,52 @@ function loadEducationTypes() {
 
 function openEducationTypeForm() {
   document.getElementById("educationTypeFormTitle").textContent = "הוסף סוג חינוך";
-  document.getElementById("educationTypeId").disabled = false;
-  document.getElementById("educationTypeId").value = "";
+  document.getElementById("educationTypeKey").value = "";
   document.getElementById("educationTypeTitle").value = "";
   document.getElementById("educationTypeModal").style.display = "block";
 }
 
-function editEducationType(id) {
-  db.ref("education_types/" + id).once("value").then(snap => {
+function editEducationType(key) {
+  firebase.database().ref("education_types/" + key).once("value").then(snap => {
     const data = snap.val();
     document.getElementById("educationTypeFormTitle").textContent = "ערוך סוג חינוך";
-    document.getElementById("educationTypeId").value = id;
-    document.getElementById("educationTypeId").disabled = true;
-    document.getElementById("educationTypeTitle").value = data.title;
+    document.getElementById("educationTypeKey").value = key;
+    document.getElementById("educationTypeTitle").value = data.Title;
     document.getElementById("educationTypeModal").style.display = "block";
   });
 }
 
 function saveEducationType() {
-  const id = document.getElementById("educationTypeId").value;
+  const key = document.getElementById("educationTypeKey").value;
   const title = document.getElementById("educationTypeTitle").value;
 
-  if (id && title) {
-    db.ref("education_types/" + id).set({ title });
-    closeEducationTypeForm();
-    loadEducationTypes();
+  if (!title.trim()) {
+    alert("יש להזין כותרת סוג חינוך");
+    return;
+  }
+
+  const ref = firebase.database().ref("education_types");
+
+  if (key) {
+    // עדכון רשומה קיימת
+    ref.child(key).update({ Title: title }).then(() => {
+      closeEducationTypeForm();
+      loadEducationTypes();
+    });
   } else {
-    alert("יש למלא גם קוד וגם כותרת");
+    // הוספת רשומה חדשה
+    ref.push({ Title: title }).then(() => {
+      closeEducationTypeForm();
+      loadEducationTypes();
+    });
   }
 }
 
-function deleteEducationType(id) {
+function deleteEducationType(key) {
   if (confirm("למחוק את סוג החינוך?")) {
-    db.ref("education_types/" + id).remove();
-    loadEducationTypes();
+    firebase.database().ref("education_types/" + key).remove().then(() => {
+      loadEducationTypes();
+    });
   }
 }
 
