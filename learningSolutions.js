@@ -1,272 +1,496 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 
 const App = () => {
+  const [userType, setUserType] = useState("");
   const [solutions, setSolutions] = useState([]);
-  const [instructors, setInstructors] = useState([]);
-  const [weekdays, setWeekdays] = useState([]);
-  const [educationLevels, setEducationLevels] = useState([]);
-  const [educationTypes, setEducationTypes] = useState([]);
-  const [hourCredits, setHourCredits] = useState([]);
-  const [subjects, setSubjects] = useState([]);
-  const [solutionDomains, setSolutionDomains] = useState([]);
-  const [learningModes, setLearningModes] = useState([]);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [editingId, setEditingId] = useState(null);
-  const [formData, setFormData] = useState({
-    solutionId: '',
-    solutionName: '',
-    creatorName: '',
-    firstMeetingDate: '',
-    startTime: '',
-    endTime: '',
-    weekday: '',
+  const [formVisible, setFormVisible] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
+  const [formData, setFormData] = useState({});
+  const [dropdowns, setDropdowns] = useState({
+    instructors: [],
+    weekdays: [],
     educationLevels: [],
     educationTypes: [],
-    hoursCount: '',
-    subject: '',
-    solutionDomain: '',
-    learningMode: '',
-    syllabusLink: '',
-    summary: '',
-    objectives: ''
+    hourCredits: [],
+    subjects: [],
+    solutionDomains: [],
+    learningModes: [],
   });
 
-  // Mock data instead of Firebase
+  // Load user type from localStorage
   useEffect(() => {
-    // Simulating database fetch
-    setTimeout(() => {
-      setInstructors([
-        { id: '1', first_name: 'יוסי', last_name: 'כהן' },
-        { id: '2', first_name: 'רוני', last_name: 'לביא' }
-      ]);
-      setWeekdays([{ id: '1', name: 'ראשון' }, { id: '2', name: 'שני' }]);
-      setEducationLevels([{ id: '1', title: 'יסודי' }, { id: '2', title: 'חטיבת ביניים' }]);
-      setEducationTypes([{ id: '1', title: 'פנימייתי' }, { id: '2', title: 'מכינה קדם אקדמית' }]);
-      setHourCredits([{ id: '1', hours: '2' }, { id: '2', hours: '3' }]);
-      setSubjects([{ id: '1', name: 'מתמטיקה' }, { id: '2', name: 'עברית' }]);
-      setSolutionDomains([{ id: '1', name: 'מדעים' }, { id: '2', name: 'ספרות' }]);
-      setLearningModes([{ id: '1', title: 'מקוון' }, { id: '2', title: 'בכיתה' }]);
-      setSolutions([
-        {
-          id: '1',
-          solution_name: 'קורס מתמטיקה בסיסי',
-          creator_name: 'יוסי כהן',
-          first_meeting_date: '2024-05-01',
-          weekday: 'ראשון',
-          education_levels: ['יסודי'],
-          hours_count: '2',
-          subject: 'מתמטיקה',
-          start_time: '09:00',
-          end_time: '11:00'
-        }
-      ]);
-    }, 500);
+    const storedUserType = localStorage.getItem("userType") || "";
+    setUserType(storedUserType);
   }, []);
 
-  const handleInputChange = (e) => {
+  // Load learning solutions from Firebase
+  useEffect(() => {
+    const dbRef = firebase.database().ref("learning_solutions");
+    dbRef.on("value", (snapshot) => {
+      const solutionsData = [];
+      snapshot.forEach((childSnapshot) => {
+        solutionsData.push({ id: childSnapshot.key, ...childSnapshot.val() });
+      });
+      setSolutions(solutionsData);
+    });
+
+    return () => dbRef.off();
+  }, []);
+
+  // Load dropdown options from Firebase
+  useEffect(() => {
+    const loadDropdown = async (path, field = "title", multi = false) => {
+      const snapshot = await firebase.database().ref(path).once("value");
+      const items = [];
+      snapshot.forEach((child) => {
+        items.push({ key: child.key, label: child.val()[field] || child.key });
+      });
+      return items;
+    };
+
+    Promise.all([
+      loadDropdown("instructors", "first_name"),
+      loadDropdown("weekdays", "name"),
+      loadDropdown("education_levels", "title", true),
+      loadDropdown("education_types", "title", true),
+      loadDropdown("hour_credits", "hours"),
+      loadDropdown("subjects", "name"),
+      loadDropdown("solution_domains", "name"),
+      loadDropdown("learning_modes", "title"),
+    ]).then(
+      ([
+        instructors,
+        weekdays,
+        educationLevels,
+        educationTypes,
+        hourCredits,
+        subjects,
+        solutionDomains,
+        learningModes,
+      ]) => {
+        setDropdowns({
+          instructors,
+          weekdays,
+          educationLevels,
+          educationTypes,
+          hourCredits,
+          subjects,
+          solutionDomains,
+          learningModes,
+        });
+      }
+    );
+  }, []);
+
+  // Form handlers
+  const openAddForm = () => {
+    setFormData({});
+    setIsEdit(false);
+    setFormVisible(true);
+  };
+
+  const openEditForm = (solution) => {
+    setFormData(solution);
+    setIsEdit(true);
+    setFormVisible(true);
+  };
+
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleMultiSelectChange = (e) => {
-    const options = Array.from(e.target.selectedOptions).map(o => o.value);
-    setFormData({ ...formData, [e.target.name]: options });
-  };
-
-  const openModal = (id = null) => {
-    if (id) {
-      const solutionToEdit = solutions.find(s => s.id === id);
-      setFormData({
-        solutionId: solutionToEdit.id,
-        solutionName: solutionToEdit.solution_name || '',
-        creatorName: solutionToEdit.creator_name || '',
-        firstMeetingDate: solutionToEdit.first_meeting_date || '',
-        startTime: solutionToEdit.start_time || '',
-        endTime: solutionToEdit.end_time || '',
-        weekday: solutionToEdit.weekday || '',
-        educationLevels: solutionToEdit.education_levels || [],
-        educationTypes: [],
-        hoursCount: solutionToEdit.hours_count || '',
-        subject: solutionToEdit.subject || '',
-        solutionDomain: '',
-        learningMode: '',
-        syllabusLink: '',
-        summary: '',
-        objectives: ''
-      });
-      setEditingId(id);
-    } else {
-      setFormData({
-        solutionId: '',
-        solutionName: '',
-        creatorName: '',
-        firstMeetingDate: '',
-        startTime: '',
-        endTime: '',
-        weekday: '',
-        educationLevels: [],
-        educationTypes: [],
-        hoursCount: '',
-        subject: '',
-        solutionDomain: '',
-        learningMode: '',
-        syllabusLink: '',
-        summary: '',
-        objectives: ''
-      });
-      setEditingId(null);
-    }
-    setModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setModalOpen(false);
+    const selectedOptions = Array.from(e.target.selectedOptions).map((o) => o.value);
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: selectedOptions,
+    }));
   };
 
   const saveSolution = () => {
-    if (!formData.solutionId || !formData.solutionName || !formData.firstMeetingDate) {
-      alert('שדות חובה: מספר פתרון, שם, תאריך');
+    const requiredFields = ["id", "solution_name", "first_meeting_date"];
+    if (!requiredFields.every((f) => formData[f])) {
+      alert("שדות חובה: מספר פתרון, שם, תאריך");
       return;
     }
 
-    const newSolution = {
-      id: formData.solutionId,
-      solution_name: formData.solutionName,
-      creator_name: instructors.find(i => i.id === formData.creatorName)?.first_name + ' ' + instructors.find(i => i.id === formData.creatorName)?.last_name,
-      first_meeting_date: formData.firstMeetingDate,
-      start_time: formData.startTime,
-      end_time: formData.endTime,
-      weekday: weekdays.find(w => w.id === formData.weekday)?.name,
-      education_levels: formData.educationLevels,
-      education_types: formData.educationTypes,
-      hours_count: hourCredits.find(h => h.id === formData.hoursCount)?.hours,
-      subject: subjects.find(s => s.id === formData.subject)?.name,
-      solution_domain: solutionDomains.find(d => d.id === formData.solutionDomain)?.name,
-      learning_mode: learningModes.find(m => m.id === formData.learningMode)?.title,
-      syllabus_link: formData.syllabusLink,
-      summary: formData.summary,
-      objectives: formData.objectives
-    };
-
-    if (editingId) {
-      setSolutions(solutions.map(s => s.id === editingId ? newSolution : s));
-    } else {
-      setSolutions([...solutions, newSolution]);
-    }
-    closeModal();
+    const updates = {};
+    updates[`learning_solutions/${formData.id}`] = formData;
+    firebase.database().ref().update(updates);
+    setFormVisible(false);
+    setFormData({});
   };
 
   const deleteSolution = (id) => {
     if (window.confirm("למחוק את פתרון הלמידה?")) {
-      setSolutions(solutions.filter(s => s.id !== id));
+      firebase.database().ref(`learning_solutions/${id}`).remove();
     }
   };
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      <h2 className="text-2xl font-bold mb-4">פתרונות למידה</h2>
-      <button onClick={() => openModal()} className="bg-blue-600 text-white px-4 py-2 rounded mb-4 hover:bg-blue-700 transition">
-        ➕ הוסף פתרון למידה
-      </button>
+    <div className="min-h-screen bg-gray-100 p-6">
+      <div className="max-w-4xl mx-auto">
+        <h2 className="text-3xl font-bold mb-6">פתרונות למידה</h2>
+        {(userType === "admin" || userType === "operator") && (
+          <button
+            onClick={openAddForm}
+            className="mb-6 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center"
+          >
+            <span>➕ הוסף פתרון למידה</span>
+          </button>
+        )}
 
-      {/* Learning Solutions Table */}
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white border border-gray-300">
-          <thead>
-            <tr className="bg-gray-200 text-right">
-              {Object.keys(formData).filter(k => k !== 'summary' && k !== 'objectives').map((key, index) => (
-                <th key={index} className="px-4 py-2 border">{key}</th>
-              ))}
-              <th className="px-4 py-2 border">פעולות</th>
-            </tr>
-          </thead>
-          <tbody>
-            {solutions.map((solution, idx) => (
-              <tr key={idx} className="hover:bg-gray-100">
-                {Object.entries(solution)
-                  .filter(([k]) => k !== 'summary' && k !== 'objectives')
-                  .map(([key, value], i) => (
-                    <td key={i} className="px-4 py-2 border text-right">{value}</td>
-                  ))
-                }
-                <td className="px-4 py-2 border text-right">
-                  <button onClick={() => openModal(solution.id)} className="text-blue-600 mx-1">✎</button>
-                  <button onClick={() => deleteSolution(solution.id)} className="text-red-600 mx-1">🗑</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Modal Form */}
-      {modalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded shadow-lg w-full max-w-3xl overflow-y-auto max-h-screen">
-            <span onClick={closeModal} className="float-left text-xl cursor-pointer">&times;</span>
-            <h3 className="text-xl font-bold mb-4">{editingId ? "ערוך פתרון למידה" : "הוסף פתרון למידה"}</h3>
-            <form onSubmit={(e) => { e.preventDefault(); saveSolution(); }} className="space-y-4">
+        {/* Vertical Cards View */}
+        <div className="space-y-6">
+          {solutions.map((solution) => (
+            <div
+              key={solution.id}
+              className="bg-white shadow-md rounded-lg p-6 border border-gray-200"
+            >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input type="text" name="solutionId" placeholder="מספר פתרון למידה" value={formData.solutionId} onChange={handleInputChange} disabled={!!editingId} className="border p-2 rounded" />
-                <input type="text" name="solutionName" placeholder="שם פתרון למידה" value={formData.solutionName} onChange={handleInputChange} className="border p-2 rounded" />
-                <select name="creatorName" value={formData.creatorName} onChange={handleInputChange} className="border p-2 rounded">
-                  <option value="">בחר מורה</option>
-                  {instructors.map(inst => (
-                    <option key={inst.id} value={inst.id}>{inst.first_name} {inst.last_name}</option>
-                  ))}
-                </select>
-                <input type="date" name="firstMeetingDate" value={formData.firstMeetingDate} onChange={handleInputChange} className="border p-2 rounded" />
-                <input type="time" name="startTime" value={formData.startTime} onChange={handleInputChange} className="border p-2 rounded" />
-                <input type="time" name="endTime" value={formData.endTime} onChange={handleInputChange} className="border p-2 rounded" />
-                <select name="weekday" value={formData.weekday} onChange={handleInputChange} className="border p-2 rounded">
-                  <option value="">בחר יום</option>
-                  {weekdays.map(day => (
-                    <option key={day.id} value={day.id}>{day.name}</option>
-                  ))}
-                </select>
-                <select name="educationLevels" multiple value={formData.educationLevels} onChange={handleMultiSelectChange} className="border p-2 rounded">
-                  {educationLevels.map(level => (
-                    <option key={level.id} value={level.title}>{level.title}</option>
-                  ))}
-                </select>
-                <select name="educationTypes" multiple value={formData.educationTypes} onChange={handleMultiSelectChange} className="border p-2 rounded">
-                  {educationTypes.map(type => (
-                    <option key={type.id} value={type.title}>{type.title}</option>
-                  ))}
-                </select>
-                <select name="hoursCount" value={formData.hoursCount} onChange={handleInputChange} className="border p-2 rounded">
-                  <option value="">בחר שעות</option>
-                  {hourCredits.map(h => (
-                    <option key={h.id} value={h.id}>{h.hours}</option>
-                  ))}
-                </select>
-                <select name="subject" value={formData.subject} onChange={handleInputChange} className="border p-2 rounded">
-                  <option value="">בחר נושא</option>
-                  {subjects.map(subj => (
-                    <option key={subj.id} value={subj.id}>{subj.name}</option>
-                  ))}
-                </select>
-                <select name="solutionDomain" value={formData.solutionDomain} onChange={handleInputChange} className="border p-2 rounded">
-                  <option value="">בחר תחום פתרון</option>
-                  {solutionDomains.map(domain => (
-                    <option key={domain.id} value={domain.id}>{domain.name}</option>
-                  ))}
-                </select>
-                <select name="learningMode" value={formData.learningMode} onChange={handleInputChange} className="border p-2 rounded">
-                  <option value="">בחר אופן למידה</option>
-                  {learningModes.map(mode => (
-                    <option key={mode.id} value={mode.id}>{mode.title}</option>
-                  ))}
-                </select>
-                <input type="url" name="syllabusLink" placeholder="קישור לסילבוס" value={formData.syllabusLink} onChange={handleInputChange} className="border p-2 rounded" />
-                <textarea name="summary" placeholder="תקציר פתרון הלמידה" value={formData.summary} onChange={handleInputChange} className="border p-2 rounded h-24"></textarea>
-                <textarea name="objectives" placeholder="מטרות פתרון הלמידה" value={formData.objectives} onChange={handleInputChange} className="border p-2 rounded h-24"></textarea>
+                <div>
+                  <p className="font-semibold">מספר פתרון:</p>
+                  <p>{solution.id}</p>
+                </div>
+                <div>
+                  <p className="font-semibold">שם פתרון למידה:</p>
+                  <p>{solution.solution_name}</p>
+                </div>
+                <div>
+                  <p className="font-semibold">שם יוצר:</p>
+                  <p>{solution.creator_name}</p>
+                </div>
+                <div>
+                  <p className="font-semibold">תאריך מפגש ראשון:</p>
+                  <p>{solution.first_meeting_date}</p>
+                </div>
+                <div>
+                  <p className="font-semibold">זמן התחלה:</p>
+                  <p>{solution.start_time}</p>
+                </div>
+                <div>
+                  <p className="font-semibold">זמן סיום:</p>
+                  <p>{solution.end_time}</p>
+                </div>
+                <div>
+                  <p className="font-semibold">יום מפגש:</p>
+                  <p>{solution.weekday}</p>
+                </div>
+                <div>
+                  <p className="font-semibold">שלבי חינוך:</p>
+                  <p>{(solution.education_levels || []).join(", ")}</p>
+                </div>
+                <div>
+                  <p className="font-semibold">סוג חינוך:</p>
+                  <p>{(solution.education_types || []).join(", ")}</p>
+                </div>
+                <div>
+                  <p className="font-semibold">היקף שעות:</p>
+                  <p>{solution.hours_count}</p>
+                </div>
+                <div>
+                  <p className="font-semibold">תחום דעת:</p>
+                  <p>{solution.subject}</p>
+                </div>
+                <div>
+                  <p className="font-semibold">תחום פתרון:</p>
+                  <p>{solution.solution_domain}</p>
+                </div>
+                <div>
+                  <p className="font-semibold">אופן למידה:</p>
+                  <p>{solution.learning_mode}</p>
+                </div>
+                <div>
+                  <p className="font-semibold">קישור סילבוס:</p>
+                  <a
+                    href={solution.syllabus_link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-500 underline"
+                  >
+                    {solution.syllabus_link || "-"}
+                  </a>
+                </div>
+                <div>
+                  <p className="font-semibold">תקציר:</p>
+                  <p>{solution.summary}</p>
+                </div>
+                <div>
+                  <p className="font-semibold">מטרות:</p>
+                  <p>{solution.objectives}</p>
+                </div>
               </div>
-              <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">שמור</button>
-            </form>
-          </div>
+
+              {(userType === "admin" || userType === "operator") && (
+                <div className="mt-4 flex space-x-2 space-x-reverse">
+                  <button
+                    onClick={() => openEditForm(solution)}
+                    className="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600"
+                  >
+                    ✎
+                  </button>
+                  {userType === "admin" && (
+                    <button
+                      onClick={() => deleteSolution(solution.id)}
+                      className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                    >
+                      🗑
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+          ))}
         </div>
-      )}
+
+        {/* Modal Form */}
+        {formVisible && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+            <div className="bg-white rounded-lg shadow-lg max-w-3xl w-full max-h-[90vh] overflow-auto p-6">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-xl font-bold">
+                  {isEdit ? "ערוך פתרון למידה" : "הוסף פתרון למידה"}
+                </h3>
+                <button
+                  onClick={() => setFormVisible(false)}
+                  className="text-2xl font-bold"
+                >
+                  &times;
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block font-medium mb-1">מספר פתרון:</label>
+                  <input
+                    type="text"
+                    name="id"
+                    value={formData.id || ""}
+                    onChange={handleChange}
+                    disabled={isEdit}
+                    className="w-full border rounded px-3 py-2"
+                  />
+                </div>
+                <div>
+                  <label className="block font-medium mb-1">שם פתרון:</label>
+                  <input
+                    type="text"
+                    name="solution_name"
+                    value={formData.solution_name || ""}
+                    onChange={handleChange}
+                    className="w-full border rounded px-3 py-2"
+                  />
+                </div>
+                <div>
+                  <label className="block font-medium mb-1">שם יוצר:</label>
+                  <select
+                    name="creator_name"
+                    value={formData.creator_name || ""}
+                    onChange={handleChange}
+                    className="w-full border rounded px-3 py-2"
+                  >
+                    <option value="">בחר</option>
+                    {dropdowns.instructors.map((item) => (
+                      <option key={item.key} value={item.label}>
+                        {item.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block font-medium mb-1">תאריך מפגש ראשון:</label>
+                  <input
+                    type="date"
+                    name="first_meeting_date"
+                    value={formData.first_meeting_date || ""}
+                    onChange={handleChange}
+                    className="w-full border rounded px-3 py-2"
+                  />
+                </div>
+                <div>
+                  <label className="block font-medium mb-1">זמן התחלה:</label>
+                  <input
+                    type="time"
+                    name="start_time"
+                    value={formData.start_time || ""}
+                    onChange={handleChange}
+                    className="w-full border rounded px-3 py-2"
+                  />
+                </div>
+                <div>
+                  <label className="block font-medium mb-1">זמן סיום:</label>
+                  <input
+                    type="time"
+                    name="end_time"
+                    value={formData.end_time || ""}
+                    onChange={handleChange}
+                    className="w-full border rounded px-3 py-2"
+                  />
+                </div>
+                <div>
+                  <label className="block font-medium mb-1">יום מפגש:</label>
+                  <select
+                    name="weekday"
+                    value={formData.weekday || ""}
+                    onChange={handleChange}
+                    className="w-full border rounded px-3 py-2"
+                  >
+                    <option value="">בחר</option>
+                    {dropdowns.weekdays.map((item) => (
+                      <option key={item.key} value={item.label}>
+                        {item.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block font-medium mb-1">שלבי חינוך:</label>
+                  <select
+                    name="education_levels"
+                    multiple
+                    value={formData.education_levels || []}
+                    onChange={handleMultiSelectChange}
+                    className="w-full border rounded px-3 py-2 h-24"
+                  >
+                    {dropdowns.educationLevels.map((item) => (
+                      <option key={item.key} value={item.label}>
+                        {item.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block font-medium mb-1">סוג חינוך:</label>
+                  <select
+                    name="education_types"
+                    multiple
+                    value={formData.education_types || []}
+                    onChange={handleMultiSelectChange}
+                    className="w-full border rounded px-3 py-2 h-24"
+                  >
+                    {dropdowns.educationTypes.map((item) => (
+                      <option key={item.key} value={item.label}>
+                        {item.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block font-medium mb-1">היקף שעות:</label>
+                  <select
+                    name="hours_count"
+                    value={formData.hours_count || ""}
+                    onChange={handleChange}
+                    className="w-full border rounded px-3 py-2"
+                  >
+                    <option value="">בחר</option>
+                    {dropdowns.hourCredits.map((item) => (
+                      <option key={item.key} value={item.label}>
+                        {item.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block font-medium mb-1">תחום דעת:</label>
+                  <select
+                    name="subject"
+                    value={formData.subject || ""}
+                    onChange={handleChange}
+                    className="w-full border rounded px-3 py-2"
+                  >
+                    <option value="">בחר</option>
+                    {dropdowns.subjects.map((item) => (
+                      <option key={item.key} value={item.label}>
+                        {item.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block font-medium mb-1">תחום פתרון:</label>
+                  <select
+                    name="solution_domain"
+                    value={formData.solution_domain || ""}
+                    onChange={handleChange}
+                    className="w-full border rounded px-3 py-2"
+                  >
+                    <option value="">בחר</option>
+                    {dropdowns.solutionDomains.map((item) => (
+                      <option key={item.key} value={item.label}>
+                        {item.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block font-medium mb-1">אופן למידה:</label>
+                  <select
+                    name="learning_mode"
+                    value={formData.learning_mode || ""}
+                    onChange={handleChange}
+                    className="w-full border rounded px-3 py-2"
+                  >
+                    <option value="">בחר</option>
+                    {dropdowns.learningModes.map((item) => (
+                      <option key={item.key} value={item.label}>
+                        {item.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block font-medium mb-1">קישור סילבוס:</label>
+                  <input
+                    type="url"
+                    name="syllabus_link"
+                    value={formData.syllabus_link || ""}
+                    onChange={handleChange}
+                    placeholder="https://..."
+                    className="w-full border rounded px-3 py-2"
+                  />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block font-medium mb-1">תקציר:</label>
+                  <textarea
+                    name="summary"
+                    value={formData.summary || ""}
+                    onChange={handleChange}
+                    rows="3"
+                    className="w-full border rounded px-3 py-2"
+                  ></textarea>
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block font-medium mb-1">מטרות:</label>
+                  <textarea
+                    name="objectives"
+                    value={formData.objectives || ""}
+                    onChange={handleChange}
+                    rows="3"
+                    className="w-full border rounded px-3 py-2"
+                  ></textarea>
+                </div>
+              </div>
+
+              <div className="mt-6 flex justify-end space-x-2 space-x-reverse">
+                <button
+                  onClick={saveSolution}
+                  className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                >
+                  שמור
+                </button>
+                <button
+                  onClick={() => setFormVisible(false)}
+                  className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                >
+                  ביטול
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
