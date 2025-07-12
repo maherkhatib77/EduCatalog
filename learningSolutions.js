@@ -44,6 +44,7 @@ function renderPopupCard() {
     <p><strong>תחום דעת:</strong> ${d.subject || ""}</p>
     <p><strong>מטרות:</strong> ${d.objectives || ""}</p>
     <p><strong>תקציר:</strong> ${d.summary || ""}</p>
+    <p><strong>סילבוס:</strong> ${d.syllabus_link || ""}</p>
     <div style="margin-top: 10px;">
       <button onclick="showSolutionForm('${d.id}')">✎ ערוך</button>
       <button onclick="deleteLearningSolution('${d.id}')">🗑 מחק</button>
@@ -62,7 +63,8 @@ function showSolutionForm(id = null) {
     hours_count: "",
     subject: "",
     objectives: "",
-    summary: ""
+    summary: "",
+    syllabus_link: ""
   };
 
   if (id) {
@@ -72,15 +74,22 @@ function showSolutionForm(id = null) {
 
   document.getElementById("popupContent").innerHTML = `
     <h4>${id ? "עריכת פתרון" : "הוספת פתרון חדש"}</h4>
-    <input type="text" id="formSolutionName" placeholder="שם פתרון" value="${d.solution_name || ""}" style="width:100%;margin-bottom:5px;">
-    <input type="text" id="formCreator" placeholder="שם מנחה" value="${d.creator_name || ""}" style="width:100%;margin-bottom:5px;">
+    <hr><strong>✏️ פרטי בסיס</strong><br>
+    <input type="text" id="formSolutionName" placeholder="לדוגמה: פתרון חקר מדעי" value="${d.solution_name || ""}" style="width:100%;margin-bottom:5px;">
+    <input type="text" id="formCreator" placeholder="שם המנחה" value="${d.creator_name || ""}" style="width:100%;margin-bottom:5px;">
     <input type="date" id="formDate" value="${d.first_meeting_date || ""}" style="width:100%;margin-bottom:5px;">
-    <input type="text" id="formWeekday" placeholder="יום" value="${d.weekday || ""}" style="width:100%;margin-bottom:5px;">
-    <input type="text" id="formLevels" placeholder="שלבי חינוך (מופרד בפסיקים)" value="${(d.education_levels || []).join(",")}" style="width:100%;margin-bottom:5px;">
-    <input type="text" id="formHours" placeholder="שעות" value="${d.hours_count || ""}" style="width:100%;margin-bottom:5px;">
-    <input type="text" id="formSubject" placeholder="תחום דעת" value="${d.subject || ""}" style="width:100%;margin-bottom:5px;">
-    <textarea id="formObjectives" placeholder="מטרות" style="width:100%;margin-bottom:5px;">${d.objectives || ""}</textarea>
-    <textarea id="formSummary" placeholder="תקציר" style="width:100%;margin-bottom:5px;">${d.summary || ""}</textarea>
+    <input type="text" id="formSubject" placeholder="לדוגמה: מדעים" value="${d.subject || ""}" style="width:100%;margin-bottom:5px;">
+
+    <hr><strong>📅 פרטי לוגיסטיקה</strong><br>
+    <input type="text" id="formWeekday" placeholder="לדוגמה: שני" value="${d.weekday || ""}" style="width:100%;margin-bottom:5px;">
+    <input type="text" id="formLevels" placeholder="יסודי, חטיבה, תיכון" value="${(d.education_levels || []).join(",")}" style="width:100%;margin-bottom:5px;">
+    <input type="text" id="formHours" placeholder="לדוגמה: 30" value="${d.hours_count || ""}" style="width:100%;margin-bottom:5px;">
+    <input type="url" id="formSyllabus" placeholder="קישור לסילבוס" value="${d.syllabus_link || ""}" style="width:100%;margin-bottom:5px;">
+
+    <hr><strong>📝 תיאור ותוכן</strong><br>
+    <textarea id="formObjectives" placeholder="מטרות פתרון הלמידה" style="width:100%;margin-bottom:5px;">${d.objectives || ""}</textarea>
+    <textarea id="formSummary" placeholder="תקציר פתרון הלמידה" style="width:100%;margin-bottom:5px;">${d.summary || ""}</textarea>
+
     <div>
       <button onclick="savePopupSolution()">💾 שמור</button>
       <button onclick="renderPopupCard()">ביטול</button>
@@ -89,33 +98,54 @@ function showSolutionForm(id = null) {
 }
 
 function savePopupSolution() {
-  const name = document.getElementById("formSolutionName").value;
-  const creator = document.getElementById("formCreator").value;
+  const name = document.getElementById("formSolutionName").value.trim();
+  const creator = document.getElementById("formCreator").value.trim();
   const date = document.getElementById("formDate").value;
-  const weekday = document.getElementById("formWeekday").value;
-  const levels = document.getElementById("formLevels").value.split(",").map(s => s.trim());
-  const hours = document.getElementById("formHours").value;
-  const subject = document.getElementById("formSubject").value;
-  const objectives = document.getElementById("formObjectives").value;
-  const summary = document.getElementById("formSummary").value;
+  const subject = document.getElementById("formSubject").value.trim();
+  const url = document.getElementById("formSyllabus").value.trim();
+
+  if (!name || !creator || !date || !subject) {
+    alert("נא למלא את כל השדות החיוניים: שם, מנחה, תאריך, תחום דעת.");
+    return;
+  }
+
+  if (url && !/^https?:\/\//.test(url)) {
+    alert("כתובת הסילבוס אינה חוקית. ודא שהיא מתחילה ב-http:// או https://");
+    return;
+  }
 
   const data = {
     solution_name: name,
     creator_name: creator,
     first_meeting_date: date,
-    weekday,
-    education_levels: levels,
-    hours_count: hours,
+    weekday: document.getElementById("formWeekday").value,
+    education_levels: document.getElementById("formLevels").value.split(",").map(s => s.trim()),
+    hours_count: document.getElementById("formHours").value,
     subject,
-    objectives,
-    summary
+    objectives: document.getElementById("formObjectives").value,
+    summary: document.getElementById("formSummary").value,
+    syllabus_link: url
   };
 
   const id = editingId || Date.now().toString();
   db.ref("learning_solutions/" + id).set(data).then(() => {
     alert("נשמר בהצלחה!");
-    openLearningSolutionPopup(); // רענון
+    openLearningSolutionPopup();
   });
+}
+
+function prevPopupCard() {
+  if (popupIndex > 0) {
+    popupIndex--;
+    renderPopupCard();
+  }
+}
+
+function nextPopupCard() {
+  if (popupIndex < popupData.length - 1) {
+    popupIndex++;
+    renderPopupCard();
+  }
 }
 
 function filterPopupResults() {
