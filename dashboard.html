@@ -3,44 +3,103 @@
 <html lang="he">
 <head>
   <meta charset="UTF-8">
-  <title>Dashboard</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-  <script src="firebase-config.js"></script>
+  <title>ניהול פתרונות למידה</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      direction: rtl;
+      background-color: #eef2f5;
+      padding: 20px;
+    }
+
+    .card-container {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 20px;
+      border: 2px solid #1976d2;
+      border-radius: 15px;
+      background-color: #f5faff;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .card-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .card-nav button {
+      font-size: 20px;
+      background-color: #1976d2;
+      color: white;
+      border: none;
+      padding: 5px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .card-content {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .card-field {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid #ccc;
+      padding: 5px 0;
+    }
+
+    .card-field strong {
+      color: #0d47a1;
+    }
+
+    .card-actions {
+      margin-top: 15px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 15px;
+    }
+
+    .card-actions i {
+      cursor: pointer;
+      font-size: 20px;
+      color: #1976d2;
+    }
+
+    .card-actions i:hover {
+      color: #0d47a1;
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <div>ממשק ניהול</div>
-    <button onclick="logout()">התנתקות</button>
-  </header>
-  <div style="padding: 20px;">
-    <button onclick="loadLecturers()">מרצה</button>
-    <button onclick="loadInstructors()">מדריך</button>
-    <button onclick="loadLearningModes()">אופן למידה</button>
-    <button onclick="loadEducationLevels()">שלבי חינוך</button>
-    <button onclick="loadEducationTypes()">סוג חינוך</button>
-    <button onclick="loadWeekdays()">יום</button>
-    <button onclick="loadHourCredits()">היקף שעות</button>
-    <button onclick="loadSubjects()">תחום דעת</button>
-    <button onclick="loadSolutionDomains()">תחום פתרון הלמידה</button>
-    <button onclick="loadUsers()">משתמשים</button>
-    <button onclick="loadLearningSolutions()">פתרון למידה</button>
 
+  <h1>תצוגת כרטיסים - פתרונות למידה</h1>
+
+  <div id="learningSolutionCard" class="card-container">
+    <div class="card-nav">
+      <button onclick="prevCard()">&#9664;</button>
+      <span id="cardCounter">1 / 1</span>
+      <button onclick="nextCard()">&#9654;</button>
+    </div>
+
+    <div id="cardContent" class="card-content">
+      <!-- תוכן דינמי -->
+    </div>
   </div>
-  <div id="table-container"></div>
 
-  <script src="auth.js"></script>
-  <script src="lecturers.js"></script>
-  <script src="instructors.js"></script>
-  <script src="learningModes.js"></script>
-  <script src="educationLevels.js"></script>
-  <script src="educationTypes.js"></script>
-  <script src="weekdays.js"></script>
-  <script src="hourCredits.js"></script>
-  <script src="subjects.js"></script>
-  <script src="solutionDomains.js"></script>
-  <script src="users.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      databaseURL: "https://educatalog-63603-default-rtdb.firebaseio.com"
+    };
+    firebase.initializeApp(firebaseConfig);
+  </script>
+
   <script src="learningSolutions.js"></script>
 
 </body>
