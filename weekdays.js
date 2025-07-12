@@ -1,38 +1,36 @@
-
 function loadWeekdays() {
   const userType = localStorage.getItem("userType");
   const container = document.getElementById("table-container");
   container.innerHTML = `
     <h2>Weekdays</h2>
-    ${userType === "admin" || userType === "operator" ? '<button onclick="openWeekdayForm()">➕ הוסף יום</button>' : ""}
+    ${(userType === "admin" || userType === "operator") ? '<button onclick="openWeekdayForm()">➕ הוסף יום בשבוע</button>' : ""}
     <table class="data-table">
-      <thead><tr><th>ID</th><th>Name</th><th>Actions</th></tr></thead>
+      <thead><tr><th>Title</th><th>Actions</th></tr></thead>
       <tbody id="weekdays-body"></tbody>
     </table>
     <div id="weekdayModal" class="modal">
       <div class="modal-content">
         <span class="close" onclick="closeWeekdayForm()">&times;</span>
-        <h3 id="weekdayFormTitle">הוסף יום</h3>
-        <input type="text" id="weekdayId" placeholder="קוד יום">
-        <input type="text" id="weekdayName" placeholder="שם יום">
+        <h3 id="weekdayFormTitle">הוסף יום בשבוע</h3>
+        <input type="hidden" id="weekdayKey">
+        <input type="text" id="weekdayTitle" placeholder="כותרת יום בשבוע">
         <button onclick="saveWeekday()">שמור</button>
       </div>
     </div>
   `;
 
   const tbody = document.getElementById("weekdays-body");
-  db.ref("weekdays").once("value", snapshot => {
+  firebase.database().ref("weekdays").once("value", snapshot => {
     tbody.innerHTML = "";
     snapshot.forEach(child => {
-      const id = child.key;
+      const key = child.key;
       const d = child.val();
       tbody.innerHTML += `
         <tr>
-          <td>${id}</td>
-          <td>${d.name}</td>
+          <td>${d.Title}</td>
           <td>
-            ${(userType === "admin" || userType === "operator") ? `<button onclick="editWeekday('${id}')">✎</button>` : ""}
-            ${(userType === "admin") ? `<button onclick="deleteWeekday('${id}')">🗑</button>` : ""}
+            ${(userType === "admin" || userType === "operator") ? `<button onclick="editWeekday('${key}')">✎</button>` : ""}
+            ${(userType === "admin") ? `<button onclick="deleteWeekday('${key}')">🗑</button>` : ""}
           </td>
         </tr>`;
     });
@@ -40,41 +38,53 @@ function loadWeekdays() {
 }
 
 function openWeekdayForm() {
-  document.getElementById("weekdayFormTitle").textContent = "הוסף יום";
-  document.getElementById("weekdayId").disabled = false;
-  document.getElementById("weekdayId").value = "";
-  document.getElementById("weekdayName").value = "";
+  document.getElementById("weekdayFormTitle").textContent = "הוסף יום בשבוע";
+  document.getElementById("weekdayKey").value = "";
+  document.getElementById("weekdayTitle").value = "";
   document.getElementById("weekdayModal").style.display = "block";
 }
 
-function editWeekday(id) {
-  db.ref("weekdays/" + id).once("value").then(snap => {
+function editWeekday(key) {
+  firebase.database().ref("weekdays/" + key).once("value").then(snap => {
     const data = snap.val();
-    document.getElementById("weekdayFormTitle").textContent = "ערוך יום";
-    document.getElementById("weekdayId").value = id;
-    document.getElementById("weekdayId").disabled = true;
-    document.getElementById("weekdayName").value = data.name;
+    document.getElementById("weekdayFormTitle").textContent = "ערוך יום בשבוע";
+    document.getElementById("weekdayKey").value = key;
+    document.getElementById("weekdayTitle").value = data.Title;
     document.getElementById("weekdayModal").style.display = "block";
   });
 }
 
 function saveWeekday() {
-  const id = document.getElementById("weekdayId").value;
-  const name = document.getElementById("weekdayName").value;
+  const key = document.getElementById("weekdayKey").value;
+  const title = document.getElementById("weekdayTitle").value;
 
-  if (id && name) {
-    db.ref("weekdays/" + id).set({ name });
-    closeWeekdayForm();
-    loadWeekdays();
+  if (!title.trim()) {
+    alert("יש להזין כותרת יום בשבוע");
+    return;
+  }
+
+  const ref = firebase.database().ref("weekdays");
+
+  if (key) {
+    // עדכון
+    ref.child(key).update({ Title: title }).then(() => {
+      closeWeekdayForm();
+      loadWeekdays();
+    });
   } else {
-    alert("יש למלא גם קוד וגם שם");
+    // הוספה
+    ref.push({ Title: title }).then(() => {
+      closeWeekdayForm();
+      loadWeekdays();
+    });
   }
 }
 
-function deleteWeekday(id) {
+function deleteWeekday(key) {
   if (confirm("למחוק את היום?")) {
-    db.ref("weekdays/" + id).remove();
-    loadWeekdays();
+    firebase.database().ref("weekdays/" + key).remove().then(() => {
+      loadWeekdays();
+    });
   }
 }
 
