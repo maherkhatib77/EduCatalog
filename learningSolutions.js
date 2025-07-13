@@ -113,3 +113,30 @@ function openLearningSolutionPopup() {
 function closeLearningSolutionPopup() {
   document.getElementById("learningSolutionPopup").style.display = "none";
 }
+
+
+// מציג טופס הוספת פתרון למידה בתוך חלון הפופאפ
+function showSolutionForm() {
+  const popupContent = document.getElementById("popupContent");
+  popupContent.innerHTML = `
+    <h4>הוספת פתרון למידה חדש</h4>
+    <input type="text" id="solutionNumber" placeholder="מספר פתרון למידה"><br>
+    <input type="text" id="solutionName" placeholder="שם פתרון למידה"><br>
+    <input type="text" id="creatorName" placeholder="שם יוצר"><br>
+    <input type="text" id="lecturerName" placeholder="שם המרצה"><br>
+    <input type="date" id="startDate" placeholder="תאריך התחלה"><br>
+    <input type="text" id="meetingDay" placeholder="יום מפגש קבוע"><br>
+    <input type="time" id="startTime" placeholder="שעת התחלה"><br>
+    <input type="time" id="endTime" placeholder="שעת סיום"><br>
+    <input type="text" id="educationLevels" placeholder="שלבי חינוך"><br>
+    <input type="text" id="educationType" placeholder="סוג חינוך"><br>
+    <input type="text" id="subject" placeholder="תחום דעת"><br>
+    <input type="text" id="solutionDomain" placeholder="תחום פתרון"><br>
+    <input type="text" id="learningMode" placeholder="אופן למידה"><br>
+    <input type="text" id="hourCredits" placeholder="היקף שעות אקדמיות"><br>
+    <input type="url" id="syllabusLink" placeholder="קישור לסילבוס"><br>
+    <textarea id="solutionSummary" placeholder="תקציר"></textarea><br>
+    <textarea id="solutionGoals" placeholder="מטרות"></textarea><br>
+    <button onclick="saveLearningSolution()">שמירה</button>
+  `;
+}
