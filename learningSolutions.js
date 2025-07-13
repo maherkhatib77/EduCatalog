@@ -34,16 +34,19 @@ function renderPopupCard() {
   editingId = null;
 
   content.innerHTML = `
-    <p><strong>שם:</strong> ${d.solution_name || ""}</p>
-    <p><strong>מנחה:</strong> ${d.creator_name || ""}</p>
-    <p><strong>תאריך:</strong> ${d.first_meeting_date || ""}</p>
-    <p><strong>יום:</strong> ${d.weekday || ""}</p>
-    <p><strong>שלבים:</strong> ${Object.values(d.education_levels || {}).join(", ")}</p>
-    <p><strong>שעות:</strong> ${d.hours_count || ""}</p>
-    <p><strong>תחום דעת:</strong> ${d.subject || ""}</p>
-    <p><strong>מטרות:</strong> ${d.objectives || ""}</p>
-    <p><strong>תקציר:</strong> ${d.summary || ""}</p>
-    <p><strong>סילבוס:</strong> ${d.syllabus_link || ""}</p>
+    <p><strong>מספר פתרון הלמידה:</strong> ${d.id || ""}</p>
+    <p><strong>שם פתרון הלמידה:</strong> ${d.solution_name || ""}</p>
+    <p><strong>שם יוצר פתרון הלמידה:</strong> ${d.creator_name || ""}</p>
+    <p><strong>שם מרצה פתרון הלמידה:</strong> ${d.lecturer_name || ""}</p>
+    <p><strong>תאריך מפגש ראשון:</strong> ${d.first_meeting_date || ""}</p>
+    <p><strong>יום המפגש הקבוע:</strong> ${d.weekday || ""}</p>
+    <p><strong>זמני המפגש – התחלה:</strong> ${d.start_time || ""}</p>
+    <p><strong>זמני המפגש – סיום:</strong> ${d.end_time || ""}</p>
+    <p><strong>שלבי חינוך:</strong> ${Object.values(d.education_levels || {}).join(", ")}</p>
+    <p><strong>סוג חינוך:</strong> ${Object.values(d.education_types || {}).join(", ")}</p>
+    <p><strong>אופן למידה:</strong> ${d.learning_mode || ""}</p>
+    <p><strong>היקף שעות אקדמיות מוכר לגמול:</strong> ${d.hours_count || ""}</p>
+
     <div style="margin-top: 10px;">
       <button onclick="showSolutionForm('${d.id}')">✎ ערוך</button>
       <button onclick="deleteLearningSolution('${d.id}')">🗑 מחק</button>
@@ -54,19 +57,23 @@ function renderPopupCard() {
 
 function showSolutionForm(id = null) {
   let d = {
+    id: "",
     solution_name: "",
     creator_name: "",
+    lecturer_name: "",
     first_meeting_date: "",
+    start_time: "",
+    end_time: "",
     weekday: "",
     education_levels: [],
     education_types: [],
-    hours_count: "",
     subject: "",
     solution_domain: "",
     learning_mode: "",
-    objectives: "",
+    hours_count: "",
+    syllabus_link: "",
     summary: "",
-    syllabus_link: ""
+    objectives: ""
   };
 
   if (id) {
@@ -77,20 +84,29 @@ function showSolutionForm(id = null) {
   document.getElementById("popupContent").innerHTML = `
     <h4>${id ? "עריכת פתרון למידה" : "הוספת פתרון למידה חדש"}</h4>
 
+    <label>מספר פתרון הלמידה:</label>
+    <input type="text" id="formId" value="${d.id || ""}" style="width:100%;margin-bottom:5px;" ${id ? "disabled" : ""}>
+
     <label>שם פתרון הלמידה:</label>
     <input type="text" id="formSolutionName" value="${d.solution_name || ""}" style="width:100%;margin-bottom:5px;">
 
-    <label>שם המנחה:</label>
+    <label>שם מדריך:</label>
     <select id="formCreator" style="width:100%;margin-bottom:5px;"></select>
 
-    <label>תאריך התחלה:</label>
+    <label>שם מרצה פתרון הלמידה:</label>
+    <select id="formLecturer" style="width:100%;margin-bottom:5px;"></select>
+
+    <label>תאריך מפגש ראשון:</label>
     <input type="date" id="formDate" value="${d.first_meeting_date || ""}" style="width:100%;margin-bottom:5px;">
 
-    <label>תחום דעת:</label>
-    <select id="formSubject" style="width:100%;margin-bottom:5px;"></select>
-
-    <label>יום קבוע:</label>
+    <label>יום המפגש הקבוע:</label>
     <select id="formWeekday" style="width:100%;margin-bottom:5px;"></select>
+
+    <label>זמני המפגש – התחלה:</label>
+    <input type="time" id="formStartTime" value="${d.start_time || ""}" style="width:100%;margin-bottom:5px;">
+
+    <label>זמני המפגש – סיום:</label>
+    <input type="time" id="formEndTime" value="${d.end_time || ""}" style="width:100%;margin-bottom:5px;">
 
     <label>שלבי חינוך:</label>
     <select id="formLevels" multiple style="width:100%;margin-bottom:5px;"></select>
@@ -98,8 +114,8 @@ function showSolutionForm(id = null) {
     <label>סוג חינוך:</label>
     <select id="formTypes" multiple style="width:100%;margin-bottom:5px;"></select>
 
-    <label>היקף שעות:</label>
-    <select id="formHours" style="width:100%;margin-bottom:5px;"></select>
+    <label>תחום דעת:</label>
+    <select id="formSubject" style="width:100%;margin-bottom:5px;"></select>
 
     <label>תחום פתרון למידה:</label>
     <select id="formDomain" style="width:100%;margin-bottom:5px;"></select>
@@ -107,14 +123,17 @@ function showSolutionForm(id = null) {
     <label>אופן למידה:</label>
     <select id="formMode" style="width:100%;margin-bottom:5px;"></select>
 
-    <label>קישור לסילבוס:</label>
-    <input type="url" id="formSyllabus" value="${d.syllabus_link || ""}" style="width:100%;margin-bottom:5px;">
+    <label>היקף שעות אקדמיות מוכר לגמול:</label>
+    <select id="formHours" style="width:100%;margin-bottom:5px;"></select>
 
-    <label>מטרות פתרון הלמידה:</label>
-    <textarea id="formObjectives" style="width:100%;margin-bottom:5px;">${d.objectives || ""}</textarea>
+    <label>קישור סילבוס:</label>
+    <input type="url" id="formSyllabus" value="${d.syllabus_link || ""}" style="width:100%;margin-bottom:5px;">
 
     <label>תקציר פתרון הלמידה:</label>
     <textarea id="formSummary" style="width:100%;margin-bottom:5px;">${d.summary || ""}</textarea>
+
+    <label>מטרות פתרון הלמידה:</label>
+    <textarea id="formObjectives" style="width:100%;margin-bottom:5px;">${d.objectives || ""}</textarea>
 
     <div>
       <button onclick="savePopupSolution()">💾 שמור</button>
@@ -123,33 +142,57 @@ function showSolutionForm(id = null) {
   `;
 
   populateSelect("formCreator", "instructors", "first_name", "last_name");
+  populateSelect("formLecturer", "lecturers", "first_name", "last_name").then(() => {
+    if (d.lecturer_name) {
+      const formLecturer = document.getElementById("formLecturer");
+      Array.from(formLecturer.options).forEach(opt => {
+        if (opt.value === d.lecturer_name) {
+          opt.selected = true;
+        }
+      });
+    }
+  });
   populateSelect("formWeekday", "weekdays", "Title");
   populateSelect("formLevels", "education_levels", "Title", null, true);
   populateSelect("formTypes", "education_types", "Title", null, true);
-  populateSelect("formHours", "hour_credits", "Title");
   populateSelect("formSubject", "subjects", "Title");
   populateSelect("formDomain", "solution_domains", "Title");
   populateSelect("formMode", "learning_modes", "title");
+  populateSelect("formHours", "hour_credits", "Title");
 }
 
 function savePopupSolution() {
+  const isEdit = Boolean(editingId);
+  const ref = isEdit
+    ? db.ref("learning_solutions/" + editingId)
+    : db.ref("learning_solutions").push();
+
   const data = {
     solution_name: document.getElementById("formSolutionName").value.trim(),
     creator_name: document.getElementById("formCreator").value.trim(),
+    lecturer_name: document.getElementById("formLecturer").value.trim(),
     first_meeting_date: document.getElementById("formDate").value,
-    subject: document.getElementById("formSubject").value.trim(),
     weekday: document.getElementById("formWeekday").value.trim(),
+    start_time: document.getElementById("formStartTime").value,
+    end_time: document.getElementById("formEndTime").value,
     education_levels: Array.from(document.getElementById("formLevels").selectedOptions).map(opt => opt.value),
     education_types: Array.from(document.getElementById("formTypes").selectedOptions).map(opt => opt.value),
-    hours_count: document.getElementById("formHours").value.trim(),
+    subject: document.getElementById("formSubject").value.trim(),
     solution_domain: document.getElementById("formDomain").value.trim(),
     learning_mode: document.getElementById("formMode").value.trim(),
+    hours_count: document.getElementById("formHours").value.trim(),
     syllabus_link: document.getElementById("formSyllabus").value.trim(),
-    objectives: document.getElementById("formObjectives").value.trim(),
-    summary: document.getElementById("formSummary").value.trim()
+    summary: document.getElementById("formSummary").value.trim(),
+    objectives: document.getElementById("formObjectives").value.trim()
   };
 
-  const ref = editingId ? db.ref("learning_solutions/" + editingId) : db.ref("learning_solutions").push();
+  if (!isEdit) {
+    const formId = document.getElementById("formId").value.trim();
+    if (formId) {
+      data.id = formId;
+    }
+  }
+
   ref.set(data, (error) => {
     if (error) {
       alert("שגיאה בשמירה");
@@ -163,10 +206,13 @@ function savePopupSolution() {
 function populateSelect(id, path, field, secondField = null, multi = false) {
   const select = document.getElementById(id);
   select.innerHTML = multi ? "" : "<option value=''>בחר</option>";
-  db.ref(path).once("value", snapshot => {
+
+  return db.ref(path).once("value").then(snapshot => {
     snapshot.forEach(child => {
       const data = child.val();
-      const label = secondField ? `${data[field] || ""} ${data[secondField] || ""}`.trim() : data[field];
+      const label = secondField
+        ? `${data[field] || ""} ${data[secondField] || ""}`.trim()
+        : data[field];
       const option = document.createElement("option");
       option.value = label;
       option.textContent = label;
