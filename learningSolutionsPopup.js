@@ -2,7 +2,6 @@
 let popupSolutions = [];
 let currentPopupIndex = 0;
 
-// טוען את הנתונים מתוך Firebase ומציג אותם בקונסול ובפופאפ
 function loadLearningSolutionsIntoPopup() {
   const ref = firebase.database().ref("learning_solutions");
   ref.once("value", (snapshot) => {
@@ -43,7 +42,7 @@ function renderPopupCard() {
     </div>
   `;
 
-  document.getElementById("popupCounter").innerText = \`\${currentPopupIndex + 1} / \${popupSolutions.length}\`;
+  document.getElementById("popupCounter").innerText = `${currentPopupIndex + 1} / ${popupSolutions.length}`;
 }
 
 function nextPopupCard() {
