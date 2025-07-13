@@ -1,4 +1,3 @@
-
 let popupData = [];
 let popupIndex = 0;
 let fullData = [];
@@ -39,7 +38,7 @@ function renderPopupCard() {
     <p><strong>מנחה:</strong> ${d.creator_name || ""}</p>
     <p><strong>תאריך:</strong> ${d.first_meeting_date || ""}</p>
     <p><strong>יום:</strong> ${d.weekday || ""}</p>
-    <p><strong>שלבים:</strong> ${(d.education_levels || []).join(", ")}</p>
+    <p><strong>שלבים:</strong> ${Object.values(d.education_levels || {}).join(", ")}</p>
     <p><strong>שעות:</strong> ${d.hours_count || ""}</p>
     <p><strong>תחום דעת:</strong> ${d.subject || ""}</p>
     <p><strong>מטרות:</strong> ${d.objectives || ""}</p>
@@ -131,6 +130,34 @@ function showSolutionForm(id = null) {
   populateSelect("formSubject", "subjects", "name");
   populateSelect("formDomain", "solution_domains", "name");
   populateSelect("formMode", "learning_modes", "title");
+}
+
+function savePopupSolution() {
+  const data = {
+    solution_name: document.getElementById("formSolutionName").value.trim(),
+    creator_name: document.getElementById("formCreator").value.trim(),
+    first_meeting_date: document.getElementById("formDate").value,
+    subject: document.getElementById("formSubject").value.trim(),
+    weekday: document.getElementById("formWeekday").value.trim(),
+    education_levels: Array.from(document.getElementById("formLevels").selectedOptions).map(opt => opt.value),
+    education_types: Array.from(document.getElementById("formTypes").selectedOptions).map(opt => opt.value),
+    hours_count: document.getElementById("formHours").value.trim(),
+    solution_domain: document.getElementById("formDomain").value.trim(),
+    learning_mode: document.getElementById("formMode").value.trim(),
+    syllabus_link: document.getElementById("formSyllabus").value.trim(),
+    objectives: document.getElementById("formObjectives").value.trim(),
+    summary: document.getElementById("formSummary").value.trim()
+  };
+
+  const ref = editingId ? db.ref("learning_solutions/" + editingId) : db.ref("learning_solutions").push();
+  ref.set(data, (error) => {
+    if (error) {
+      alert("שגיאה בשמירה");
+    } else {
+      alert("נשמר בהצלחה");
+      openLearningSolutionPopup();
+    }
+  });
 }
 
 function populateSelect(id, path, field, secondField = null, multi = false) {
