@@ -118,12 +118,14 @@
   <script src="solutionDomains.js"></script>
   <script src="users.js"></script>
   <script src="learningSolutions.js"></script>
+  <script src="learningSolutionsPopup.js"></script>
 
   <!-- fallback function in case it's missing -->
   <script>
     console.log("dashboard.html loaded");
     if (typeof openLearningSolutionPopup !== "function") {
       function openLearningSolutionPopup() {
+  loadLearningSolutionsIntoPopup();
         console.warn("Fallback: פונקציית openLearningSolutionPopup הופעלה מהדף");
         document.getElementById("learningSolutionPopup").style.display = "flex";
       }
