@@ -8,13 +8,64 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
   <script src="firebase-config.js"></script>
+  <style>
+    .hidden { display: none; }
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      right: 0; left: 0; top: 0; bottom: 0;
+      background-color: rgba(0,0,0,0.6);
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background: #fefefe;
+      padding: 20px;
+      width: 90%;
+      max-width: 700px;
+      border-radius: 10px;
+      overflow-y: auto;
+      max-height: 90vh;
+      direction: rtl;
+      text-align: right;
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-body p {
+      margin: 10px 0;
+    }
+    .modal-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 20px;
+    }
+    .modal-footer button {
+      padding: 5px 10px;
+    }
+    .close {
+      font-size: 22px;
+      cursor: pointer;
+    }
+    .search-bar {
+      margin: 10px 0;
+    }
+    .action-bar {
+      display: flex;
+      justify-content: space-between;
+      margin: 10px 0;
+    }
+  </style>
 </head>
 <body>
   <header>
     <div>ממשק ניהול</div>
     <button onclick="logout()">התנתקות</button>
   </header>
-
   <div style="padding: 20px;">
     <button onclick="loadLecturers()">מרצה</button>
     <button onclick="loadInstructors()">מדריך</button>
@@ -29,25 +80,32 @@
     <button onclick="openLearningSolutionPopup()">פתרון למידה (Popup)</button>
   </div>
 
-  <div id="table-container" style="padding: 20px;"></div>
+  <div id="table-container"></div>
 
   <!-- Popup Modal -->
-  <div id="learningSolutionPopup" class="modal" style="display: none; position: fixed; background: rgba(0,0,0,0.5); top: 0; left: 0; right: 0; bottom: 0; justify-content: center; align-items: center;">
-    <div class="modal-content" style="background: white; padding: 20px; width: 600px;">
+  <div id="learningSolutionPopup" class="modal">
+    <div class="modal-content">
       <div class="modal-header">
         <h3 id="popupTitle">פתרון למידה</h3>
-        <span onclick="closeLearningSolutionPopup()" style="cursor:pointer;">✖</span>
+        <span class="close" onclick="closeLearningSolutionPopup()">&times;</span>
       </div>
-      <div id="popupContent" class="modal-body"></div>
+      <div class="search-bar">
+        <input type="text" id="popupSearch" placeholder="חיפוש לפי שם, תחום, מנחה..." oninput="filterPopupResults()">
+      </div>
+      <div class="action-bar">
+        <button onclick="showSolutionForm()">➕ הוסף פתרון</button>
+        <button onclick="printAllLearningSolutions()">🖨️ הדפס</button>
+      </div>
+      <div class="modal-body" id="popupContent"></div>
       <div class="modal-footer">
         <button onclick="prevPopupCard()">◀</button>
-        <span id="popupCounter">0 / 0</span>
+        <span id="popupCounter">1 / 1</span>
         <button onclick="nextPopupCard()">▶</button>
       </div>
     </div>
   </div>
 
-  <!-- כל קבצי הפונקציות -->
+  <script src="auth.js"></script>
   <script src="lecturers.js"></script>
   <script src="instructors.js"></script>
   <script src="learningModes.js"></script>
@@ -58,21 +116,6 @@
   <script src="subjects.js"></script>
   <script src="solutionDomains.js"></script>
   <script src="users.js"></script>
-  <script src="learningSolutionsPopup.js"></script>
-
-  <script>
-    function openLearningSolutionPopup() {
-      document.getElementById("learningSolutionPopup").style.display = "flex";
-      loadLearningSolutionsIntoPopup();
-    }
-
-    function closeLearningSolutionPopup() {
-      document.getElementById("learningSolutionPopup").style.display = "none";
-    }
-
-    function logout() {
-      window.location.href = "index.html"; // הפניה לדף הכניסה
-    }
-  </script>
+  <script src="learningSolutions.js"></script>
 </body>
 </html>
