@@ -15,6 +15,16 @@
     <button onclick="logout()">התנתקות</button>
   </header>
   <div style="padding: 20px;">
+    <button onclick="loadLecturers()">מרצה</button>
+    <button onclick="loadInstructors()">מדריך</button>
+    <button onclick="loadLearningModes()">אופן למידה</button>
+    <button onclick="loadEducationLevels()">שלבי חינוך</button>
+    <button onclick="loadEducationTypes()">סוג חינוך</button>
+    <button onclick="loadWeekdays()">יום</button>
+    <button onclick="loadHourCredits()">היקף שעות</button>
+    <button onclick="loadSubjects()">תחום דעת</button>
+    <button onclick="loadSolutionDomains()">תחום פתרון הלמידה</button>
+    <button onclick="loadUsers()">משתמשים</button>
     <button onclick="openLearningSolutionPopup()">פתרון למידה (Popup)</button>
   </div>
 
@@ -42,6 +52,19 @@
     function closeLearningSolutionPopup() {
       document.getElementById("learningSolutionPopup").style.display = "none";
     }
+
+    // פונקציות דמה ליתר הכפתורים
+    function loadLecturers() { alert("טעינת מרצים..."); }
+    function loadInstructors() { alert("טעינת מדריכים..."); }
+    function loadLearningModes() { alert("טעינת אופני למידה..."); }
+    function loadEducationLevels() { alert("טעינת שלבי חינוך..."); }
+    function loadEducationTypes() { alert("טעינת סוגי חינוך..."); }
+    function loadWeekdays() { alert("טעינת ימים..."); }
+    function loadHourCredits() { alert("טעינת שעות..."); }
+    function loadSubjects() { alert("טעינת תחומי דעת..."); }
+    function loadSolutionDomains() { alert("טעינת תחומי פתרון..."); }
+    function loadUsers() { alert("טעינת משתמשים..."); }
+    function logout() { alert("התנתקות"); }
   </script>
 </body>
 </html>

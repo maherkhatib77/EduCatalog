@@ -6,7 +6,7 @@ function loadLearningSolutionsIntoPopup() {
   const ref = firebase.database().ref("learning_solutions");
   ref.once("value", (snapshot) => {
     const data = snapshot.val();
-    console.log("✅ טוען נתונים מטבלת learning_solutions:", data);
+    console.log("✅ נתונים מ-Firebase:", data);
 
     if (!data) {
       document.getElementById("popupContent").innerHTML = "<p style='color:red;'>לא נמצאו נתונים בטבלה.</p>";
@@ -30,12 +30,13 @@ function renderPopupCard() {
   }
 
   const item = popupSolutions[currentPopupIndex];
-  console.log("✅ מציג כרטיס:", item);
+  console.log("📄 כרטיס מוצג:", item);
 
   container.innerHTML = `
     <div style="line-height: 1.8; padding: 10px;">
       <strong>שם הפתרון:</strong> ${item.solution_name || ""}<br>
       <strong>מספר:</strong> ${item.solution_number || ""}<br>
+      <strong>יוצר:</strong> ${item.creator_name || ""}<br>
       <strong>מרצה:</strong> ${item.lecturer_name || ""}<br>
       <strong>תחום דעת:</strong> ${item.subject || ""}<br>
       <strong>תאריך התחלה:</strong> ${item.start_date || ""}<br>
