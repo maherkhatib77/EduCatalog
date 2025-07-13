@@ -105,7 +105,7 @@
     </div>
   </div>
 
-  <!-- טעינת כל הסקריפטים -->
+  <!-- סקריפטים -->
   <script src="auth.js"></script>
   <script src="lecturers.js"></script>
   <script src="instructors.js"></script>
@@ -120,21 +120,15 @@
   <script src="learningSolutions.js"></script>
   <script src="learningSolutionsPopup.js"></script>
 
-  <!-- fallback function in case it's missing -->
+  <!-- פותח את הפופאפ ומטעין את הנתונים -->
   <script>
-    console.log("dashboard.html loaded");
-    if (typeof openLearningSolutionPopup !== "function") {
-      function openLearningSolutionPopup() {
-  loadLearningSolutionsIntoPopup();
-        console.warn("Fallback: פונקציית openLearningSolutionPopup הופעלה מהדף");
-        document.getElementById("learningSolutionPopup").style.display = "flex";
-      }
+    function openLearningSolutionPopup() {
+      document.getElementById("learningSolutionPopup").style.display = "flex";
+      loadLearningSolutionsIntoPopup();
     }
 
-    if (typeof closeLearningSolutionPopup !== "function") {
-      function closeLearningSolutionPopup() {
-        document.getElementById("learningSolutionPopup").style.display = "none";
-      }
+    function closeLearningSolutionPopup() {
+      document.getElementById("learningSolutionPopup").style.display = "none";
     }
   </script>
 </body>
