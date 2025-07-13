@@ -115,28 +115,43 @@ function closeLearningSolutionPopup() {
 }
 
 
-// מציג טופס הוספת פתרון למידה בתוך חלון הפופאפ
+// מציג טופס הוספת פתרון למידה עם עיצוב וולידציה
 function showSolutionForm() {
   const popupContent = document.getElementById("popupContent");
   popupContent.innerHTML = `
-    <h4>הוספת פתרון למידה חדש</h4>
-    <input type="text" id="solutionNumber" placeholder="מספר פתרון למידה"><br>
-    <input type="text" id="solutionName" placeholder="שם פתרון למידה"><br>
-    <input type="text" id="creatorName" placeholder="שם יוצר"><br>
-    <input type="text" id="lecturerName" placeholder="שם המרצה"><br>
-    <input type="date" id="startDate" placeholder="תאריך התחלה"><br>
-    <input type="text" id="meetingDay" placeholder="יום מפגש קבוע"><br>
-    <input type="time" id="startTime" placeholder="שעת התחלה"><br>
-    <input type="time" id="endTime" placeholder="שעת סיום"><br>
-    <input type="text" id="educationLevels" placeholder="שלבי חינוך"><br>
-    <input type="text" id="educationType" placeholder="סוג חינוך"><br>
-    <input type="text" id="subject" placeholder="תחום דעת"><br>
-    <input type="text" id="solutionDomain" placeholder="תחום פתרון"><br>
-    <input type="text" id="learningMode" placeholder="אופן למידה"><br>
-    <input type="text" id="hourCredits" placeholder="היקף שעות אקדמיות"><br>
-    <input type="url" id="syllabusLink" placeholder="קישור לסילבוס"><br>
-    <textarea id="solutionSummary" placeholder="תקציר"></textarea><br>
-    <textarea id="solutionGoals" placeholder="מטרות"></textarea><br>
-    <button onclick="saveLearningSolution()">שמירה</button>
+    <h4 style="margin-bottom: 10px;">הוספת פתרון למידה חדש</h4>
+    <form id="solutionForm" onsubmit="event.preventDefault(); validateAndSave();">
+      <div style="display: grid; gap: 8px;">
+        <input type="text" id="solutionNumber" placeholder="מספר פתרון למידה *" required>
+        <input type="text" id="solutionName" placeholder="שם פתרון למידה *" required>
+        <input type="text" id="creatorName" placeholder="שם יוצר *" required>
+        <input type="text" id="lecturerName" placeholder="שם המרצה *" required>
+        <input type="date" id="startDate" placeholder="תאריך התחלה *" required>
+        <input type="text" id="meetingDay" placeholder="יום מפגש קבוע *" required>
+        <input type="time" id="startTime" placeholder="שעת התחלה *" required>
+        <input type="time" id="endTime" placeholder="שעת סיום *" required>
+        <input type="text" id="educationLevels" placeholder="שלבי חינוך *" required>
+        <input type="text" id="educationType" placeholder="סוג חינוך *" required>
+        <input type="text" id="subject" placeholder="תחום דעת *" required>
+        <input type="text" id="solutionDomain" placeholder="תחום פתרון *" required>
+        <input type="text" id="learningMode" placeholder="אופן למידה *" required>
+        <input type="text" id="hourCredits" placeholder="היקף שעות אקדמיות *" required>
+        <input type="url" id="syllabusLink" placeholder="קישור לסילבוס (https://...) *" required>
+        <textarea id="solutionSummary" placeholder="תקציר *" required></textarea>
+        <textarea id="solutionGoals" placeholder="מטרות *" required></textarea>
+      </div>
+      <br>
+      <button type="submit">💾 שמירה</button>
+    </form>
   `;
+}
+
+// ולידציה לפני שמירה
+function validateAndSave() {
+  const form = document.getElementById("solutionForm");
+  if (!form.checkValidity()) {
+    alert("אנא מלא/י את כל השדות החובה");
+    return;
+  }
+  saveLearningSolution();
 }
