@@ -102,3 +102,14 @@ function deleteLearningSolution(id) {
 function generateId() {
   return "LS" + Math.floor(Math.random() * 100000);
 }
+
+
+// פותח את חלון הפופאפ
+function openLearningSolutionPopup() {
+  document.getElementById("learningSolutionPopup").style.display = "flex";
+}
+
+// סוגר את חלון הפופאפ
+function closeLearningSolutionPopup() {
+  document.getElementById("learningSolutionPopup").style.display = "none";
+}
