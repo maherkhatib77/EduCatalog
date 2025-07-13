@@ -105,6 +105,7 @@
     </div>
   </div>
 
+  <!-- טעינת כל הסקריפטים -->
   <script src="auth.js"></script>
   <script src="lecturers.js"></script>
   <script src="instructors.js"></script>
@@ -117,5 +118,22 @@
   <script src="solutionDomains.js"></script>
   <script src="users.js"></script>
   <script src="learningSolutions.js"></script>
+
+  <!-- fallback function in case it's missing -->
+  <script>
+    console.log("dashboard.html loaded");
+    if (typeof openLearningSolutionPopup !== "function") {
+      function openLearningSolutionPopup() {
+        console.warn("Fallback: פונקציית openLearningSolutionPopup הופעלה מהדף");
+        document.getElementById("learningSolutionPopup").style.display = "flex";
+      }
+    }
+
+    if (typeof closeLearningSolutionPopup !== "function") {
+      function closeLearningSolutionPopup() {
+        document.getElementById("learningSolutionPopup").style.display = "none";
+      }
+    }
+  </script>
 </body>
 </html>
