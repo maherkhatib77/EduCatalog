@@ -123,12 +123,12 @@ function showSolutionForm(id = null) {
   `;
 
   populateSelect("formCreator", "instructors", "first_name", "last_name");
-  populateSelect("formWeekday", "weekdays", "name");
-  populateSelect("formLevels", "education_levels", "title", null, true);
-  populateSelect("formTypes", "education_types", "title", null, true);
-  populateSelect("formHours", "hour_credits", "hours");
-  populateSelect("formSubject", "subjects", "name");
-  populateSelect("formDomain", "solution_domains", "name");
+  populateSelect("formWeekday", "weekdays", "Title");
+  populateSelect("formLevels", "education_levels", "Title", null, true);
+  populateSelect("formTypes", "education_types", "Title", null, true);
+  populateSelect("formHours", "hour_credits", "Title");
+  populateSelect("formSubject", "subjects", "Title");
+  populateSelect("formDomain", "solution_domains", "Title");
   populateSelect("formMode", "learning_modes", "title");
 }
 
